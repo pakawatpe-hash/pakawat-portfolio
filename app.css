@@ -269,3 +269,20 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after,.marquee .track{animation:none}
   .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
+/* === Full-bleed helper (ยืดให้ชนขอบจอ) === */
+.full-bleed{
+  width:100vw;
+  /* ดึงออกจากขอบ .container ให้เท่ากับความกว้างจอ */
+  margin-left:  calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  box-sizing: border-box;
+}
+
+/* เอาไปใช้กับ marquee เพื่อให้ชนขอบซ้าย-ขวาเป๊ะ */
+.marquee.full-bleed{
+  border-left:none;            /* ถ้าอยากเห็นเป็นแถบชนขอบจริง ๆ */
+  border-right:none;
+  border-radius:0;             /* ไม่โค้งขอบ เพื่อให้ดูชน */
+  padding:12px 0;
+  overflow:hidden;
+}
