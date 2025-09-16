@@ -101,23 +101,27 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
   100% { transform: translateY(0) rotate(-2deg); }
 }
 
-/* ===== Marquee (fix tilt / overflow right) ===== */
+/* ===== Marquee Full Width ===== */
 .marquee {
-  overflow: hidden;
   position: relative;
+  width: 100vw; /* กินเต็มจอ */
+  left: 50%;
+  transform: translateX(-50%); /* ดึงให้อยู่ตรงกลางพอดี */
+  overflow: hidden;
+
   border: 1px solid var(--line);
   border-radius: 12px;
-  margin: 20px 0;
-  padding: 10px 0;
+  padding: 12px 0;
+  margin: 28px 0;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .marquee .track {
   display: inline-flex;
-  gap: 28px;
+  gap: 36px;
   white-space: nowrap;
   will-change: transform;
-  animation: marquee 18s linear infinite;
-  padding-left: 100%; /* เริ่มจากนอกจอด้านซ้าย */
+  animation: marquee 20s linear infinite;
 }
 
 .marquee span {
@@ -129,10 +133,10 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
   opacity: .9;
 }
 
-/* Keyframes */
+/* วิ่งวน */
 @keyframes marquee {
   from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
+  to   { transform: translateX(-50%); } /* ครึ่งนึง เพราะ track มีเนื้อหาซ้ำ */
 }
 
 /* =============== ILLUSTRATION / TILT + GLARE =============== */
