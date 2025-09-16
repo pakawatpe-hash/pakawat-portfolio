@@ -7,6 +7,7 @@ const rafThrottle = (fn) => {
     requestAnimationFrame(() => { fn(...args); ticking = false; });
   };
 };
+const isFinePointer = matchMedia('(pointer: fine)').matches;
 
 /* ===== Reveal on scroll (elements) ===== */
 const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
@@ -21,10 +22,9 @@ const io = new IntersectionObserver((entries)=>{
 revealEls.forEach(el=>io.observe(el));
 
 /* ===== Reveal whole sections (.section.lazy) ===== */
-(function(){
+(() => {
   const secs = document.querySelectorAll('section.lazy');
   if(!secs.length) return;
-
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if (e.isIntersecting) {
@@ -33,11 +33,10 @@ revealEls.forEach(el=>io.observe(el));
       }
     });
   },{threshold:0.12});
-
   secs.forEach(s=>obs.observe(s));
 })();
 
-/* ===== Tilt + Glare (vanilla) ===== */
+/* ===== Tilt + Glare ===== */
 document.querySelectorAll('.tilt').forEach(el=>{
   const glare = el.querySelector('.glare-spot');
   const handle = (e)=>{
@@ -46,10 +45,8 @@ document.querySelectorAll('.tilt').forEach(el=>{
     const y = (e.clientY - r.top)/r.height - .5;
     el.style.transform = `rotateX(${(-y*10).toFixed(2)}deg) rotateY(${(x*12).toFixed(2)}deg)`;
     if(glare){
-      const gx = (e.clientX - r.left);
-      const gy = (e.clientY - r.top);
-      glare.style.left = `${gx}px`;
-      glare.style.top  = `${gy}px`;
+      glare.style.left = (e.clientX - r.left) + 'px';
+      glare.style.top  = (e.clientY - r.top)  + 'px';
       glare.style.opacity = .7;
     }
   };
@@ -60,8 +57,9 @@ document.querySelectorAll('.tilt').forEach(el=>{
   });
 });
 
-/* ===== Magnetic buttons/cards ===== */
+/* ===== Magnetic hover (buttons/links with .magnetic) ===== */
 (() => {
+  if(!isFinePointer) return; // ปิดบนจอสัมผัส
   const magnets = document.querySelectorAll('.magnetic');
   const strength = 18;
   magnets.forEach(m=>{
@@ -76,37 +74,35 @@ document.querySelectorAll('.tilt').forEach(el=>{
   });
 })();
 
-/* ===== Parallax for blobs and card thumbs ===== */
-document.addEventListener('mousemove', rafThrottle((e)=>{
-  const x = (e.clientX / innerWidth - .5) * 8;
-  const y = (e.clientY / innerHeight - .5) * 8;
-  document.querySelectorAll('.bg-blob').forEach((b,i)=>{
-    b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`;
-  });
-}));
-
-/* Small parallax on thumbnails */
-document.addEventListener('mousemove', rafThrottle((e)=>{
-  document.querySelectorAll('.parallax').forEach(el=>{
-    const depth = parseFloat(el.dataset.depth||'0.1');
-    const x = ((e.clientX / window.innerWidth) - .5) * depth * 40;
-    const y = ((e.clientY / window.innerHeight) - .5) * depth * 40;
-    el.style.transform = `translate(${x}px, ${y}px)`;
-  });
-}));
+/* ===== Parallax for blobs & card thumbnails ===== */
+if (isFinePointer) {
+  document.addEventListener('mousemove', rafThrottle((e)=>{
+    const x = (e.clientX / innerWidth - .5) * 8;
+    const y = (e.clientY / innerHeight - .5) * 8;
+    document.querySelectorAll('.bg-blob').forEach((b,i)=>{
+      b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`;
+    });
+  }));
+  document.addEventListener('mousemove', rafThrottle((e)=>{
+    document.querySelectorAll('.parallax').forEach(el=>{
+      const depth = parseFloat(el.dataset.depth||'0.1');
+      const x = ((e.clientX / window.innerWidth) - .5) * depth * 40;
+      const y = ((e.clientY / window.innerHeight) - .5) * depth * 40;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+    });
+  }));
+}
 
 /* ===== Cursor blob & dot ===== */
 (() => {
+  if(!isFinePointer) return;
   const blob = document.querySelector('.cursor-blob');
   const dot  = document.querySelector('.cursor-dot');
   if(!blob || !dot) return;
-
   let bx = innerWidth/2, by = innerHeight/2;
   let tx = bx, ty = by;
-
   const move = (e)=>{ tx = e.clientX; ty = e.clientY; dot.style.left = tx+'px'; dot.style.top = ty+'px'; };
   window.addEventListener('mousemove', move);
-
   const tick = ()=>{
     bx += (tx - bx) * 0.12;
     by += (ty - by) * 0.12;
@@ -117,70 +113,33 @@ document.addEventListener('mousemove', rafThrottle((e)=>{
   tick();
 })();
 
-/* ===== Intro / Splash (auto close & go Home) ===== */
-(function(){
+/* ===== Intro ===== */
+(() => {
   const intro = document.getElementById('intro');
   if(!intro) return;
-
+  const enterBtn = intro.querySelector('.intro-cta');
   document.body.classList.add('intro-lock');
 
   const clearToHome = ()=>{
-    if (location.hash) {
-      history.replaceState(null,'', location.pathname + location.search);
-    }
+    if (location.hash) history.replaceState(null,'', location.pathname + location.search);
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
-
   const closeIntro = ()=>{
     intro.classList.add('hide');
     setTimeout(()=>{
       intro.remove();
       document.body.classList.remove('intro-lock');
       clearToHome();
-    }, 700);
+    }, 650);
   };
 
+  // ปิดอัตโนมัติ + ปุ่ม Enter
   window.addEventListener('load', ()=> setTimeout(closeIntro, 1600));
+  enterBtn && enterBtn.addEventListener('click', (e)=>{ e.preventDefault(); closeIntro(); });
 })();
 
-/* ===== Typewriter for Intro subtitle ===== */
-(function(){
-  const el = document.querySelector('.intro-sub .type');
-  if(!el) return;
-
-  let words = ['Portfolio Website'];
-  try { if (el.dataset.words) words = JSON.parse(el.dataset.words); } catch(_){}
-  let wi = 0, ci = 0, deleting = false;
-
-  const tick = () => {
-    const w = words[wi];
-    el.textContent = deleting ? w.slice(0, --ci) : w.slice(0, ++ci);
-    let d = deleting ? 45 : 80;
-    if(!deleting && ci === w.length){ d = 900; deleting = true; }
-    else if(deleting && ci === 0){ deleting = false; wi = (wi+1)%words.length; d = 300; }
-    setTimeout(tick, d);
-  };
-  setTimeout(tick, 300);
-})();
-
-/* ===== Split Text (About name) ===== */
+/* ===== Stats counter ===== */
 (() => {
-  const el = document.querySelector('.about-name.split');
-  if(!el) return;
-  const text = el.textContent.trim();
-  el.innerHTML = [...text].map((c,i)=>`<span class="ch" style="display:inline-block;transform:translateY(16px);opacity:0;transition:.5s ${i*40}ms; ">${c}</span>`).join('');
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(!e.isIntersecting) return;
-      e.target.querySelectorAll('.ch').forEach(ch=>{ ch.style.transform='translateY(0)'; ch.style.opacity='1'; });
-      io.unobserve(e.target);
-    });
-  },{threshold:.7});
-  io.observe(el);
-})();
-
-/* ===== Stats counter (About) ===== */
-(function(){
   const counters = document.querySelectorAll('.stat-card[data-count] .num');
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
@@ -198,7 +157,7 @@ document.addEventListener('mousemove', rafThrottle((e)=>{
 })();
 
 /* ===== Tabs (Projects / Certificates / Tech Stack) ===== */
-(function(){
+(() => {
   const tabs = document.querySelectorAll('.tab');
   const panels = {
     projects: document.getElementById('panel-projects'),
@@ -229,17 +188,16 @@ document.addEventListener('mousemove', rafThrottle((e)=>{
 })();
 
 /* ===== ScrollSpy (active nav link) ===== */
-(function(){
+(() => {
   const links = document.querySelectorAll('#navLinks a[href^="#"]');
   const sections = Array.from(links).map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
-
   const spy = ()=>{
     const y = window.scrollY + 120;
     let active = links[0];
     sections.forEach((sec,i)=>{ if(sec.offsetTop <= y) active = links[i]; });
     links.forEach(a=>a.classList.toggle('active', a===active));
   };
-  spy(); window.addEventListener('scroll', spy);
+  spy(); window.addEventListener('scroll', spy, {passive:true});
 })();
 
 /* ===== Scroll progress bar ===== */
@@ -253,4 +211,14 @@ document.addEventListener('mousemove', rafThrottle((e)=>{
   });
   window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
+})();
+
+/* ===== Marquee safety (ถ้าเผลอไม่ duplicate) ===== */
+(() => {
+  document.querySelectorAll('.marquee .track').forEach(track=>{
+    const children = [...track.children];
+    if(children.length && children.length < 12){
+      track.innerHTML += track.innerHTML;
+    }
+  });
 })();
