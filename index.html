@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pakawat — Portfolio</title>
 
-  <!-- Meta / SEO -->
+  <!-- SEO / Meta -->
   <meta name="description" content="Pakawat Portfolio — Frontend/Mobile Dev • Flutter • Python • Roblox • Web. Projects, Certificates & Contact.">
   <meta name="theme-color" content="#070b1a">
 
@@ -16,10 +16,10 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=12" />
+  <link rel="stylesheet" href="app.css?v=13" />
 </head>
 <body>
-  <!-- Cursor Glow -->
+  <!-- Cursor Glow + Dot -->
   <div class="cursor-blob" aria-hidden="true"></div>
   <div class="cursor-dot" aria-hidden="true"></div>
 
@@ -31,7 +31,7 @@
   <div class="bg-blob b2" aria-hidden="true"></div>
   <div class="bg-blob b3" aria-hidden="true"></div>
 
-  <!-- INTRO / SPLASH -->
+  <!-- INTRO / SPLASH (สีตัดกันชัด) -->
   <div id="intro" class="intro" aria-label="Intro">
     <div class="intro-inner">
       <div class="icons" aria-hidden="true">
@@ -39,11 +39,13 @@
         <div class="tile"><i class='bx bxl-java'></i></div>
         <div class="tile"><i class='bx bx-joystick'></i></div>
       </div>
-      <h1 class="intro-title">Welcome To My</h1>
-      <h2 class="intro-sub">
-        <span class="type" data-words='["Portfolio Website","Frontend • Mobile","Flutter • Python • Web"]'></span>
-        <span class="caret" aria-hidden="true"></span>
-      </h2>
+
+      <h1 class="intro-title">
+        <span class="line-1">Welcome To My</span>
+        <span class="line-2">Portfolio Website</span>
+      </h1>
+
+      <a href="#home" class="btn primary intro-cta"><i class='bx bx-right-arrow-alt'></i> Enter</a>
     </div>
   </div>
 
@@ -72,24 +74,24 @@
           <a class="btn ghost magnetic" href="#contact"><i class='bx bx-send'></i> Contact</a>
         </div>
 
-        <!-- Marquee (Tech / Skills) -->
+        <!-- Skills Marquee -->
         <div class="marquee glass" aria-hidden="true">
           <div class="track">
-            <span><i class='bx bxl-flutter'></i> Flutter</span>
-            <span><i class='bx bxl-python'></i> Python</span>
             <span><i class='bx bxl-javascript'></i> JavaScript</span>
             <span><i class='bx bxl-html5'></i> HTML</span>
             <span><i class='bx bxl-css3'></i> CSS</span>
             <span><i class='bx bxl-github'></i> GitHub</span>
             <span><i class='bx bx-joystick'></i> Roblox</span>
+            <span><i class='bx bxl-flutter'></i> Flutter</span>
+            <span><i class='bx bxl-python'></i> Python</span>
             <!-- duplicate for seamless loop -->
-            <span><i class='bx bxl-flutter'></i> Flutter</span>
-            <span><i class='bx bxl-python'></i> Python</span>
             <span><i class='bx bxl-javascript'></i> JavaScript</span>
             <span><i class='bx bxl-html5'></i> HTML</span>
             <span><i class='bx bxl-css3'></i> CSS</span>
             <span><i class='bx bxl-github'></i> GitHub</span>
             <span><i class='bx bx-joystick'></i> Roblox</span>
+            <span><i class='bx bxl-flutter'></i> Flutter</span>
+            <span><i class='bx bxl-python'></i> Python</span>
           </div>
         </div>
 
@@ -121,7 +123,7 @@
   <section id="about" class="section about-section lazy" aria-label="About">
     <div class="container">
       <h2 class="section-title center">About Me</h2>
-      <p class="section-sub center">Welcome to About me :D</p>
+      <p class="section-sub center">Transforming ideas into digital experiences</p>
 
       <div class="about-layout">
         <!-- LEFT -->
@@ -129,7 +131,7 @@
           <p class="eyebrow"><i class='bx bx-sparkles'></i> Hello, I’m</p>
           <h3 class="about-name split">Pakawat</h3>
           <p class="about-desc">
-            ผมชื่อเปเปอร์มีโปรเจคคร่าวๆดังนี้ — แอปเช็คสต็อกเชื่อม Google Sheets (Flutter),
+            ชอบสร้างของที่ “ใช้งานได้จริง” — แอปเช็คสต็อกเชื่อม Google Sheets (Flutter),
             โปรแกรมเอกสารอัตโนมัติด้วย Python/Tkinter + Google Forms, เกม Roblox (M1 Combo/Skills)
             และเว็บเพจสำหรับแบรนด์/โปรเจ็กต์ส่วนตัว
           </p>
@@ -150,20 +152,20 @@
 
       <!-- STATS -->
       <div class="stats-row">
-        <div class="stat-card glass reveal" data-count="10">
+        <div class="stat-card glass reveal" data-count="12">
           <div class="icon"><i class='bx bx-folder'></i></div>
           <div class="num">0</div>
           <div class="label">Projects</div>
         </div>
-        <div class="stat-card glass reveal" data-count="5">
+        <div class="stat-card glass reveal" data-count="7">
           <div class="icon"><i class='bx bx-badge-check'></i></div>
           <div class="num">0</div>
           <div class="label">Certificates</div>
         </div>
-        <div class="stat-card glass reveal" data-count="7">
+        <div class="stat-card glass reveal" data-count="3">
           <div class="icon"><i class='bx bx-briefcase'></i></div>
           <div class="num">0</div>
-          <div class="label">Programming Skills</div>
+          <div class="label">Years of Experience</div>
         </div>
       </div>
     </div>
@@ -274,6 +276,6 @@
   </footer>
 
   <!-- JS -->
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>
