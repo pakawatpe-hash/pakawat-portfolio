@@ -22,6 +22,9 @@ body{
   overflow-x:hidden;
 }
 
+/* lock scroll while intro showing */
+body.intro-lock{ overflow:hidden; }
+
 .container{max-width:1100px;margin:0 auto;padding:0 20px}
 .center{text-align:center}
 
@@ -118,15 +121,20 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 }
 .intro-inner{text-align:center; animation:intro-pop .6s ease both}
 .intro .icons{display:flex; gap:12px; justify-content:center; margin-bottom:16px}
-.intro .icons i{
-  font-size:22px; color:#cfe4ff; border:1px solid var(--line);
-  background:rgba(255,255,255,.08); padding:8px; border-radius:10px;
+
+/* ไทล์ครอบไอคอนทั้ง svg/i ให้หน้าตาเหมือนกัน */
+.intro .tile{
+  width:46px;height:46px; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:12px;
+  background:rgba(255,255,255,.08); color:#cfe4ff;
   box-shadow:0 6px 20px rgba(0,0,0,.3);
 }
-.intro-title{margin:0; font-weight:700; letter-spacing:.5px; color:#fff}
-.intro-sub{margin:.25rem 0 0; font-weight:700}
+.intro .tile i{font-size:22px}
+.intro .tile .logo{width:26px;height:26px; display:block}
+
+.intro-title{margin:0; font-weight:800; letter-spacing:.5px; color:#fff}
+.intro-sub{margin:.25rem 0 0; font-weight:800}
 .intro-sub span{color:#cbbaff; animation:glow 2.4s ease-in-out infinite; text-shadow:0 0 12px rgba(155,140,255,.45)}
-.intro .skip{margin-top:18px}
 .intro.hide{opacity:0; transform:scale(1.02); pointer-events:none}
 
 @keyframes intro-pop{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)}}
