@@ -1,149 +1,219 @@
-/* ===== Reveal on scroll (elements) ===== */
-const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('in');
-      io.unobserve(e.target);
-    }
-  });
-},{threshold:0.15});
-revealEls.forEach(el=>io.observe(el));
+/* app.js v22 */
+'use strict';
+console.log('app.js v22 loaded');
 
-/* ===== Reveal whole sections (.section.lazy) ===== */
-(function(){
-  const secs = document.querySelectorAll('section.lazy');
-  if(!secs.length) return;
+const $  = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-  const obs = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if (e.isIntersecting) {
-        e.target.classList.add('entered');
-        obs.unobserve(e.target);
-      }
-    });
-  },{threshold:0.12});
-
-  secs.forEach(s=>obs.observe(s));
-})();
-
-/* ===== Tilt hover ===== */
-document.querySelectorAll('.tilt').forEach(el=>{
-  el.addEventListener('mousemove',(e)=>{
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left)/r.width - .5;
-    const y = (e.clientY - r.top)/r.height - .5;
-    el.style.transform = `rotateX(${(-y*8).toFixed(2)}deg) rotateY(${(x*10).toFixed(2)}deg)`;
-  });
-  el.addEventListener('mouseleave',()=>{ el.style.transform = 'rotateX(0) rotateY(0)'; });
-});
-
-/* ===== Parallax for blobs ===== */
-document.addEventListener('mousemove',(e)=>{
-  const x = (e.clientX / innerWidth - .5) * 8;
-  const y = (e.clientY / innerHeight - .5) * 8;
-  document.querySelectorAll('.bg-blob').forEach((b,i)=>{
-    b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`;
-  });
-});
-
-/* ===== Intro / Splash (auto close & go Home) ===== */
-(function(){
-  const intro = document.getElementById('intro');
+/* =========================================
+   1) INTRO: สร้างเลเยอร์สีสัน + พิมพ์วิ่ง + ปิดอัตโนมัติ
+========================================= */
+(function initIntro(){
+  const intro = $('#intro');
   if(!intro) return;
 
+  // ล็อกสกรอลล์ช่วง Intro
   document.body.classList.add('intro-lock');
 
-  const clearToHome = ()=>{
-    // ลบ hash (#about/#work) และเลื่อนกลับบนสุด
+  // --- ใส่เลเยอร์ให้ Intro มีสีสัน (Aurora / Rings / Particles / Vignette) ---
+  const add = (html) => intro.insertAdjacentHTML('afterbegin', html);
+
+  add(`<div class="intro-bg"></div>`);
+  add(`<div class="aurora"><span></span><span></span><span></span></div>`);
+  add(`<div class="rings"></div>`);
+  add(`<div class="particles"></div>`);
+  add(`<div class="vignette"></div>`);
+
+  // สร้างอนุภาคระยิบ
+  const particles = $('.particles', intro);
+  if (particles) {
+    const N = 64;
+    let html = '';
+    for (let i=0;i<N;i++){
+      const left = Math.random()*100;
+      const top = Math.random()*100;
+      const dur = 4 + Math.random()*6;  // 4-10s
+      const delay = Math.random()*4;
+      html += `<span style="left:${left}%;top:${top}%;animation-duration:${dur}s;animation-delay:${delay}s"></span>`;
+    }
+    particles.innerHTML = html;
+  }
+
+  // --- Typewriter ---
+  const typeEl  = $('.type', intro);
+  const caretEl = $('.caret', intro);
+  const words = (()=> {
+    try {
+      return JSON.parse(typeEl?.dataset.words || '["Portfolio Website"]');
+    } catch { return ["Portfolio Website"]; }
+  })();
+
+  let wIndex=0, cIndex=0;
+  const speed = 65;     // ความเร็วพิมพ์
+  const pause  = 650;   // หน่วงหลังพิมพ์จบ
+
+  function typeWord() {
+    if (!typeEl) return finishIntroSoon();
+    const word = words[wIndex] || "";
+    if (cIndex <= word.length) {
+      typeEl.textContent = word.slice(0, cIndex++);
+      setTimeout(typeWord, speed);
+    } else {
+      // พิมพ์จบคำแรกแล้ว ปิด Intro
+      setTimeout(finishIntroSoon, pause);
+    }
+  }
+
+  // เริ่มพิมพ์เมื่อ DOM พร้อม (กันบางเครื่องที่โหลดไฟล์ช้า)
+  window.addEventListener('load', () => {
+    // กันกรณีหลุด typeEl
+    if (typeEl) typeWord();
+    // Fallback: ถ้าพิมพ์ไม่ทำงานให้ปิดใน 2.4s
+    setTimeout(finishIntroSoon, 2400);
+  });
+
+  function clearHashToHome(){
     if (location.hash) {
-      history.replaceState(null,'', location.pathname + location.search);
+      history.replaceState(null, '', location.pathname + location.search);
     }
     window.scrollTo({ top: 0, behavior: 'auto' });
-  };
+  }
 
-  const closeIntro = ()=>{
+  function closeIntro(){
     intro.classList.add('hide');
     setTimeout(()=>{
       intro.remove();
       document.body.classList.remove('intro-lock');
-      clearToHome();
+      clearHashToHome();
     }, 700);
-  };
+  }
 
-  window.addEventListener('load', ()=> setTimeout(closeIntro, 1800));
+  let done = false;
+  function finishIntroSoon(){
+    if (done) return;
+    done = true;
+    closeIntro();
+  }
 })();
 
-/* ===== Typewriter for Intro subtitle ===== */
-(function(){
-  const el = document.querySelector('.intro-sub .type');
-  if(!el) return;
-
-  let words = ['Portfolio Website'];
-  try { if (el.dataset.words) words = JSON.parse(el.dataset.words); } catch(_){}
-  let wi = 0, ci = 0, deleting = false;
-
-  const tick = () => {
-    const w = words[wi];
-    el.textContent = deleting ? w.slice(0, --ci) : w.slice(0, ++ci);
-    let d = deleting ? 45 : 80;
-    if(!deleting && ci === w.length){ d = 1200; deleting = true; }
-    else if(deleting && ci === 0){ deleting = false; wi = (wi+1)%words.length; d = 300; }
-    setTimeout(tick, d);
-  };
-  setTimeout(tick, 300);
-})();
-
-/* ===== Stats counter (About) ===== */
-(function(){
-  const counters = document.querySelectorAll('.stat-card[data-count] .num');
-  const obs = new IntersectionObserver((entries)=>{
+/* =========================================
+   2) Reveal-on-Scroll (การ์ด/คอนเทนต์ค่อยๆ โผล่)
+========================================= */
+(function revealScroll(){
+  // องค์ประกอบเล็ก (การ์ด ฯลฯ)
+  const revealEls = $$('.reveal, .card, .contact-card');
+  const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
-      if(!e.isIntersecting) return;
-      const numEl = e.target;
-      const target = +numEl.parentElement.dataset.count || 0;
-      let cur = 0;
-      const step = Math.max(1, Math.floor(target/60));
-      const inc = ()=>{ cur = Math.min(target, cur + step); numEl.textContent = cur; if(cur<target) requestAnimationFrame(inc); };
-      inc();
-      obs.unobserve(numEl);
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
     });
-  },{threshold:0.5});
-  counters.forEach(n=>obs.observe(n));
+  },{threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  // ซ่อนทั้ง section (ใช้กับ .section.lazy)
+  const secs = $$('section.lazy');
+  const io2 = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('entered');
+        io2.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  secs.forEach(s=>io2.observe(s));
 })();
 
-/* ===== Tabs (Projects / Certificates / Tech Stack) ===== */
-(function(){
-  const tabs = document.querySelectorAll('.tab');
-  const panels = {
-    projects: document.getElementById('panel-projects'),
-    certs: document.getElementById('panel-certs'),
-    stack: document.getElementById('panel-stack'),
-  };
-  const show = (key)=>{
-    tabs.forEach(t=>{
-      t.classList.toggle('active', t.dataset.tab===key);
-      t.setAttribute('aria-selected', t.dataset.tab===key ? 'true':'false');
+/* =========================================
+   3) Tilt (เอียงการ์ดนิดๆ)
+========================================= */
+(function tilt(){
+  // ปิดบนอุปกรณ์ touch เพื่อความลื่น
+  const coarse = matchMedia('(any-pointer:coarse)').matches;
+  if (coarse) return;
+
+  $$('.tilt').forEach(el=>{
+    let raf = null;
+    function handle(e){
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      const rx = clamp(-y*10, -10, 10);
+      const ry = clamp( x*12, -12, 12);
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(()=> {
+        el.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+      });
+    }
+    el.addEventListener('mousemove', handle);
+    el.addEventListener('mouseleave', ()=> {
+      if (raf) cancelAnimationFrame(raf);
+      el.style.transform = 'rotateX(0) rotateY(0)';
     });
-    Object.entries(panels).forEach(([k,p])=>{
-      if(!p) return;
-      if(k===key){ p.removeAttribute('hidden'); p.classList.add('show'); }
-      else { p.setAttribute('hidden',''); p.classList.remove('show'); }
-    });
-  };
-  tabs.forEach(t=>t.addEventListener('click', ()=>show(t.dataset.tab)));
+  });
 })();
 
-/* ===== ScrollSpy (active nav link) ===== */
-(function(){
-  const links = document.querySelectorAll('#navLinks a[href^="#"]');
-  const sections = Array.from(links).map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+/* =========================================
+   4) Parallax ของฉากหลัง blob
+========================================= */
+(function parallax(){
+  const blobs = $$('.bg-blob');
+  if (!blobs.length) return;
 
-  const spy = ()=>{
-    const y = window.scrollY + 120;
-    let active = links[0];
-    sections.forEach((sec,i)=>{ if(sec.offsetTop <= y) active = links[i]; });
-    links.forEach(a=>a.classList.toggle('active', a===active));
-  };
-  spy(); window.addEventListener('scroll', spy);
+  let raf = null, lx=0, ly=0;
+  window.addEventListener('mousemove', (e)=>{
+    const x = (e.clientX / window.innerWidth  - .5) * 10;
+    const y = (e.clientY / window.innerHeight - .5) * 10;
+    lx = x; ly = y;
+    if (raf) return;
+    raf = requestAnimationFrame(()=>{
+      blobs.forEach((b,i)=>{
+        b.style.transform = `translate(${lx*(i+1)}px, ${ly*(i+1)}px)`;
+      });
+      raf = null;
+    });
+  });
+})();
+
+/* =========================================
+   5) เนวิเกชันไฮไลท์ลิงก์ตาม section ที่เห็น
+========================================= */
+(function activeNavOnScroll(){
+  const links = $$('#navLinks a[href^="#"]');
+  if (!links.length) return;
+  const map = links.map(a=>({a, id: a.getAttribute('href').slice(1), sec: $(a.getAttribute('href'))}))
+                   .filter(o=>o.sec);
+
+  function update(){
+    const y = window.scrollY + 120; // offset เผื่อ header
+    let cur = map[0]?.a;
+    for (let i=0;i<map.length;i++){
+      const top = map[i].sec.offsetTop;
+      const nextTop = map[i+1]?.sec?.offsetTop ?? (top+999999);
+      if (y >= top && y < nextTop){ cur = map[i].a; break; }
+    }
+    links.forEach(a=>a.classList.toggle('active', a===cur));
+  }
+  update();
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+})();
+
+/* =========================================
+   6) Tabs (ถ้ามีใน About)
+========================================= */
+(function tabs(){
+  const group = $('.tabs');
+  if(!group) return;
+  const tabs = $$('.tab', group);
+  const panels = $$('.panel');
+  function show(name){
+    panels.forEach(p => p.hidden = p.dataset.panel !== name);
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  }
+  tabs.forEach(t => t.addEventListener('click', ()=> show(t.dataset.tab)));
+  // ค่าเริ่มต้น
+  show(tabs[0]?.dataset.tab || panels[0]?.dataset.panel);
 })();
