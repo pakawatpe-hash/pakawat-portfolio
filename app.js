@@ -221,3 +221,34 @@ if (isFinePointer) {
     }
   });
 })();
+/* ===== Skills Marquee: make seamless & full-bleed ===== */
+(() => {
+  const track = document.getElementById('skillsTrack');
+  if(!track) return;
+
+  // ถ้ายังไม่มีชุดที่ 2 -> ทำซ้ำ 1 รอบให้ครบสองชุด
+  const childHTML = track.innerHTML.trim();
+  if(track.children.length && !/data-dup/i.test(track.innerHTML)){
+    track.innerHTML = childHTML + childHTML.replaceAll('<span', '<span data-dup');
+  }
+
+  // คำนวณความกว้างและตั้งความเร็วให้อ่านง่าย (px/sec)
+  const setSpeed = () => {
+    const totalWidth = [...track.children]
+      .slice(0, Math.floor(track.children.length/2)) // กว้างของ "ครึ่งชุด"
+      .reduce((w,el)=> w + el.getBoundingClientRect().width + 40 /*gap*/, 0);
+
+    const pxPerSec = 120; // ความเร็วอ่านสบาย ๆ
+    const duration = Math.max(14, totalWidth / pxPerSec);
+    track.style.animationDuration = `${duration}s`;
+  };
+  // รันครั้งแรกและรอฟอนต์โหลด
+  setSpeed(); window.addEventListener('load', setSpeed);
+
+  // Pause on hover (เฉพาะ pointer:fine)
+  if (matchMedia('(pointer:fine)').matches) {
+    const marquee = track.closest('.marquee');
+    marquee.addEventListener('mouseenter', ()=> track.style.animationPlayState = 'paused');
+    marquee.addEventListener('mouseleave', ()=> track.style.animationPlayState = 'running');
+  }
+})();
