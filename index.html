@@ -12,7 +12,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=9" />
+  <link rel="stylesheet" href="app.css?v=10" />
 </head>
 <body>
   <!-- Floating background blobs -->
@@ -83,11 +83,11 @@
     </div>
   </section>
 
-  <!-- ABOUT (สไตล์เหมือนคลิป) -->
-  <section id="about" class="section about-section" aria-label="About">
+  <!-- ABOUT (lazy: โผล่เมื่อเลื่อนถึง) -->
+  <section id="about" class="section about-section lazy" aria-label="About">
     <div class="container">
       <h2 class="section-title center">About Me</h2>
-      <p class="section-sub center">EiEi</p>
+      <p class="section-sub center">Transforming ideas into digital experiences</p>
 
       <div class="about-layout">
         <!-- LEFT -->
@@ -95,8 +95,8 @@
           <p class="eyebrow"><i class='bx bx-sparkles'></i> Hello, I’m</p>
           <h3 class="about-name">Pakawat</h3>
           <p class="about-desc">
-            สวัสดีครับผมชื่อเปเปอร์นะครับมีประสบการณ์ — แอปเช็คสต็อกเชื่อม Google Sheets (Flutter),
-            โปรแกรม Python/Tkinter + Google Forms, เกม Roblox 
+            ชอบสร้างของที่ “ใช้งานได้จริง” — แอปเช็คสต็อกเชื่อม Google Sheets (Flutter),
+            โปรแกรมเอกสารอัตโนมัติด้วย Python/Tkinter + Google Forms, เกม Roblox (M1 Combo/Skills)
             และเว็บเพจสำหรับแบรนด์/โปรเจ็กต์ส่วนตัว
           </p>
           <div class="mini-cta">
@@ -134,8 +134,8 @@
     </div>
   </section>
 
-  <!-- SHOWCASE / PORTFOLIO (มีแท็บ) -->
-  <section id="work" class="section" aria-label="Portfolio">
+  <!-- SHOWCASE / PORTFOLIO (lazy + tabs) -->
+  <section id="work" class="section lazy" aria-label="Portfolio">
     <div class="container">
       <h2 class="center reveal">Portfolio Showcase</h2>
 
@@ -179,28 +179,19 @@
           <div class="cards">
             <article class="card glass reveal">
               <div class="cert">
-                <div class="cert-head">
-                  <span class="seal"></span>
-                  <h3>Algorithm & DS</h3>
-                </div>
+                <div class="cert-head"><span class="seal"></span><h3>Algorithm & DS</h3></div>
                 <p>Online Course / 2024</p>
               </div>
             </article>
             <article class="card glass reveal">
               <div class="cert">
-                <div class="cert-head">
-                  <span class="seal"></span>
-                  <h3>Flutter App Dev</h3>
-                </div>
+                <div class="cert-head"><span class="seal"></span><h3>Flutter App Dev</h3></div>
                 <p>Bootcamp / 2024</p>
               </div>
             </article>
             <article class="card glass reveal">
               <div class="cert">
-                <div class="cert-head">
-                  <span class="seal"></span>
-                  <h3>Python Automation</h3>
-                </div>
+                <div class="cert-head"><span class="seal"></span><h3>Python Automation</h3></div>
                 <p>Workshop / 2023</p>
               </div>
             </article>
@@ -222,8 +213,8 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
-  <section id="contact" class="section" aria-label="Contact">
+  <!-- CONTACT (lazy) -->
+  <section id="contact" class="section lazy" aria-label="Contact">
     <div class="container">
       <h2 class="center reveal">Contact</h2>
       <div class="contact-grid">
@@ -245,6 +236,6 @@
   </footer>
 
   <!-- JS -->
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
