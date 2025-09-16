@@ -113,11 +113,10 @@ if (isFinePointer) {
   tick();
 })();
 
-/* ===== Intro ===== */
+/* ===== Intro (auto close, no button) ===== */
 (() => {
   const intro = document.getElementById('intro');
   if(!intro) return;
-  const enterBtn = intro.querySelector('.intro-cta');
   document.body.classList.add('intro-lock');
 
   const clearToHome = ()=>{
@@ -133,10 +132,10 @@ if (isFinePointer) {
     }, 650);
   };
 
-  // ปิดอัตโนมัติ + ปุ่ม Enter
-  window.addEventListener('load', ()=> setTimeout(closeIntro, 1600));
-  enterBtn && enterBtn.addEventListener('click', (e)=>{ e.preventDefault(); closeIntro(); });
+  // ปิดอัตโนมัติ (ประมาณ 2.2 วิ หลังจาก load)
+  window.addEventListener('load', ()=> setTimeout(closeIntro, 2200));
 })();
+
 
 /* ===== Stats counter ===== */
 (() => {
