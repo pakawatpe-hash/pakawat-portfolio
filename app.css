@@ -240,3 +240,59 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after{animation:none}
   .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
+/* ===== Tech Stack Grid (like TikTok) ===== */
+.skill-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+  gap:16px;
+  margin-top:18px;
+}
+
+.skill-tile{
+  height:140px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:10px;
+  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ไฟวิ่งขอบแบบนุ่ม ๆ */
+.skill-tile::before{
+  content:"";
+  position:absolute; inset:-40% -40%;
+  background:conic-gradient(from 0turn, rgba(106,165,255,.0), rgba(106,165,255,.35), rgba(155,140,255,.0));
+  filter:blur(30px);
+  transform:rotate(0deg);
+  transition:opacity .25s ease;
+  opacity:0;
+}
+
+.skill-tile i{
+  font-size:42px; color:#cfe4ff; opacity:.95;
+  text-shadow:0 6px 24px rgba(120,160,255,.45);
+}
+.skill-tile span{
+  font-weight:700; letter-spacing:.2px;
+  color:#e8eef6; opacity:.95;
+}
+
+.skill-tile:hover{
+  transform:translateY(-6px);
+  border-color:rgba(155,140,255,.45);
+  box-shadow:0 20px 50px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.05);
+}
+.skill-tile:hover::before{
+  opacity:.9;
+  animation:spin 4s linear infinite;
+}
+
+/* mobile spacing */
+@media (max-width:560px){
+  .skill-grid{ gap:12px; }
+  .skill-tile{ height:120px; }
+  .skill-tile i{ font-size:36px; }
+}
