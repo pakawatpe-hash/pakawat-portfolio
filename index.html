@@ -16,7 +16,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=13" />
+  <link rel="stylesheet" href="app.css?v=16" />
 </head>
 <body>
   <!-- Cursor Glow + Dot -->
@@ -31,22 +31,21 @@
   <div class="bg-blob b2" aria-hidden="true"></div>
   <div class="bg-blob b3" aria-hidden="true"></div>
 
- <!-- INTRO / SPLASH -->
-<div id="intro" class="intro" aria-label="Intro">
-  <div class="intro-inner">
-    <div class="icons" aria-hidden="true">
-      <div class="tile"><i class='bx bx-code-alt'></i></div>
-      <div class="tile"><i class='bx bxl-java'></i></div>
-      <div class="tile"><i class='bx bx-joystick'></i></div>
+  <!-- INTRO / SPLASH -->
+  <div id="intro" class="intro" aria-label="Intro">
+    <div class="intro-inner">
+      <div class="icons" aria-hidden="true">
+        <div class="tile"><i class='bx bx-code-alt'></i></div>
+        <div class="tile"><i class='bx bxl-java'></i></div>
+        <div class="tile"><i class='bx bx-joystick'></i></div>
+      </div>
+
+      <h1 class="intro-title">
+        <span class="line-1">Welcome To My</span>
+        <span class="line-2 typewriter">Portfolio Website</span>
+      </h1>
     </div>
-
-    <h1 class="intro-title">
-      <span class="line-1">Welcome To My</span>
-      <span class="line-2">Portfolio Website</span>
-    </h1>
   </div>
-</div>
-
 
   <!-- NAV -->
   <header class="nav glass">
@@ -72,36 +71,6 @@
           <a class="btn primary magnetic" href="#work"><i class='bx bx-rocket'></i> View Projects</a>
           <a class="btn ghost magnetic" href="#contact"><i class='bx bx-send'></i> Contact</a>
         </div>
-
-        <!-- Skills Marquee: Full-bleed + Seamless -->
-<div class="marquee full-bleed" aria-hidden="true">
-  <div class="track" id="skillsTrack">
-    <span><i class='bx bxl-flutter'></i> Flutter</span>
-    <span><i class='bx bxl-python'></i> Python</span>
-    <span><i class='bx bxl-javascript'></i> JavaScript</span>
-    <span><i class='bx bxl-html5'></i> HTML</span>
-    <span><i class='bx bxl-css3'></i> CSS</span>
-    <span><i class='bx bxl-github'></i> GitHub</span>
-    <span><i class='bx bx-joystick'></i> Roblox</span>
-    <!-- ไม่ต้องใส่ซ้ำเอง เดี๋ยว JS auto-duplicate ให้ -->
-  </div>
-</div>
-
-            <!-- duplicate for seamless loop -->
-            <span><i class='bx bxl-javascript'></i> JavaScript</span>
-            <span><i class='bx bxl-html5'></i> HTML</span>
-            <span><i class='bx bxl-css3'></i> CSS</span>
-            <span><i class='bx bxl-github'></i> GitHub</span>
-            <span><i class='bx bx-joystick'></i> Roblox</span>
-            <span><i class='bx bxl-flutter'></i> Flutter</span>
-            <span><i class='bx bxl-python'></i> Python</span>
-          </div>
-        </div>
-
-        <div class="social">
-          <a aria-label="GitHub" href="https://github.com/pakawatpe-hash" target="_blank" rel="noopener noreferrer"><i class='bx bxl-github'></i></a>
-          <a aria-label="Email" href="mailto:pakawatpe@gmail.com"><i class='bx bx-envelope'></i></a>
-        </div>
       </div>
 
       <!-- Illustration card -->
@@ -122,6 +91,32 @@
     </div>
   </section>
 
+  <!-- Skills Marquee — Double Track, Full-Bleed -->
+  <div class="marquee full-bleed" id="skillsMarquee" aria-hidden="true">
+    <div class="row row-1">
+      <div class="track" id="skillsTrack1">
+        <span><i class='bx bxl-flutter'></i> Flutter</span>
+        <span><i class='bx bxl-python'></i> Python</span>
+        <span><i class='bx bxl-javascript'></i> JavaScript</span>
+        <span><i class='bx bxl-html5'></i> HTML</span>
+        <span><i class='bx bxl-css3'></i> CSS</span>
+        <span><i class='bx bxl-github'></i> GitHub</span>
+        <span><i class='bx bx-joystick'></i> Roblox</span>
+      </div>
+    </div>
+    <div class="row row-2">
+      <div class="track" id="skillsTrack2">
+        <span><i class='bx bx-joystick'></i> Roblox</span>
+        <span><i class='bx bxl-github'></i> GitHub</span>
+        <span><i class='bx bxl-css3'></i> CSS</span>
+        <span><i class='bx bxl-html5'></i> HTML</span>
+        <span><i class='bx bxl-javascript'></i> JavaScript</span>
+        <span><i class='bx bxl-python'></i> Python</span>
+        <span><i class='bx bxl-flutter'></i> Flutter</span>
+      </div>
+    </div>
+  </div>
+
   <!-- ABOUT -->
   <section id="about" class="section about-section lazy" aria-label="About">
     <div class="container">
@@ -129,7 +124,6 @@
       <p class="section-sub center">Transforming ideas into digital experiences</p>
 
       <div class="about-layout">
-        <!-- LEFT -->
         <article class="about-text glass reveal">
           <p class="eyebrow"><i class='bx bx-sparkles'></i> Hello, I’m</p>
           <h3 class="about-name split">Pakawat</h3>
@@ -144,7 +138,6 @@
           </div>
         </article>
 
-        <!-- RIGHT -->
         <aside class="about-photo reveal" aria-hidden="true">
           <div class="avatar-glow avatar-empty tilt glare">
             <i class='bx bx-user'></i>
@@ -279,6 +272,6 @@
   </footer>
 
   <!-- JS -->
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>
