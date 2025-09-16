@@ -10,170 +10,195 @@
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+  <!-- TOP BAR (minimal like TikTok) -->
   <header class="topbar">
-    <div class="container">
-      <div class="brand">Pakawat</div>
+    <div class="wrap">
+      <div class="logo">Pakawat</div>
       <nav class="nav">
-        <a href="#home">Home</a>
-        <a href="#projects">Projects</a>
+        <a href="#grid">Projects</a>
         <a href="#about">About</a>
-        <a href="#contact" class="btn">Contact</a>
+        <a href="#contact" class="btn small">Contact</a>
       </nav>
     </div>
   </header>
 
-  <!-- HERO (inspired by TikTok profile header) -->
-  <section id="home" class="hero">
-    <div class="glass card profile">
-      <img class="avatar" src="https://i.pravatar.cc/240?img=12" alt="Pakawat avatar">
-      <div class="profile-info">
-        <h1>@pakawat</h1>
-        <p>เด็กคอม | Candidate — CE@KMUTNB</p>
-        <div class="badges">
-          <span>Flutter</span>
-          <span>Python</span>
-          <span>Roblox</span>
-          <span>Web</span>
-        </div>
-        <div class="cta">
-          <a class="btn primary" href="#projects">ดูผลงาน</a>
-          <a class="btn ghost" href="#contact">ติดต่อ</a>
-        </div>
-      </div>
-    </div>
+  <!-- PROFILE HEADER (center, avatar, username, bio, stats, buttons) -->
+  <section class="profile">
+    <img class="avatar" src="https://i.pravatar.cc/240?img=12" alt="Pakawat avatar">
+    <h1 class="handle">@pakawat</h1>
+    <p class="bio">เด็กคอม • Candidate CE @ KMUTNB • Flutter • Python • Roblox</p>
 
-    <div class="stats">
-      <div class="stat"><strong>12+</strong><span>Projects</span></div>
-      <div class="stat"><strong>4</strong><span>Tech Stacks</span></div>
-      <div class="stat"><strong>3</strong><span>Apps</span></div>
+    <ul class="stats">
+      <li><strong>12</strong><span>Projects</span></li>
+      <li><strong>3</strong><span>Apps</span></li>
+      <li><strong>4</strong><span>Stacks</span></li>
+    </ul>
+
+    <div class="actions">
+      <a class="btn primary">ดูผลงานเด่น</a>
+      <a class="btn ghost" href="#contact">ติดต่อ</a>
     </div>
   </section>
 
-  <!-- PROJECT GRID (like TikTok video grid) -->
-  <section id="projects" class="section container">
-    <h2>Projects</h2>
-    <p class="muted">กริดสไตล์ TikTok — hover แล้วเล่น/โชว์รายละเอียด</p>
+  <!-- TAB BAR (Posts/Info like TikTok tabs) -->
+  <div class="tabs wrap">
+    <button class="tab active" data-tab="grid">ผลงาน</button>
+    <button class="tab" data-tab="about">เกี่ยวกับ</button>
+    <button class="tab" data-tab="contact">ติดต่อ</button>
+  </div>
 
-    <div class="grid">
-      <!-- Card 1 -->
-      <article class="tile">
-        <a href="#" class="thumb">
-          <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop" alt="Flutter App"/>
-          <span class="chip">Flutter</span>
-        </a>
-        <div class="info">
-          <h3>StockApp</h3>
-          <p>นับสต็อก + สแกนบาร์โค้ด เชื่อม Google Sheets</p>
-          <div class="actions">
-            <a class="btn small" href="#">Demo</a>
-            <a class="btn small ghost" href="#">GitHub</a>
-          </div>
-        </div>
-      </article>
+  <!-- GRID (3 columns, 9:16 tiles, overlay views, hover play) -->
+  <section id="grid" class="wrap grid">
+    <!-- repeat tiles -->
+    
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
 
-      <!-- Card 2 -->
-      <article class="tile">
-        <a href="#" class="thumb">
-          <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop" alt="Python Tkinter"/>
-          <span class="chip">Python</span>
-        </a>
-        <div class="info">
-          <h3>Document Manager</h3>
-          <p>จัดการเอกสาร + ส่ง Google Forms อัตโนมัติ</p>
-          <div class="actions">
-            <a class="btn small" href="#">Overview</a>
-            <a class="btn small ghost" href="#">GitHub</a>
-          </div>
-        </div>
-      </article>
 
-      <!-- Card 3 -->
-      <article class="tile">
-        <a href="#" class="thumb">
-          <img src="https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?q=80&w=1200&auto=format&fit=crop" alt="Roblox Game"/>
-          <span class="chip">Roblox</span>
-        </a>
-        <div class="info">
-          <h3>Anime Battleground</h3>
-          <p>ระบบ M1 Combo, Dash, Block, Skills, Ultimate</p>
-          <div class="actions">
-            <a class="btn small" href="#">Video</a>
-            <a class="btn small ghost" href="#">Docs</a>
-          </div>
-        </div>
-      </article>
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
 
-      <!-- Card 4 -->
-      <article class="tile">
-        <a href="#" class="thumb">
-          <img src="https://images.unsplash.com/photo-1523475496153-3d6cc0f0f4d2?q=80&w=1200&auto=format&fit=crop" alt="Web"/>
-          <span class="chip">Web</span>
-        </a>
-        <div class="info">
-          <h3>DrPharma Site</h3>
-          <p>Landing + Product showcase, Tailwind-like style</p>
-          <div class="actions">
-            <a class="btn small" href="#">Live</a>
-            <a class="btn small ghost" href="#">Repo</a>
-          </div>
-        </div>
-      </article>
 
-      <!-- Card 5 -->
-      <article class="tile">
-        <a href="#" class="thumb">
-          <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop" alt="IoT/Hardware"/>
-          <span class="chip">Other</span>
-        </a>
-        <div class="info">
-          <h3>Mini Projects</h3>
-          <p>รวมของเล่นเล็ก ๆ และทดลองเทคโนโลยี</p>
-          <div class="actions">
-            <a class="btn small" href="#">Gallery</a>
-            <a class="btn small ghost" href="#">Readme</a>
-          </div>
-        </div>
-      </article>
-    </div>
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1523475496153-3d6cc0f0f4d2?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1550439062-609e1531270e?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1553028826-ccdfc006d45d?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
+
+<article class="tile">
+  <a class="thumb" href="#">
+    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="project"/>
+    <span class="views">12.3k</span>
+    <span class="play">▶</span>
+    <span class="label">Project</span>
+  </a>
+</article>
+
   </section>
 
   <!-- ABOUT -->
-  <section id="about" class="section container about">
-    <div class="about-card glass">
-      <h2>About</h2>
-      <p>ผมภควัฒน์ ชอบสร้างสิ่งที่ใช้งานได้จริงและแก้ปัญหา ผ่านแอปมือถือ เว็บไซต์ และเกม
-      โฟกัสด้าน Software มากเป็นพิเศษ: Flutter, Python/Tkinter, Google Apps Script และ Roblox Lua</p>
-      <ul class="list">
-        <li>🏫 เป้าหมายศึกษา: วิศวกรรมคอมพิวเตอร์ มจพ.</li>
-        <li>🧩 สนใจ: Mobile Dev, Backend, Game Scripting</li>
-        <li>🛠️ Tools: GitHub, Android Studio, VS Code, Figma</li>
-      </ul>
-    </div>
+  <section id="about" class="wrap about hidden">
+    <h2>เกี่ยวกับ</h2>
+    <p>ผมภควัฒน์ สนใจการพัฒนาแอป/เว็บ/เกม สร้างสิ่งที่ใช้งานได้จริง เช่น StockApp (Flutter), Document Manager (Python/Tkinter + Google Forms), และ Roblox Game (M1 Combo/Skills).</p>
+    <ul>
+      <li>เทคโนโลยี: Flutter, Python, Google Apps Script, Roblox Lua, HTML/CSS</li>
+      <li>เป้าหมาย: วิศวกรรมคอมพิวเตอร์ มจพ.</li>
+    </ul>
   </section>
 
   <!-- CONTACT -->
-  <section id="contact" class="section container contact">
-    <h2>Contact</h2>
-    <p>เปิดรับคำแนะนำและโอกาสร่วมงาน</p>
-    <div class="contact-cards">
-      <a class="ccard" href="mailto:yourmail@example.com">
+  <section id="contact" class="wrap contact hidden">
+    <h2>ติดต่อ</h2>
+    <div class="cards">
+      <a class="card" href="mailto:yourmail@example.com">
         <span>อีเมล</span><strong>yourmail@example.com</strong>
       </a>
-      <a class="ccard" href="https://github.com/pakawatpe-hash" target="_blank">
+      <a class="card" href="https://github.com/pakawatpe-hash" target="_blank">
         <span>GitHub</span><strong>@pakawatpe-hash</strong>
       </a>
-      <a class="ccard" href="#" target="_blank">
+      <a class="card" href="#">
         <span>LINE</span><strong>ใส่ลิงก์/QR ภายหลัง</strong>
       </a>
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <span>© 2025 Pakawat — Portfolio</span>
-      <button id="themeToggle" class="btn tiny ghost">Toggle theme</button>
-    </div>
-  </footer>
+  <footer class="foot"><div class="wrap">© 2025 Pakawat</div></footer>
 
   <script src="script.js"></script>
 </body>

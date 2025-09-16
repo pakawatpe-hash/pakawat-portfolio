@@ -1,91 +1,58 @@
-/* Base */
+/* TikTok-like clean profile + grid */
 :root{
-  --bg:#0b0b12;
-  --fg:#e8ecf1;
-  --muted:#a7b0bd;
-  --accent:#6aa5ff;
-  --accent-2:#9b8cff;
-  --card:rgba(255,255,255,.06);
-  --stroke:rgba(255,255,255,.12);
+  --fg:#0e1116;
+  --bg:#ffffff;
+  --muted:#556171;
+  --line:#e7ecf3;
+  --accent:#111827;
 }
-
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{
-  font-family:'Prompt',system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:var(--fg);
-  background:
-    radial-gradient(1200px 500px at 10% -10%, rgba(106,165,255,.18), transparent 60%),
-    radial-gradient(1000px 600px at 100% 0%, rgba(155,140,255,.15), transparent 60%),
-    linear-gradient(180deg,#0d0e15,#0a0a10);
-  background-attachment: fixed;
-}
+body{font-family:'Prompt',system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--fg)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
 
-/* Layout helpers */
-.container{max-width:1080px;margin:0 auto;padding:0 20px}
-.section{padding:64px 0}
-.muted{color:var(--muted)}
+/* Top bar */
+.topbar{position:sticky;top:0;background:rgba(255,255,255,.9);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line);z-index:50}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;min-height:56px}
+.logo{font-weight:700}
+.nav a{color:var(--fg);text-decoration:none;margin:0 10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);text-decoration:none;color:var(--fg);background:#fff}
+.btn.small{padding:6px 10px;font-size:14px}
+.btn.primary{background:#000;color:#fff;border-color:#000}
+.btn.ghost{background:#fff}
 
-/* Topbar */
-.topbar{position:sticky;top:0;backdrop-filter:saturate(180%) blur(10px);background:rgba(10,10,16,.6);border-bottom:1px solid var(--stroke);z-index:10}
-.topbar .container{display:flex;align-items:center;justify-content:space-between;min-height:64px}
-.brand{font-weight:700;letter-spacing:.5px}
-.nav a{color:var(--fg);text-decoration:none;margin:0 10px;opacity:.9}
-.nav a.btn{padding:8px 14px;border:1px solid var(--stroke);border-radius:10px}
+/* Profile header */
+.profile{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 16px 12px}
+.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
+.handle{margin:12px 0 4px 0;font-weight:700}
+.bio{margin:0;color:var(--muted)}
+.stats{list-style:none;padding:0;margin:14px 0;display:flex;gap:20px}
+.stats li{display:flex;flex-direction:column}
+.stats strong{font-size:20px}
+.actions{display:flex;gap:10px;margin:8px 0 0 0}
 
-/* Hero */
-.hero{padding:96px 0 40px;display:flex;flex-direction:column;gap:20px;align-items:center}
-.glass{background:var(--card);border:1px solid var(--stroke);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-.card.profile{display:flex;gap:20px;padding:20px;align-items:center;max-width:960px;width:90%}
-.avatar{width:96px;height:96px;border-radius:50%;border:2px solid var(--stroke);object-fit:cover}
-.profile-info h1{margin:0 0 6px 0}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.badges span{background:#1a1e29;border:1px solid var(--stroke);padding:6px 10px;border-radius:999px;font-size:14px;color:#cbd4e1}
-.cta{display:flex;gap:10px;margin-top:6px}
+/* Tabs */
+.tabs{display:flex;gap:16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:12px}
+.tabs .tab{appearance:none;background:none;border:none;padding:12px 6px;font:inherit;color:var(--muted);cursor:pointer}
+.tabs .tab.active{color:#000;border-bottom:2px solid #000}
 
-.stats{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
-.stat{background:var(--card);border:1px solid var(--stroke);padding:14px 20px;border-radius:14px;text-align:center}
-.stat strong{font-size:20px;display:block}
+/* Grid 9:16 like TikTok */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:2px}
+@media(max-width:780px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid{grid-template-columns:repeat(2,1fr)}}
+.tile{position:relative;background:#000;overflow:hidden}
+.thumb{position:relative;display:block}
+.thumb img{width:100%;height:100%;aspect-ratio:9/16;object-fit:cover;display:block;transform:scale(1.01);transition:transform .25s ease}
+.tile:hover img{transform:scale(1.06)}
+.play{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:4px 8px;font-size:12px;opacity:0;transition:opacity .2s}
+.tile:hover .play{opacity:1}
+.views{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;border-radius:8px;padding:2px 6px;font-size:12px}
+.label{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.85);color:#111;border-radius:8px;padding:2px 6px;font-size:12px;margin-right:4px}
 
-/* Buttons */
-.btn{display:inline-block;background:var(--accent);color:#0b0b12;border:none;border-radius:12px;padding:10px 16px;text-decoration:none;font-weight:600}
-.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
-.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--stroke)}
-.btn.small{padding:6px 10px;border-radius:10px;font-size:14px}
-.btn.tiny{padding:5px 8px;border-radius:8px;font-size:12px}
+/* About & Contact */
+.about,.contact{padding:20px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+.card{border:1px solid var(--line);padding:14px;border-radius:12px;text-decoration:none;color:inherit;background:#fff}
+.hidden{display:none}
 
-/* Grid like TikTok */
-.grid{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.tile{background:var(--card);border:1px solid var(--stroke);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-.thumb{position:relative;display:block;overflow:hidden}
-.thumb img{width:100%;height:220px;object-fit:cover;display:block;transform:scale(1.02);transition:transform .35s ease}
-.tile:hover .thumb img{transform:scale(1.08)}
-.chip{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.55);border:1px solid var(--stroke);color:#fff;padding:6px 10px;border-radius:999px;font-size:12px}
-.info{padding:14px}
-.info h3{margin:0 0 6px 0}
-.actions{display:flex;gap:8px;margin-top:8px}
-
-/* About */
-.about .about-card{padding:20px}
-.list{margin:12px 0 0 0;padding:0 0 0 18px;color:#d7deea}
-
-/* Contact */
-.contact .contact-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
-.ccard{display:flex;flex-direction:column;gap:4px;padding:16px;border:1px solid var(--stroke);border-radius:14px;background:var(--card);text-decoration:none;color:var(--fg)}
-.ccard:hover{outline:2px solid var(--accent);}
-
-/* Footer */
-.footer{border-top:1px solid var(--stroke);padding:16px 0;margin-top:24px;background:rgba(8,8,12,.6);backdrop-filter:blur(6px)}
-
-/* Light theme */
-body.light{
-  --bg:#ffffff;
-  --fg:#0e1116;
-  --muted:#516070;
-  --card:#fff;
-  --stroke:#e6ebf2;
-  background:#f6f8fc;
-}
-body.light .topbar{background:rgba(255,255,255,.85)}
-body.light .badges span{background:#f6f8fc;border-color:#e6ebf2;color:#334155}
-body.light .chip{background:rgba(255,255,255,.8);color:#111827;border-color:#e5e7eb}
+.foot{border-top:1px solid var(--line);padding:16px 0;margin-top:20px;color:var(--muted)}
