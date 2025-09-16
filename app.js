@@ -27,22 +27,22 @@ document.addEventListener('mousemove',(e)=>{
   });
 });
 
-/* ===== Intro / Splash control ===== */
+/* ===== Intro / Splash (auto close, no click) ===== */
 (function(){
   const intro = document.getElementById('intro');
   if(!intro) return;
 
+  // ล็อกสกอร์ลระหว่างโชว์ Intro
+  document.body.classList.add('intro-lock');
+
   const closeIntro = ()=>{
     intro.classList.add('hide');
-    setTimeout(()=> intro.remove(), 700); // remove after fade
+    setTimeout(()=>{
+      intro.remove();
+      document.body.classList.remove('intro-lock');
+    }, 700);
   };
 
-  // Auto close after ~1.8s
+  // ปิดอัตโนมัติหลัง ~1.8 วินาที (ปรับได้)
   window.addEventListener('load', ()=> setTimeout(closeIntro, 1800));
-
-  // Allow user to skip
-  intro.querySelector('.skip')?.addEventListener('click',(e)=>{
-    e.preventDefault();
-    closeIntro();
-  });
 })();
