@@ -23,6 +23,26 @@ body{
 body.intro-lock{overflow:hidden;}
 .container{max-width:1100px;margin:0 auto;padding:0 20px}
 .center{text-align:center}
+a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--primary); outline-offset:2px; border-radius:12px}
+
+/* Account for sticky header when hash-jumping */
+:target{scroll-margin-top:84px}
+
+/* =============== SCROLL PROGRESS =============== */
+.progress{position:fixed;inset:0 0 auto 0;height:3px;background:rgba(255,255,255,.08);z-index:60}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-2))}
+
+/* =============== CURSOR =============== */
+.cursor-blob{
+  position:fixed; width:260px; height:260px; border-radius:50%;
+  background:radial-gradient(closest-side, rgba(118,170,255,.25), rgba(155,140,255,.12), transparent 70%);
+  filter:blur(40px); mix-blend-mode:screen; pointer-events:none; z-index:0; transform:translate(-50%,-50%);
+}
+.cursor-dot{
+  position:fixed; width:8px; height:8px; border-radius:50%;
+  background:#cfe4ff; box-shadow:0 0 18px rgba(120,160,255,.7);
+  pointer-events:none; z-index:70; transform:translate(-50%,-50%);
+}
 
 /* =============== BG BLOBS =============== */
 .bg-blob{position:fixed;inset:auto;z-index:-1;filter:blur(80px);opacity:.35;border-radius:50%;animation:floatY 12s ease-in-out infinite}
@@ -40,10 +60,13 @@ body.intro-lock{overflow:hidden;}
 .btn.primary{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#0b0f1e;border:none}
 .btn.ghost{background:rgba(255,255,255,.06)}
 
+/* Magnetic hover hint */
+.magnetic{transition:transform .12s ease}
+
 /* =============== NAV =============== */
 .nav{position:sticky;top:0;backdrop-filter:saturate(180%) blur(12px);background:rgba(7,11,26,.6);border-bottom:1px solid var(--line);z-index:50}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;min-height:64px}
-.brand{font-weight:800;color:#d7e8ff;letter-spacing:.5px}
+.brand{font-weight:800;color:#d7e8ff;letter-spacing:.5px;text-decoration:none}
 .links a{color:var(--ink);opacity:.9;text-decoration:none;margin:0 10px;position:relative}
 .links a.active::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;background:linear-gradient(90deg,var(--primary),var(--primary-2));border-radius:2px}
 
@@ -82,6 +105,13 @@ body.intro-lock{overflow:hidden;}
   100% { transform: translateY(0) rotate(-2deg); }
 }
 
+/* Marquee */
+.marquee{margin-top:18px; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:rgba(255,255,255,.04)}
+.marquee .track{display:flex; gap:28px; padding:10px 16px; width:max-content; animation:marq 20s linear infinite}
+.marquee span{opacity:.9; white-space:nowrap}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* Illustration / tilt + glare */
 .hero-art{padding:16px;position:relative;overflow:hidden}
 .code-window{border-radius:14px;border:1px solid var(--line);background:#0f152d;position:relative}
 .dots{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.05)}
@@ -94,6 +124,8 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .gear{width:90px;height:90px;border:6px solid rgba(255,255,255,.14);border-radius:50%;position:absolute;animation:spin 14s linear infinite}
 .g2{width:60px;height:60px;right:50px;bottom:50px;animation-duration:10s}
 @keyframes spin{to{transform:rotate(360deg)}}
+.glare{position:relative; overflow:hidden}
+.glare-spot{position:absolute; inset:auto; width:140px; height:140px; border-radius:50%; background:radial-gradient(closest-side, rgba(255,255,255,.28), rgba(255,255,255,.06), transparent 70%); filter:blur(10px); pointer-events:none; transform:translate(-50%,-50%); opacity:.0; transition:opacity .2s ease}
 
 /* =============== SECTION GENERIC =============== */
 .section{padding:72px 0}
@@ -101,7 +133,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .section-title{font-weight:800;letter-spacing:.3px;margin:0 0 6px}
 .section-sub{color:var(--muted);margin:0 0 26px}
 
-/* ซ่อน section อื่นตอนโหลด แล้วค่อย reveal เมื่อเลื่อนถึง */
+/* lazy enter reveal */
 .section.lazy{opacity:0; transform:translateY(18px);}
 .section.lazy.entered{opacity:1; transform:none; transition:opacity .7s ease, transform .7s ease;}
 
@@ -134,7 +166,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .panel[hidden]{display:none}
 
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px}
-.card{padding:0;border-radius:16px;border:1px solid var(--line);background:var(--card);overflow:hidden;transform:translateY(10px);opacity:0}
+.card{padding:0;border-radius:16px;border:1px solid var(--line);background:var(--card);overflow:hidden;transform:translateY(10px);opacity:0;transition:transform .25s ease}
 .card .thumb{width:100%;height:160px;display:block}
 .gradient-1{background:linear-gradient(135deg,#6aa5ff 0%,#9b8cff 100%)}
 .gradient-2{background:linear-gradient(135deg,#9b8cff 0%,#6aa5ff 100%)}
@@ -165,7 +197,8 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .reveal{transform:translateY(12px);opacity:0}
 .reveal.in{transform:none;opacity:1;transition:opacity .7s ease, transform .7s ease}
 .card.reveal.in,.contact-card.reveal.in{transform:none;opacity:1;transition:opacity .6s ease, transform .6s ease}
-.tilt{will-change:transform;transition:transform .15s linear}
+.tilt{will-change:transform;transition:transform .12s linear}
+.parallax{will-change:transform}
 
 /* =============== INTRO / TYPEWRITER =============== */
 .intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:
@@ -194,6 +227,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 
 /* =============== REDUCE MOTION =============== */
 @media (prefers-reduced-motion:reduce){
-  .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after{animation:none}
-  .reveal,.card,.contact-card,.section.lazy.entered{transition:none}
+  .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after,.marquee .track{animation:none}
+  .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
