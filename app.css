@@ -8,6 +8,7 @@
   --card:rgba(255,255,255,.06);
   --line:rgba(255,255,255,.14);
 }
+
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -62,6 +63,7 @@ body.intro-lock{ overflow:hidden; }
 .cta{display:flex;gap:10px;margin-top:14px}
 .social a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin-top:10px;margin-right:6px;border-radius:10px;border:1px solid var(--line);color:#cfe4ff;text-decoration:none;background:rgba(255,255,255,.06)}
 
+/* hero art */
 .hero-art{padding:16px;position:relative;overflow:hidden}
 .code-window{border-radius:14px;border:1px solid var(--line);background:#0f152d;position:relative}
 .dots{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.05)}
@@ -82,6 +84,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .about-card{padding:18px}
 .mini-cta{display:flex;gap:10px;margin-top:10px}
 
+/* stats */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .stat{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
 .stat h3{margin:0;font-size:28px}
@@ -122,7 +125,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .intro-inner{text-align:center; animation:intro-pop .6s ease both}
 .intro .icons{display:flex; gap:12px; justify-content:center; margin-bottom:16px}
 
-/* ไทล์ครอบไอคอนทั้ง svg/i ให้หน้าตาเหมือนกัน */
+/* tiles for icons (svg/i unified look) */
 .intro .tile{
   width:46px;height:46px; display:grid; place-items:center;
   border:1px solid var(--line); border-radius:12px;
@@ -133,12 +136,26 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .intro .tile .logo{width:26px;height:26px; display:block}
 
 .intro-title{margin:0; font-weight:800; letter-spacing:.5px; color:#fff}
-.intro-sub{margin:.25rem 0 0; font-weight:800}
-.intro-sub span{color:#cbbaff; animation:glow 2.4s ease-in-out infinite; text-shadow:0 0 12px rgba(155,140,255,.45)}
+.intro-sub{margin:.25rem 0 0; font-weight:800; display:inline-flex; align-items:center; gap:6px}
+
+/* typewriter text */
+.intro-sub .type{min-width:1ch; font-weight:800}
+.intro-sub .caret{
+  width:2px; height:1.1em; background:#cbbaff;
+  animation: caret-blink .9s steps(1,end) infinite;
+  display:inline-block; vertical-align:baseline;
+}
+@keyframes caret-blink { 50% { opacity:0; } }
+
+/* intro hide state */
 .intro.hide{opacity:0; transform:scale(1.02); pointer-events:none}
 
 @keyframes intro-pop{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)}}
-@keyframes glow{0%,100%{text-shadow:0 0 0 rgba(155,140,255,0)} 50%{text-shadow:0 0 16px rgba(155,140,255,.55)}}
+
+/* responsive */
+@media (max-width:900px){
+  .hero-grid,.about-grid{grid-template-columns:1fr}
+}
 
 /* reduce motion */
 @media (prefers-reduced-motion:reduce){
