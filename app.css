@@ -101,27 +101,27 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
   100% { transform: translateY(0) rotate(-2deg); }
 }
 
-/* ===== Marquee Full Width ===== */
+/* ===== Marquee Full Bleed (ชนขอบจอ) ===== */
 .marquee {
   position: relative;
-  width: 100vw; /* กินเต็มจอ */
-  left: 50%;
-  transform: translateX(-50%); /* ดึงให้อยู่ตรงกลางพอดี */
+  width: 100vw;        /* เต็มจอจริง ๆ */
+  margin: 30px 0;      /* ระยะห่างบนล่าง */
+  left: 50%;           /* ดึงออกจาก container */
+  transform: translateX(-50%);
   overflow: hidden;
 
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   padding: 12px 0;
-  margin: 28px 0;
   background: rgba(255, 255, 255, 0.02);
 }
 
 .marquee .track {
   display: inline-flex;
-  gap: 36px;
+  gap: 40px;
   white-space: nowrap;
-  will-change: transform;
   animation: marquee 20s linear infinite;
+  will-change: transform;
 }
 
 .marquee span {
@@ -133,11 +133,12 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
   opacity: .9;
 }
 
-/* วิ่งวน */
+/* seamless loop */
 @keyframes marquee {
   from { transform: translateX(0); }
-  to   { transform: translateX(-50%); } /* ครึ่งนึง เพราะ track มีเนื้อหาซ้ำ */
+  to   { transform: translateX(-50%); }
 }
+
 
 /* =============== ILLUSTRATION / TILT + GLARE =============== */
 .hero-art{padding:16px;position:relative;overflow:hidden}
