@@ -1,108 +1,147 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pakawat — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- BACKGROUND DECOR -->
+  <div class="bg-blur bg-1"></div>
+  <div class="bg-blur bg-2"></div>
+
   <!-- NAVBAR -->
-  <header class="navbar">
-    <div class="container">
-      <h1 class="logo">Pakawat</h1>
-      <nav class="menu">
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">Pakawat</div>
+      <nav class="links">
         <a href="#home">Home</a>
         <a href="#about">About</a>
-        <a href="#portfolio">Portfolio</a>
-        <a href="#contact" class="btn">Contact</a>
+        <a href="#work">Portfolio</a>
+        <a class="btn" href="#contact">Contact</a>
       </nav>
     </div>
   </header>
 
-  <!-- HERO SECTION -->
+  <!-- HERO -->
   <section id="home" class="hero">
-    <div class="container hero-content">
-      <div class="hero-text">
-        <span class="tag">Frontend Developer</span>
-        <h2>Hello, I'm <span class="accent">Pakawat</span></h2>
-        <p>เด็กคอม | Candidate CE @ KMUTNB | Flutter | Python | Roblox</p>
-        <div class="hero-actions">
-          <a class="btn primary" href="#portfolio">View Portfolio</a>
-          <a class="btn ghost" href="#contact">Contact Me</a>
+    <div class="container hero-inner">
+      <div class="copy">
+        <span class="pill"><i class='bx bx-bolt-circle'></i> Frontend / Mobile</span>
+        <h1>สร้างงานไอทีที่ **ใช้งานได้จริง**</h1>
+        <p>เด็กคอม | Candidate CE @ KMUTNB — โฟกัส Flutter, Python/Tkinter, Roblox Lua และ Web</p>
+        <div class="cta">
+          <a class="btn primary" href="#work"><i class='bx bx-show'></i> ดูผลงาน</a>
+          <a class="btn ghost" href="#contact"><i class='bx bx-send'></i> ติดต่อ</a>
         </div>
       </div>
-      <div class="hero-image">
-        <img src="https://raw.githubusercontent.com/atisawd/boxicons/master/svg/regular/bx-code.svg" alt="developer icon"/>
+      <div class="illus glass">
+        <div class="code">
+          <span>&lt;/&gt;</span>
+          <span class="dot dot1"></span>
+          <span class="dot dot2"></span>
+          <span class="dot dot3"></span>
+        </div>
+        <div class="chips">
+          <div class="chip">Flutter</div>
+          <div class="chip">Python</div>
+          <div class="chip">Roblox</div>
+          <div class="chip">Web</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ABOUT SECTION -->
-  <section id="about" class="about">
-    <div class="container about-content">
-      <div class="about-text">
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="container grid-2">
+      <div class="glass pad">
         <h2>About Me</h2>
-        <p>ผมภควัฒน์ สนใจพัฒนาแอป/เว็บ/เกม ทำโปรเจกต์จริง เช่น StockApp (Flutter), Document Manager (Python/Tkinter + Google Forms), Roblox Game (M1 Combo/Skills) และเว็บไซต์ DrPharma</p>
+        <p>ผมภควัฒน์ ชอบพัฒนาซอฟต์แวร์ที่แก้ปัญหาได้จริง: แอปนับสต็อกเชื่อม Google Sheets, โปรแกรมเอกสารอัตโนมัติด้วย Python + Google Forms, เกม Roblox ระบบ M1 Combo และเว็บไซต์แบรนด์ DrPharma</p>
       </div>
-      <div class="about-stats">
-        <div class="stat-card">
-          <h3>12+</h3>
-          <p>Projects</p>
-        </div>
-        <div class="stat-card">
-          <h3>4</h3>
-          <p>Apps</p>
-        </div>
-        <div class="stat-card">
-          <h3>3</h3>
-          <p>Stacks</p>
-        </div>
+      <div class="stats">
+        <div class="stat glass"><h3>12+</h3><span>Projects</span></div>
+        <div class="stat glass"><h3>4</h3><span>Apps</span></div>
+        <div class="stat glass"><h3>3</h3><span>Stacks</span></div>
       </div>
     </div>
   </section>
 
-  <!-- PORTFOLIO SECTION -->
-  <section id="portfolio" class="portfolio">
+  <!-- PORTFOLIO -->
+  <section id="work" class="section">
     <div class="container">
-      <h2>Portfolio Showcase</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>StockApp</h3>
+      <h2 class="center">Portfolio Showcase</h2>
+      <div class="cards">
+        <article class="card glass">
+          <div class="card-head">
+            <i class='bx bxl-flutter'></i>
+            <h3>StockApp</h3>
+          </div>
           <p>Flutter + Google Sheets + Barcode Scan</p>
-        </div>
-        <div class="card">
-          <h3>Document Manager</h3>
-          <p>Python/Tkinter + Google Forms</p>
-        </div>
-        <div class="card">
-          <h3>Roblox Game</h3>
-          <p>M1 Combo / Skills / Quest System</p>
-        </div>
-        <div class="card">
-          <h3>DrPharma Website</h3>
-          <p>Landing page + Product showcase</p>
-        </div>
+          <div class="card-actions">
+            <a class="btn tiny" href="#">Demo</a>
+            <a class="btn tiny ghost" href="#">GitHub</a>
+          </div>
+        </article>
+
+        <article class="card glass">
+          <div class="card-head">
+            <i class='bx bxl-python'></i>
+            <h3>Document Manager</h3>
+          </div>
+          <p>Python/Tkinter + Google Forms Automation</p>
+          <div class="card-actions">
+            <a class="btn tiny" href="#">Overview</a>
+            <a class="btn tiny ghost" href="#">Repo</a>
+          </div>
+        </article>
+
+        <article class="card glass">
+          <div class="card-head">
+            <i class='bx bx-joystick'></i>
+            <h3>Roblox Game</h3>
+          </div>
+          <p>M1 Combo • Skills • Quest System</p>
+          <div class="card-actions">
+            <a class="btn tiny" href="#">Video</a>
+            <a class="btn tiny ghost" href="#">Docs</a>
+          </div>
+        </article>
+
+        <article class="card glass">
+          <div class="card-head">
+            <i class='bx bx-globe'></i>
+            <h3>DrPharma Site</h3>
+          </div>
+          <p>Landing Page • Product Showcase</p>
+          <div class="card-actions">
+            <a class="btn tiny" href="#">Live</a>
+            <a class="btn tiny ghost" href="#">Repo</a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- CONTACT SECTION -->
-  <section id="contact" class="contact">
+  <!-- CONTACT -->
+  <section id="contact" class="section">
     <div class="container">
-      <h2>Contact</h2>
-      <p>Email: yourmail@example.com</p>
-      <p>GitHub: <a href="https://github.com/pakawatpe-hash" target="_blank">@pakawatpe-hash</a></p>
+      <h2 class="center">Contact</h2>
+      <div class="contact-grid">
+        <a class="contact-card glass" href="mailto:yourmail@example.com"><i class='bx bx-envelope'></i> yourmail@example.com</a>
+        <a class="contact-card glass" href="https://github.com/pakawatpe-hash" target="_blank"><i class='bx bxl-github'></i> @pakawatpe-hash</a>
+        <a class="contact-card glass" href="#"><i class='bx bxl-line'></i> LINE: ใส่ลิงก์/QR</a>
+      </div>
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <p>© 2025 Pakawat Portfolio</p>
-    </div>
+  <footer class="foot">
+    <div class="container">© 2025 Pakawat — Portfolio</div>
   </footer>
 </body>
 </html>
