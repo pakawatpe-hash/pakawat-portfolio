@@ -200,7 +200,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .tilt{will-change:transform;transition:transform .12s linear}
 .parallax{will-change:transform}
 
-/* =============== INTRO (สีตัดกันชัด) =============== */
+/* =============== INTRO (auto close) =============== */
 .intro{
   position:fixed; inset:0; z-index:9999; display:grid; place-items:center;
   background:
@@ -213,16 +213,26 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .intro .icons{display:flex;gap:12px;justify-content:center;margin-bottom:16px}
 .intro .tile{width:46px;height:46px;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.08);color:#cfe4ff;box-shadow:0 6px 20px rgba(0,0,0,.3)}
 .intro .tile i{font-size:22px}
-.intro-title{margin:.25rem 0 0;line-height:1.1}
-.intro-title .line-1{display:block;font-size:28px;font-weight:800;color:#fff;letter-spacing:.3px}
-.intro-title .line-2{
-  display:block; font-size:36px; font-weight:800; letter-spacing:.3px;
-  background:linear-gradient(90deg,#87b3ff,#c3b6ff); -webkit-background-clip:text; background-clip:text; color:transparent;
-  text-shadow:0 10px 30px rgba(120,160,255,.35);
+
+.intro-title{margin:.25rem 0 0;line-height:1.1;display:flex;flex-direction:column;gap:4px;}
+.intro-title .line-1{
+  font-size:28px;font-weight:800;color:#fff;letter-spacing:.3px;
+  opacity:0; transform:translateY(10px);
+  animation:fadeInUp .8s ease forwards .3s;
 }
-.intro-cta{margin-top:16px;display:inline-flex}
+.intro-title .line-2{
+  font-size:36px;font-weight:800;letter-spacing:.3px;
+  background:linear-gradient(90deg,#87b3ff,#c3b6ff); -webkit-background-clip:text;
+  background-clip:text; color:transparent;
+  text-shadow:0 10px 30px rgba(120,160,255,.35);
+  opacity:0; transform:translateY(10px);
+  animation:fadeInUp .8s ease forwards .6s;
+}
+
 .intro.hide{opacity:0;transform:scale(1.02);pointer-events:none}
 @keyframes intro-pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInUp{to{opacity:1;transform:translateY(0)}}
+
 
 /* =============== RESPONSIVE & PERF =============== */
 @media (max-width:900px){
