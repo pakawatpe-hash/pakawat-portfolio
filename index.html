@@ -6,200 +6,103 @@
   <title>Pakawat — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <!-- TOP BAR (minimal like TikTok) -->
-  <header class="topbar">
-    <div class="wrap">
-      <div class="logo">Pakawat</div>
-      <nav class="nav">
-        <a href="#grid">Projects</a>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">Pakawat</h1>
+      <nav class="menu">
+        <a href="#home">Home</a>
         <a href="#about">About</a>
-        <a href="#contact" class="btn small">Contact</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#contact" class="btn">Contact</a>
       </nav>
     </div>
   </header>
 
-  <!-- PROFILE HEADER (center, avatar, username, bio, stats, buttons) -->
-  <section class="profile">
-    <img class="avatar" src="https://i.pravatar.cc/240?img=12" alt="Pakawat avatar">
-    <h1 class="handle">@pakawat</h1>
-    <p class="bio">เด็กคอม • Candidate CE @ KMUTNB • Flutter • Python • Roblox</p>
-
-    <ul class="stats">
-      <li><strong>12</strong><span>Projects</span></li>
-      <li><strong>3</strong><span>Apps</span></li>
-      <li><strong>4</strong><span>Stacks</span></li>
-    </ul>
-
-    <div class="actions">
-      <a class="btn primary">ดูผลงานเด่น</a>
-      <a class="btn ghost" href="#contact">ติดต่อ</a>
+  <!-- HERO SECTION -->
+  <section id="home" class="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <span class="tag">Frontend Developer</span>
+        <h2>Hello, I'm <span class="accent">Pakawat</span></h2>
+        <p>เด็กคอม | Candidate CE @ KMUTNB | Flutter | Python | Roblox</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#portfolio">View Portfolio</a>
+          <a class="btn ghost" href="#contact">Contact Me</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="https://raw.githubusercontent.com/atisawd/boxicons/master/svg/regular/bx-code.svg" alt="developer icon"/>
+      </div>
     </div>
   </section>
 
-  <!-- TAB BAR (Posts/Info like TikTok tabs) -->
-  <div class="tabs wrap">
-    <button class="tab active" data-tab="grid">ผลงาน</button>
-    <button class="tab" data-tab="about">เกี่ยวกับ</button>
-    <button class="tab" data-tab="contact">ติดต่อ</button>
-  </div>
-
-  <!-- GRID (3 columns, 9:16 tiles, overlay views, hover play) -->
-  <section id="grid" class="wrap grid">
-    <!-- repeat tiles -->
-    
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1523475496153-3d6cc0f0f4d2?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1550439062-609e1531270e?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1553028826-ccdfc006d45d?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-
-<article class="tile">
-  <a class="thumb" href="#">
-    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="project"/>
-    <span class="views">12.3k</span>
-    <span class="play">▶</span>
-    <span class="label">Project</span>
-  </a>
-</article>
-
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about" class="wrap about hidden">
-    <h2>เกี่ยวกับ</h2>
-    <p>ผมภควัฒน์ สนใจการพัฒนาแอป/เว็บ/เกม สร้างสิ่งที่ใช้งานได้จริง เช่น StockApp (Flutter), Document Manager (Python/Tkinter + Google Forms), และ Roblox Game (M1 Combo/Skills).</p>
-    <ul>
-      <li>เทคโนโลยี: Flutter, Python, Google Apps Script, Roblox Lua, HTML/CSS</li>
-      <li>เป้าหมาย: วิศวกรรมคอมพิวเตอร์ มจพ.</li>
-    </ul>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="wrap contact hidden">
-    <h2>ติดต่อ</h2>
-    <div class="cards">
-      <a class="card" href="mailto:yourmail@example.com">
-        <span>อีเมล</span><strong>yourmail@example.com</strong>
-      </a>
-      <a class="card" href="https://github.com/pakawatpe-hash" target="_blank">
-        <span>GitHub</span><strong>@pakawatpe-hash</strong>
-      </a>
-      <a class="card" href="#">
-        <span>LINE</span><strong>ใส่ลิงก์/QR ภายหลัง</strong>
-      </a>
+  <!-- ABOUT SECTION -->
+  <section id="about" class="about">
+    <div class="container about-content">
+      <div class="about-text">
+        <h2>About Me</h2>
+        <p>ผมภควัฒน์ สนใจพัฒนาแอป/เว็บ/เกม ทำโปรเจกต์จริง เช่น StockApp (Flutter), Document Manager (Python/Tkinter + Google Forms), Roblox Game (M1 Combo/Skills) และเว็บไซต์ DrPharma</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <h3>12+</h3>
+          <p>Projects</p>
+        </div>
+        <div class="stat-card">
+          <h3>4</h3>
+          <p>Apps</p>
+        </div>
+        <div class="stat-card">
+          <h3>3</h3>
+          <p>Stacks</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <footer class="foot"><div class="wrap">© 2025 Pakawat</div></footer>
+  <!-- PORTFOLIO SECTION -->
+  <section id="portfolio" class="portfolio">
+    <div class="container">
+      <h2>Portfolio Showcase</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>StockApp</h3>
+          <p>Flutter + Google Sheets + Barcode Scan</p>
+        </div>
+        <div class="card">
+          <h3>Document Manager</h3>
+          <p>Python/Tkinter + Google Forms</p>
+        </div>
+        <div class="card">
+          <h3>Roblox Game</h3>
+          <p>M1 Combo / Skills / Quest System</p>
+        </div>
+        <div class="card">
+          <h3>DrPharma Website</h3>
+          <p>Landing page + Product showcase</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <script src="script.js"></script>
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <h2>Contact</h2>
+      <p>Email: yourmail@example.com</p>
+      <p>GitHub: <a href="https://github.com/pakawatpe-hash" target="_blank">@pakawatpe-hash</a></p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 Pakawat Portfolio</p>
+    </div>
+  </footer>
 </body>
 </html>
