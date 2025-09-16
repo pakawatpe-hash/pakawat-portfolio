@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pakawat — Portfolio</title>
 
+  <!-- Meta / SEO -->
+  <meta name="description" content="Pakawat Portfolio — Frontend/Mobile Dev • Flutter • Python • Roblox • Web. Projects, Certificates & Contact.">
+  <meta name="theme-color" content="#070b1a">
+
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,13 +16,20 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=10" />
+  <link rel="stylesheet" href="app.css?v=12" />
 </head>
 <body>
+  <!-- Cursor Glow -->
+  <div class="cursor-blob" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <!-- Scroll progress -->
+  <div class="progress" aria-hidden="true"><span></span></div>
+
   <!-- Floating background blobs -->
-  <div class="bg-blob b1"></div>
-  <div class="bg-blob b2"></div>
-  <div class="bg-blob b3"></div>
+  <div class="bg-blob b1" aria-hidden="true"></div>
+  <div class="bg-blob b2" aria-hidden="true"></div>
+  <div class="bg-blob b3" aria-hidden="true"></div>
 
   <!-- INTRO / SPLASH -->
   <div id="intro" class="intro" aria-label="Intro">
@@ -30,8 +41,8 @@
       </div>
       <h1 class="intro-title">Welcome To My</h1>
       <h2 class="intro-sub">
-        <span class="type" data-words='["Portfolio Website"]'></span>
-        <span class="caret"></span>
+        <span class="type" data-words='["Portfolio Website","Frontend • Mobile","Flutter • Python • Web"]'></span>
+        <span class="caret" aria-hidden="true"></span>
       </h2>
     </div>
   </div>
@@ -39,12 +50,12 @@
   <!-- NAV -->
   <header class="nav glass">
     <div class="container nav-inner">
-      <div class="brand">Pakawat</div>
-      <nav class="links" id="navLinks">
-        <a href="#home" class="active">Home</a>
+      <a class="brand" href="#home">Pakawat</a>
+      <nav class="links" id="navLinks" aria-label="Primary">
+        <a href="#home" class="active" aria-current="page">Home</a>
         <a href="#about">About</a>
         <a href="#work">Portfolio</a>
-        <a href="#contact" class="btn small">Contact</a>
+        <a href="#contact" class="btn small magnetic">Contact</a>
       </nav>
     </div>
   </header>
@@ -57,17 +68,39 @@
         <h1 class="headline gradient">Hello, I'm <span>Pakawat</span></h1>
         <p class="sub">DekCom • CE Candidate @ KMUTNB • Flutter • Python • Roblox • Web</p>
         <div class="cta">
-          <a class="btn primary" href="#work"><i class='bx bx-rocket'></i> View Projects</a>
-          <a class="btn ghost" href="#contact"><i class='bx bx-send'></i> Contact</a>
+          <a class="btn primary magnetic" href="#work"><i class='bx bx-rocket'></i> View Projects</a>
+          <a class="btn ghost magnetic" href="#contact"><i class='bx bx-send'></i> Contact</a>
         </div>
+
+        <!-- Marquee (Tech / Skills) -->
+        <div class="marquee glass" aria-hidden="true">
+          <div class="track">
+            <span><i class='bx bxl-flutter'></i> Flutter</span>
+            <span><i class='bx bxl-python'></i> Python</span>
+            <span><i class='bx bxl-javascript'></i> JavaScript</span>
+            <span><i class='bx bxl-html5'></i> HTML</span>
+            <span><i class='bx bxl-css3'></i> CSS</span>
+            <span><i class='bx bxl-github'></i> GitHub</span>
+            <span><i class='bx bx-joystick'></i> Roblox</span>
+            <!-- duplicate for seamless loop -->
+            <span><i class='bx bxl-flutter'></i> Flutter</span>
+            <span><i class='bx bxl-python'></i> Python</span>
+            <span><i class='bx bxl-javascript'></i> JavaScript</span>
+            <span><i class='bx bxl-html5'></i> HTML</span>
+            <span><i class='bx bxl-css3'></i> CSS</span>
+            <span><i class='bx bxl-github'></i> GitHub</span>
+            <span><i class='bx bx-joystick'></i> Roblox</span>
+          </div>
+        </div>
+
         <div class="social">
-          <a aria-label="GitHub" href="https://github.com/pakawatpe-hash" target="_blank"><i class='bx bxl-github'></i></a>
+          <a aria-label="GitHub" href="https://github.com/pakawatpe-hash" target="_blank" rel="noopener noreferrer"><i class='bx bxl-github'></i></a>
           <a aria-label="Email" href="mailto:pakawatpe@gmail.com"><i class='bx bx-envelope'></i></a>
         </div>
       </div>
 
       <!-- Illustration card -->
-      <div class="hero-art glass tilt reveal" aria-hidden="true">
+      <div class="hero-art glass tilt glare reveal" aria-hidden="true">
         <div class="code-window">
           <div class="dots"><span></span><span></span><span></span></div>
 <pre><code><span class="kw">class</span> <span class="id">StockApp</span> {
@@ -79,11 +112,12 @@
           <div class="gear g1"></div>
           <div class="gear g2"></div>
         </div>
+        <span class="glare-spot" aria-hidden="true"></span>
       </div>
     </div>
   </section>
 
-  <!-- ABOUT (lazy: โผล่เมื่อเลื่อนถึง) -->
+  <!-- ABOUT -->
   <section id="about" class="section about-section lazy" aria-label="About">
     <div class="container">
       <h2 class="section-title center">About Me</h2>
@@ -93,22 +127,23 @@
         <!-- LEFT -->
         <article class="about-text glass reveal">
           <p class="eyebrow"><i class='bx bx-sparkles'></i> Hello, I’m</p>
-          <h3 class="about-name">Pakawat</h3>
+          <h3 class="about-name split">Pakawat</h3>
           <p class="about-desc">
             ชอบสร้างของที่ “ใช้งานได้จริง” — แอปเช็คสต็อกเชื่อม Google Sheets (Flutter),
             โปรแกรมเอกสารอัตโนมัติด้วย Python/Tkinter + Google Forms, เกม Roblox (M1 Combo/Skills)
             และเว็บเพจสำหรับแบรนด์/โปรเจ็กต์ส่วนตัว
           </p>
           <div class="mini-cta">
-            <a class="btn tiny primary" href="#" download><i class='bx bx-download'></i> Download CV</a>
-            <a class="btn tiny ghost" href="#contact"><i class='bx bx-message-dots'></i> Hire me</a>
+            <a class="btn tiny primary magnetic" href="#" download><i class='bx bx-download'></i> Download CV</a>
+            <a class="btn tiny ghost magnetic" href="#contact"><i class='bx bx-message-dots'></i> Hire me</a>
           </div>
         </article>
 
-        <!-- RIGHT (ยังไม่ใส่รูปจริง) -->
+        <!-- RIGHT -->
         <aside class="about-photo reveal" aria-hidden="true">
-          <div class="avatar-glow avatar-empty">
+          <div class="avatar-glow avatar-empty tilt glare">
             <i class='bx bx-user'></i>
+            <span class="glare-spot" aria-hidden="true"></span>
           </div>
         </aside>
       </div>
@@ -134,16 +169,16 @@
     </div>
   </section>
 
-  <!-- SHOWCASE / PORTFOLIO (lazy + tabs) -->
+  <!-- SHOWCASE / PORTFOLIO -->
   <section id="work" class="section lazy" aria-label="Portfolio">
     <div class="container">
       <h2 class="center reveal">Portfolio Showcase</h2>
 
       <!-- Tabs -->
       <div class="tabs reveal" role="tablist" aria-label="Showcase Tabs">
-        <button class="tab active" data-tab="projects" role="tab" aria-selected="true">Projects</button>
-        <button class="tab" data-tab="certs" role="tab" aria-selected="false">Certificates</button>
-        <button class="tab" data-tab="stack" role="tab" aria-selected="false">Tech Stack</button>
+        <button class="tab active magnetic" data-tab="projects" role="tab" aria-selected="true">Projects</button>
+        <button class="tab magnetic" data-tab="certs" role="tab" aria-selected="false">Certificates</button>
+        <button class="tab magnetic" data-tab="stack" role="tab" aria-selected="false">Tech Stack</button>
       </div>
 
       <!-- Panels -->
@@ -151,25 +186,28 @@
         <!-- Projects -->
         <div class="panel show" id="panel-projects" role="tabpanel">
           <div class="cards">
-            <article class="card glass reveal tilt">
-              <div class="thumb gradient-1"></div>
+            <article class="card glass reveal tilt glare">
+              <div class="thumb gradient-1 parallax" data-depth="0.15"></div>
               <div class="card-head"><i class='bx bxl-flutter'></i><h3>StockApp</h3></div>
               <p>Flutter + Google Sheets + Barcode Scan</p>
-              <div class="card-actions"><a class="btn tiny" href="#">Demo</a><a class="btn tiny ghost" href="#">GitHub</a></div>
+              <div class="card-actions"><a class="btn tiny magnetic" href="#">Demo</a><a class="btn tiny ghost magnetic" href="#">GitHub</a></div>
+              <span class="glare-spot"></span>
             </article>
 
-            <article class="card glass reveal tilt">
-              <div class="thumb gradient-2"></div>
+            <article class="card glass reveal tilt glare">
+              <div class="thumb gradient-2 parallax" data-depth="0.12"></div>
               <div class="card-head"><i class='bx bxl-python'></i><h3>Document Manager</h3></div>
               <p>Python/Tkinter + Google Forms Automation</p>
-              <div class="card-actions"><a class="btn tiny" href="#">Overview</a><a class="btn tiny ghost" href="#">Repo</a></div>
+              <div class="card-actions"><a class="btn tiny magnetic" href="#">Overview</a><a class="btn tiny ghost magnetic" href="#">Repo</a></div>
+              <span class="glare-spot"></span>
             </article>
 
-            <article class="card glass reveal tilt">
-              <div class="thumb gradient-3"></div>
+            <article class="card glass reveal tilt glare">
+              <div class="thumb gradient-3 parallax" data-depth="0.1"></div>
               <div class="card-head"><i class='bx bx-joystick'></i><h3>Roblox Game</h3></div>
               <p>M1 Combo • Skills • Quest System</p>
-              <div class="card-actions"><a class="btn tiny" href="#">Video</a><a class="btn tiny ghost" href="#">Docs</a></div>
+              <div class="card-actions"><a class="btn tiny magnetic" href="#">Video</a><a class="btn tiny ghost magnetic" href="#">Docs</a></div>
+              <span class="glare-spot"></span>
             </article>
           </div>
         </div>
@@ -213,18 +251,18 @@
     </div>
   </section>
 
-  <!-- CONTACT (lazy) -->
+  <!-- CONTACT -->
   <section id="contact" class="section lazy" aria-label="Contact">
     <div class="container">
       <h2 class="center reveal">Contact</h2>
       <div class="contact-grid">
-        <a class="contact-card glass reveal" href="mailto:pakawatpe@gmail.com">
+        <a class="contact-card glass reveal magnetic" href="mailto:pakawatpe@gmail.com">
           <i class='bx bx-envelope'></i> pakawatpe@gmail.com
         </a>
-        <a class="contact-card glass reveal" href="https://github.com/pakawatpe-hash" target="_blank">
+        <a class="contact-card glass reveal magnetic" href="https://github.com/pakawatpe-hash" target="_blank" rel="noopener noreferrer">
           <i class='bx bxl-github'></i> @pakawatpe-hash
         </a>
-        <a class="contact-card glass reveal" href="#">
+        <a class="contact-card glass reveal magnetic" href="#">
           <i class='bx bxl-line'></i> LINE: ใส่ลิงก์/QR
         </a>
       </div>
@@ -236,6 +274,6 @@
   </footer>
 
   <!-- JS -->
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>
