@@ -1,63 +1,180 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio - Pakawat</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pakawat — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <header>
-    <h1>Portfolio — Pakawat</h1>
-    <p>เด็กคอม | ผู้สมัครวิศวกรรมคอมพิวเตอร์ มจพ.</p>
-    <nav>
-      <a href="#about">เกี่ยวกับผม</a>
-      <a href="#projects">โปรเจกต์</a>
-      <a href="#skills">ทักษะ</a>
-      <a href="#contact">ติดต่อ</a>
-    </nav>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">Pakawat</div>
+      <nav class="nav">
+        <a href="#home">Home</a>
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#contact" class="btn">Contact</a>
+      </nav>
+    </div>
   </header>
 
-  <section id="about">
-    <h2>👋 เกี่ยวกับผม</h2>
-    <p>สวัสดีครับ ผมชื่อภควัฒน์ สนใจการพัฒนาโปรแกรมและเทคโนโลยี
-    เคยทำแอป Flutter, เขียน Python (Tkinter), พัฒนาเกม Roblox และสร้างเว็บไซต์
-    ตั้งใจศึกษาต่อวิศวกรรมคอมพิวเตอร์ มจพ. เพื่อพัฒนาทักษะ Software & Hardware</p>
-  </section>
-
-  <section id="projects">
-    <h2>💻 โปรเจกต์เด่น</h2>
-    <div class="project-card">
-      <h3>StockApp (Flutter)</h3>
-      <p>แอปนับสต็อก เชื่อมต่อ Google Sheets + Barcode Scan</p>
+  <!-- HERO (inspired by TikTok profile header) -->
+  <section id="home" class="hero">
+    <div class="glass card profile">
+      <img class="avatar" src="https://i.pravatar.cc/240?img=12" alt="Pakawat avatar">
+      <div class="profile-info">
+        <h1>@pakawat</h1>
+        <p>เด็กคอม | Candidate — CE@KMUTNB</p>
+        <div class="badges">
+          <span>Flutter</span>
+          <span>Python</span>
+          <span>Roblox</span>
+          <span>Web</span>
+        </div>
+        <div class="cta">
+          <a class="btn primary" href="#projects">ดูผลงาน</a>
+          <a class="btn ghost" href="#contact">ติดต่อ</a>
+        </div>
+      </div>
     </div>
-    <div class="project-card">
-      <h3>Document Manager (Python)</h3>
-      <p>ระบบเพิ่ม/ค้นหา/ลบเอกสาร ส่งข้อมูลไป Google Forms อัตโนมัติ</p>
-    </div>
-    <div class="project-card">
-      <h3>Roblox Game</h3>
-      <p>สร้างแมพ Roblox พร้อมระบบ NPC Quest และสกิลต่อสู้</p>
+
+    <div class="stats">
+      <div class="stat"><strong>12+</strong><span>Projects</span></div>
+      <div class="stat"><strong>4</strong><span>Tech Stacks</span></div>
+      <div class="stat"><strong>3</strong><span>Apps</span></div>
     </div>
   </section>
 
-  <section id="skills">
-    <h2>🛠️ ทักษะ</h2>
-    <ul>
-      <li>Programming: Python, Dart (Flutter), Lua (Roblox), HTML/CSS</li>
-      <li>Tools: Android Studio, Roblox Studio, GitHub, Figma, Canva</li>
-      <li>Soft Skills: Problem-Solving, Self-Learning, Teamwork</li>
-    </ul>
+  <!-- PROJECT GRID (like TikTok video grid) -->
+  <section id="projects" class="section container">
+    <h2>Projects</h2>
+    <p class="muted">กริดสไตล์ TikTok — hover แล้วเล่น/โชว์รายละเอียด</p>
+
+    <div class="grid">
+      <!-- Card 1 -->
+      <article class="tile">
+        <a href="#" class="thumb">
+          <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop" alt="Flutter App"/>
+          <span class="chip">Flutter</span>
+        </a>
+        <div class="info">
+          <h3>StockApp</h3>
+          <p>นับสต็อก + สแกนบาร์โค้ด เชื่อม Google Sheets</p>
+          <div class="actions">
+            <a class="btn small" href="#">Demo</a>
+            <a class="btn small ghost" href="#">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="tile">
+        <a href="#" class="thumb">
+          <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop" alt="Python Tkinter"/>
+          <span class="chip">Python</span>
+        </a>
+        <div class="info">
+          <h3>Document Manager</h3>
+          <p>จัดการเอกสาร + ส่ง Google Forms อัตโนมัติ</p>
+          <div class="actions">
+            <a class="btn small" href="#">Overview</a>
+            <a class="btn small ghost" href="#">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="tile">
+        <a href="#" class="thumb">
+          <img src="https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?q=80&w=1200&auto=format&fit=crop" alt="Roblox Game"/>
+          <span class="chip">Roblox</span>
+        </a>
+        <div class="info">
+          <h3>Anime Battleground</h3>
+          <p>ระบบ M1 Combo, Dash, Block, Skills, Ultimate</p>
+          <div class="actions">
+            <a class="btn small" href="#">Video</a>
+            <a class="btn small ghost" href="#">Docs</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="tile">
+        <a href="#" class="thumb">
+          <img src="https://images.unsplash.com/photo-1523475496153-3d6cc0f0f4d2?q=80&w=1200&auto=format&fit=crop" alt="Web"/>
+          <span class="chip">Web</span>
+        </a>
+        <div class="info">
+          <h3>DrPharma Site</h3>
+          <p>Landing + Product showcase, Tailwind-like style</p>
+          <div class="actions">
+            <a class="btn small" href="#">Live</a>
+            <a class="btn small ghost" href="#">Repo</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="tile">
+        <a href="#" class="thumb">
+          <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop" alt="IoT/Hardware"/>
+          <span class="chip">Other</span>
+        </a>
+        <div class="info">
+          <h3>Mini Projects</h3>
+          <p>รวมของเล่นเล็ก ๆ และทดลองเทคโนโลยี</p>
+          <div class="actions">
+            <a class="btn small" href="#">Gallery</a>
+            <a class="btn small ghost" href="#">Readme</a>
+          </div>
+        </div>
+      </article>
+    </div>
   </section>
 
-  <section id="contact">
-    <h2>📩 ติดต่อ</h2>
-    <p>Email: yourmail@example.com</p>
-    <p>GitHub: <a href="https://github.com/pakawatpe-hash" target="_blank">pakawatpe-hash</a></p>
+  <!-- ABOUT -->
+  <section id="about" class="section container about">
+    <div class="about-card glass">
+      <h2>About</h2>
+      <p>ผมภควัฒน์ ชอบสร้างสิ่งที่ใช้งานได้จริงและแก้ปัญหา ผ่านแอปมือถือ เว็บไซต์ และเกม
+      โฟกัสด้าน Software มากเป็นพิเศษ: Flutter, Python/Tkinter, Google Apps Script และ Roblox Lua</p>
+      <ul class="list">
+        <li>🏫 เป้าหมายศึกษา: วิศวกรรมคอมพิวเตอร์ มจพ.</li>
+        <li>🧩 สนใจ: Mobile Dev, Backend, Game Scripting</li>
+        <li>🛠️ Tools: GitHub, Android Studio, VS Code, Figma</li>
+      </ul>
+    </div>
   </section>
 
-  <footer>
-    <p>© 2025 Pakawat Portfolio</p>
+  <!-- CONTACT -->
+  <section id="contact" class="section container contact">
+    <h2>Contact</h2>
+    <p>เปิดรับคำแนะนำและโอกาสร่วมงาน</p>
+    <div class="contact-cards">
+      <a class="ccard" href="mailto:yourmail@example.com">
+        <span>อีเมล</span><strong>yourmail@example.com</strong>
+      </a>
+      <a class="ccard" href="https://github.com/pakawatpe-hash" target="_blank">
+        <span>GitHub</span><strong>@pakawatpe-hash</strong>
+      </a>
+      <a class="ccard" href="#" target="_blank">
+        <span>LINE</span><strong>ใส่ลิงก์/QR ภายหลัง</strong>
+      </a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <span>© 2025 Pakawat — Portfolio</span>
+      <button id="themeToggle" class="btn tiny ghost">Toggle theme</button>
+    </div>
   </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
