@@ -1,4 +1,4 @@
-/* ===== Reveal on scroll ===== */
+/* ===== Reveal on scroll (elements) ===== */
 const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
@@ -9,6 +9,23 @@ const io = new IntersectionObserver((entries)=>{
   });
 },{threshold:0.15});
 revealEls.forEach(el=>io.observe(el));
+
+/* ===== Reveal whole sections (.section.lazy) ===== */
+(function(){
+  const secs = document.querySelectorAll('section.lazy');
+  if(!secs.length) return;
+
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if (e.isIntersecting) {
+        e.target.classList.add('entered');
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+
+  secs.forEach(s=>obs.observe(s));
+})();
 
 /* ===== Tilt hover ===== */
 document.querySelectorAll('.tilt').forEach(el=>{
@@ -30,20 +47,30 @@ document.addEventListener('mousemove',(e)=>{
   });
 });
 
-/* ===== Intro / Splash (auto close) ===== */
+/* ===== Intro / Splash (auto close & go Home) ===== */
 (function(){
   const intro = document.getElementById('intro');
   if(!intro) return;
 
   document.body.classList.add('intro-lock');
+
+  const clearToHome = ()=>{
+    // ลบ hash (#about/#work) และเลื่อนกลับบนสุด
+    if (location.hash) {
+      history.replaceState(null,'', location.pathname + location.search);
+    }
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
   const closeIntro = ()=>{
     intro.classList.add('hide');
     setTimeout(()=>{
       intro.remove();
       document.body.classList.remove('intro-lock');
+      clearToHome();
     }, 700);
   };
-  // auto close after ~1.8s
+
   window.addEventListener('load', ()=> setTimeout(closeIntro, 1800));
 })();
 
@@ -111,6 +138,7 @@ document.addEventListener('mousemove',(e)=>{
 (function(){
   const links = document.querySelectorAll('#navLinks a[href^="#"]');
   const sections = Array.from(links).map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
   const spy = ()=>{
     const y = window.scrollY + 120;
     let active = links[0];
