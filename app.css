@@ -269,20 +269,54 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after,.marquee .track{animation:none}
   .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
-/* === Full-bleed helper (ยืดให้ชนขอบจอ) === */
+/* === Full-bleed helper === */
 .full-bleed{
   width:100vw;
-  /* ดึงออกจากขอบ .container ให้เท่ากับความกว้างจอ */
   margin-left:  calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  box-sizing: border-box;
+  box-sizing:border-box;
 }
 
-/* เอาไปใช้กับ marquee เพื่อให้ชนขอบซ้าย-ขวาเป๊ะ */
+/* === Marquee: full-bleed, ชนขอบซ้าย-ขวา, seamless === */
 .marquee.full-bleed{
-  border-left:none;            /* ถ้าอยากเห็นเป็นแถบชนขอบจริง ๆ */
-  border-right:none;
-  border-radius:0;             /* ไม่โค้งขอบ เพื่อให้ดูชน */
-  padding:12px 0;
+  position:relative;
   overflow:hidden;
+  padding:12px 0;
+
+  /* ให้เป็นเส้นยาวเต็มจอ */
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  border-left:none; border-right:none;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:rgba(255,255,255,.02);
+}
+.marquee .track{
+  display:flex;
+  align-items:center;
+  gap:40px;
+  white-space:nowrap;
+  will-change:transform;
+  animation:marquee-scroll 20s linear infinite;
+}
+.marquee .track > span{
+  display:inline-flex; align-items:center; gap:8px;
+  font-weight:600; opacity:.92;
+}
+.marquee .track i{ color:#cfe4ff; font-size:20px; }
+
+/* loop ครึ่งหนึ่งเพราะเราจะมีคอนเทนต์ซ้ำ 2 ชุด */
+@keyframes marquee-scroll{
+  from{ transform:translateX(0); }
+  to  { transform:translateX(-50%); }
+}
+
+/* มือถือ: ช้าลงหน่อยให้ลื่น */
+@media (pointer:coarse){
+  .marquee .track{ animation-duration:26s; }
+}
+
+/* ลด motion ตามการตั้งค่าผู้ใช้ */
+@media (prefers-reduced-motion:reduce){
+  .marquee .track{ animation:none; }
 }
