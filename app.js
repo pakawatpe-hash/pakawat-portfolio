@@ -21,47 +21,41 @@ const io = new IntersectionObserver((entries)=>{
 },{threshold:0.15});
 revealEls.forEach(el=>io.observe(el));
 
-/* ===== Reveal whole sections (.section.lazy) ===== */
+/* ===== Reveal whole sections ===== */
 (() => {
   const secs = document.querySelectorAll('section.lazy');
   if(!secs.length) return;
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
-      if (e.isIntersecting) {
-        e.target.classList.add('entered');
-        obs.unobserve(e.target);
-      }
+      if (e.isIntersecting) { e.target.classList.add('entered'); obs.unobserve(e.target); }
     });
   },{threshold:0.12});
   secs.forEach(s=>obs.observe(s));
 })();
 
-/* ===== Tilt + Glare ===== */
+/* ===== Tilt + Glare (soft) ===== */
 document.querySelectorAll('.tilt').forEach(el=>{
   const glare = el.querySelector('.glare-spot');
   const handle = (e)=>{
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left)/r.width - .5;
     const y = (e.clientY - r.top)/r.height - .5;
-    el.style.transform = `rotateX(${(-y*10).toFixed(2)}deg) rotateY(${(x*12).toFixed(2)}deg)`;
+    el.style.transform = `rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*8).toFixed(2)}deg)`;
     if(glare){
       glare.style.left = (e.clientX - r.left) + 'px';
       glare.style.top  = (e.clientY - r.top)  + 'px';
-      glare.style.opacity = .7;
+      glare.style.opacity = .65;
     }
   };
   el.addEventListener('mousemove', handle);
-  el.addEventListener('mouseleave', ()=>{
-    el.style.transform = 'rotateX(0) rotateY(0)';
-    if(glare) glare.style.opacity = 0;
-  });
+  el.addEventListener('mouseleave', ()=>{ el.style.transform='rotateX(0) rotateY(0)'; if(glare) glare.style.opacity=0; });
 });
 
-/* ===== Magnetic hover (buttons/links with .magnetic) ===== */
+/* ===== Magnetic hover ===== */
 (() => {
-  if(!isFinePointer) return; // ปิดบนจอสัมผัส
+  if(!isFinePointer) return;
   const magnets = document.querySelectorAll('.magnetic');
-  const strength = 18;
+  const strength = 12;
   magnets.forEach(m=>{
     const onMove = rafThrottle((e)=>{
       const r = m.getBoundingClientRect();
@@ -74,14 +68,12 @@ document.querySelectorAll('.tilt').forEach(el=>{
   });
 })();
 
-/* ===== Parallax for blobs & card thumbnails ===== */
+/* ===== Parallax blobs & thumbs ===== */
 if (isFinePointer) {
   document.addEventListener('mousemove', rafThrottle((e)=>{
     const x = (e.clientX / innerWidth - .5) * 8;
     const y = (e.clientY / innerHeight - .5) * 8;
-    document.querySelectorAll('.bg-blob').forEach((b,i)=>{
-      b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`;
-    });
+    document.querySelectorAll('.bg-blob').forEach((b,i)=>{ b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`; });
   }));
   document.addEventListener('mousemove', rafThrottle((e)=>{
     document.querySelectorAll('.parallax').forEach(el=>{
@@ -101,41 +93,36 @@ if (isFinePointer) {
   if(!blob || !dot) return;
   let bx = innerWidth/2, by = innerHeight/2;
   let tx = bx, ty = by;
-  const move = (e)=>{ tx = e.clientX; ty = e.clientY; dot.style.left = tx+'px'; dot.style.top = ty+'px'; };
-  window.addEventListener('mousemove', move);
-  const tick = ()=>{
-    bx += (tx - bx) * 0.12;
-    by += (ty - by) * 0.12;
-    blob.style.left = bx + 'px';
-    blob.style.top  = by + 'px';
-    requestAnimationFrame(tick);
-  };
+  window.addEventListener('mousemove', (e)=>{ tx=e.clientX; ty=e.clientY; dot.style.left=tx+'px'; dot.style.top=ty+'px'; });
+  const tick = ()=>{ bx += (tx-bx)*0.12; by += (ty-by)*0.12; blob.style.left=bx+'px'; blob.style.top=by+'px'; requestAnimationFrame(tick); };
   tick();
 })();
 
-/* ===== Intro (auto close, no button) ===== */
+/* ===== Intro (auto close + typewriter caret) ===== */
 (() => {
   const intro = document.getElementById('intro');
   if(!intro) return;
   document.body.classList.add('intro-lock');
 
-  const clearToHome = ()=>{
-    if (location.hash) history.replaceState(null,'', location.pathname + location.search);
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  };
+  // typewriter
+  const el = intro.querySelector('.intro-title .line-2');
+  if(el){
+    const full = el.textContent.trim();
+    el.textContent = '';
+    let i = 0;
+    const step = () => {
+      el.textContent = full.slice(0, ++i);
+      if(i < full.length) setTimeout(step, 70);
+    };
+    setTimeout(step, 260);
+  }
+
   const closeIntro = ()=>{
     intro.classList.add('hide');
-    setTimeout(()=>{
-      intro.remove();
-      document.body.classList.remove('intro-lock');
-      clearToHome();
-    }, 650);
+    setTimeout(()=>{ intro.remove(); document.body.classList.remove('intro-lock'); window.scrollTo({top:0,behavior:'auto'}); }, 650);
   };
-
-  // ปิดอัตโนมัติ (ประมาณ 2.2 วิ หลังจาก load)
-  window.addEventListener('load', ()=> setTimeout(closeIntro, 2200));
+  window.addEventListener('load', ()=> setTimeout(closeIntro, 2400));
 })();
-
 
 /* ===== Stats counter ===== */
 (() => {
@@ -145,17 +132,15 @@ if (isFinePointer) {
       if(!e.isIntersecting) return;
       const numEl = e.target;
       const target = +numEl.parentElement.dataset.count || 0;
-      let cur = 0;
-      const step = Math.max(1, Math.floor(target/60));
-      const inc = ()=>{ cur = Math.min(target, cur + step); numEl.textContent = cur; if(cur<target) requestAnimationFrame(inc); };
-      inc();
-      obs.unobserve(numEl);
+      let cur = 0; const step = Math.max(1, Math.floor(target/60));
+      const inc = ()=>{ cur=Math.min(target, cur+step); numEl.textContent=cur; if(cur<target) requestAnimationFrame(inc); };
+      inc(); obs.unobserve(numEl);
     });
   },{threshold:0.5});
   counters.forEach(n=>obs.observe(n));
 })();
 
-/* ===== Tabs (Projects / Certificates / Tech Stack) ===== */
+/* ===== Tabs ===== */
 (() => {
   const tabs = document.querySelectorAll('.tab');
   const panels = {
@@ -164,38 +149,23 @@ if (isFinePointer) {
     stack: document.getElementById('panel-stack'),
   };
   const show = (key)=>{
-    tabs.forEach(t=>{
-      t.classList.toggle('active', t.dataset.tab===key);
-      t.setAttribute('aria-selected', t.dataset.tab===key ? 'true':'false');
-    });
-    Object.entries(panels).forEach(([k,p])=>{
-      if(!p) return;
-      if(k===key){ p.removeAttribute('hidden'); p.classList.add('show'); }
-      else { p.setAttribute('hidden',''); p.classList.remove('show'); }
-    });
+    tabs.forEach(t=>{ const on = t.dataset.tab===key; t.classList.toggle('active',on); t.setAttribute('aria-selected', on?'true':'false'); });
+    Object.entries(panels).forEach(([k,p])=>{ if(!p) return; if(k===key){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }});
   };
   tabs.forEach(t=>t.addEventListener('click', ()=>show(t.dataset.tab)));
-
-  // keyboard support
-  document.addEventListener('keydown', (e)=>{
+  document.addEventListener('keydown',(e)=>{
     if(!['ArrowLeft','ArrowRight'].includes(e.key)) return;
-    const arr = Array.from(tabs);
-    const i = arr.findIndex(t=>t.classList.contains('active'));
-    const ni = e.key==='ArrowRight' ? (i+1)%arr.length : (i-1+arr.length)%arr.length;
+    const arr=[...tabs]; const i=arr.findIndex(t=>t.classList.contains('active'));
+    const ni=e.key==='ArrowRight'?(i+1)%arr.length:(i-1+arr.length)%arr.length;
     arr[ni].focus(); arr[ni].click();
   });
 })();
 
-/* ===== ScrollSpy (active nav link) ===== */
+/* ===== ScrollSpy ===== */
 (() => {
   const links = document.querySelectorAll('#navLinks a[href^="#"]');
-  const sections = Array.from(links).map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
-  const spy = ()=>{
-    const y = window.scrollY + 120;
-    let active = links[0];
-    sections.forEach((sec,i)=>{ if(sec.offsetTop <= y) active = links[i]; });
-    links.forEach(a=>a.classList.toggle('active', a===active));
-  };
+  const sections = [...links].map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const spy = ()=>{ const y=window.scrollY+120; let active=links[0]; sections.forEach((sec,i)=>{ if(sec.offsetTop<=y) active=links[i]; }); links.forEach(a=>a.classList.toggle('active', a===active)); };
   spy(); window.addEventListener('scroll', spy, {passive:true});
 })();
 
@@ -205,50 +175,44 @@ if (isFinePointer) {
   if(!bar) return;
   const onScroll = rafThrottle(()=>{
     const h = document.documentElement;
-    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
     bar.style.width = (scrolled*100).toFixed(2) + '%';
   });
   window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
 })();
 
-/* ===== Marquee safety (ถ้าเผลอไม่ duplicate) ===== */
+/* ===== Double-Track Marquee (seamless + auto speed) ===== */
 (() => {
-  document.querySelectorAll('.marquee .track').forEach(track=>{
-    const children = [...track.children];
-    if(children.length && children.length < 12){
-      track.innerHTML += track.innerHTML;
+  const setupTrack = (track) => {
+    if(!track) return;
+
+    // duplicate once to make seamless (mark duplicates)
+    const original = Array.from(track.children);
+    if (!original.some(n => n.hasAttribute && n.hasAttribute('data-dup'))) {
+      const frag = document.createDocumentFragment();
+      original.forEach(n => { const c=n.cloneNode(true); c.setAttribute('data-dup',''); frag.appendChild(c); });
+      track.appendChild(frag);
     }
-  });
-})();
-/* ===== Skills Marquee: make seamless & full-bleed ===== */
-(() => {
-  const track = document.getElementById('skillsTrack');
-  if(!track) return;
 
-  // ถ้ายังไม่มีชุดที่ 2 -> ทำซ้ำ 1 รอบให้ครบสองชุด
-  const childHTML = track.innerHTML.trim();
-  if(track.children.length && !/data-dup/i.test(track.innerHTML)){
-    track.innerHTML = childHTML + childHTML.replaceAll('<span', '<span data-dup');
-  }
-
-  // คำนวณความกว้างและตั้งความเร็วให้อ่านง่าย (px/sec)
-  const setSpeed = () => {
-    const totalWidth = [...track.children]
-      .slice(0, Math.floor(track.children.length/2)) // กว้างของ "ครึ่งชุด"
-      .reduce((w,el)=> w + el.getBoundingClientRect().width + 40 /*gap*/, 0);
-
-    const pxPerSec = 120; // ความเร็วอ่านสบาย ๆ
-    const duration = Math.max(14, totalWidth / pxPerSec);
+    // compute width of half set to set speed (px/sec)
+    const half = Math.floor(track.children.length/2);
+    let halfWidth = 0;
+    const gap = parseFloat(getComputedStyle(track).gap || '0') || 0;
+    for(let i=0;i<half;i++){ halfWidth += track.children[i].getBoundingClientRect().width + gap; }
+    const pxPerSec = 120;
+    const duration = Math.max(14, halfWidth / pxPerSec);
     track.style.animationDuration = `${duration}s`;
   };
-  // รันครั้งแรกและรอฟอนต์โหลด
-  setSpeed(); window.addEventListener('load', setSpeed);
 
-  // Pause on hover (เฉพาะ pointer:fine)
+  setupTrack(document.getElementById('skillsTrack1'));
+  setupTrack(document.getElementById('skillsTrack2'));
+  window.addEventListener('load', ()=>{ setupTrack(document.getElementById('skillsTrack1')); setupTrack(document.getElementById('skillsTrack2')); });
+
+  // pause on hover (desktop)
   if (matchMedia('(pointer:fine)').matches) {
-    const marquee = track.closest('.marquee');
-    marquee.addEventListener('mouseenter', ()=> track.style.animationPlayState = 'paused');
-    marquee.addEventListener('mouseleave', ()=> track.style.animationPlayState = 'running');
+    const marquee = document.getElementById('skillsMarquee');
+    marquee?.addEventListener('mouseenter', ()=> marquee.querySelectorAll('.track').forEach(t=>t.style.animationPlayState='paused'));
+    marquee?.addEventListener('mouseleave', ()=> marquee.querySelectorAll('.track').forEach(t=>t.style.animationPlayState='running'));
   }
 })();
