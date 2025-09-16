@@ -2,7 +2,10 @@
 const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
-    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
   });
 },{threshold:0.15});
 revealEls.forEach(el=>io.observe(el));
@@ -32,7 +35,7 @@ document.addEventListener('mousemove',(e)=>{
   const intro = document.getElementById('intro');
   if(!intro) return;
 
-  // ล็อกสกอร์ลระหว่างโชว์ Intro
+  // lock scroll while showing intro
   document.body.classList.add('intro-lock');
 
   const closeIntro = ()=>{
@@ -43,6 +46,34 @@ document.addEventListener('mousemove',(e)=>{
     }, 700);
   };
 
-  // ปิดอัตโนมัติหลัง ~1.8 วินาที (ปรับได้)
+  // auto close after ~1.8s
   window.addEventListener('load', ()=> setTimeout(closeIntro, 1800));
+})();
+
+/* ===== Typewriter for Intro subtitle ===== */
+(function(){
+  const el = document.querySelector('.intro-sub .type');
+  if(!el) return;
+
+  let words = ['Portfolio Pakawat'];
+  try {
+    if (el.dataset.words) words = JSON.parse(el.dataset.words);
+  } catch(_) {}
+
+  let wi = 0, ci = 0, deleting = false;
+
+  const tick = () => {
+    const word = words[wi];
+    el.textContent = deleting ? word.slice(0, --ci) : word.slice(0, ++ci);
+
+    let delay = deleting ? 45 : 80;       // speed: delete / type
+    if (!deleting && ci === word.length){ // hold at end of word
+      delay = 1200; deleting = true;
+    } else if (deleting && ci === 0){     // next word
+      deleting = false; wi = (wi + 1) % words.length; delay = 300;
+    }
+    setTimeout(tick, delay);
+  };
+
+  setTimeout(tick, 300);
 })();
