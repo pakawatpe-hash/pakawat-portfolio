@@ -1,3 +1,13 @@
+/* ===== Utils: RAF throttle ===== */
+const rafThrottle = (fn) => {
+  let ticking = false;
+  return (...args) => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { fn(...args); ticking = false; });
+  };
+};
+
 /* ===== Reveal on scroll (elements) ===== */
 const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
 const io = new IntersectionObserver((entries)=>{
@@ -27,25 +37,85 @@ revealEls.forEach(el=>io.observe(el));
   secs.forEach(s=>obs.observe(s));
 })();
 
-/* ===== Tilt hover ===== */
+/* ===== Tilt + Glare (vanilla) ===== */
 document.querySelectorAll('.tilt').forEach(el=>{
-  el.addEventListener('mousemove',(e)=>{
+  const glare = el.querySelector('.glare-spot');
+  const handle = (e)=>{
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left)/r.width - .5;
     const y = (e.clientY - r.top)/r.height - .5;
-    el.style.transform = `rotateX(${(-y*8).toFixed(2)}deg) rotateY(${(x*10).toFixed(2)}deg)`;
+    el.style.transform = `rotateX(${(-y*10).toFixed(2)}deg) rotateY(${(x*12).toFixed(2)}deg)`;
+    if(glare){
+      const gx = (e.clientX - r.left);
+      const gy = (e.clientY - r.top);
+      glare.style.left = `${gx}px`;
+      glare.style.top  = `${gy}px`;
+      glare.style.opacity = .7;
+    }
+  };
+  el.addEventListener('mousemove', handle);
+  el.addEventListener('mouseleave', ()=>{
+    el.style.transform = 'rotateX(0) rotateY(0)';
+    if(glare) glare.style.opacity = 0;
   });
-  el.addEventListener('mouseleave',()=>{ el.style.transform = 'rotateX(0) rotateY(0)'; });
 });
 
-/* ===== Parallax for blobs ===== */
-document.addEventListener('mousemove',(e)=>{
+/* ===== Magnetic buttons/cards ===== */
+(() => {
+  const magnets = document.querySelectorAll('.magnetic');
+  const strength = 18;
+  magnets.forEach(m=>{
+    const onMove = rafThrottle((e)=>{
+      const r = m.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width - .5) * strength;
+      const y = ((e.clientY - r.top)  / r.height - .5) * strength;
+      m.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    m.addEventListener('mousemove', onMove);
+    m.addEventListener('mouseleave', ()=>{ m.style.transform = 'translate(0,0)'; });
+  });
+})();
+
+/* ===== Parallax for blobs and card thumbs ===== */
+document.addEventListener('mousemove', rafThrottle((e)=>{
   const x = (e.clientX / innerWidth - .5) * 8;
   const y = (e.clientY / innerHeight - .5) * 8;
   document.querySelectorAll('.bg-blob').forEach((b,i)=>{
     b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`;
   });
-});
+}));
+
+/* Small parallax on thumbnails */
+document.addEventListener('mousemove', rafThrottle((e)=>{
+  document.querySelectorAll('.parallax').forEach(el=>{
+    const depth = parseFloat(el.dataset.depth||'0.1');
+    const x = ((e.clientX / window.innerWidth) - .5) * depth * 40;
+    const y = ((e.clientY / window.innerHeight) - .5) * depth * 40;
+    el.style.transform = `translate(${x}px, ${y}px)`;
+  });
+}));
+
+/* ===== Cursor blob & dot ===== */
+(() => {
+  const blob = document.querySelector('.cursor-blob');
+  const dot  = document.querySelector('.cursor-dot');
+  if(!blob || !dot) return;
+
+  let bx = innerWidth/2, by = innerHeight/2;
+  let tx = bx, ty = by;
+
+  const move = (e)=>{ tx = e.clientX; ty = e.clientY; dot.style.left = tx+'px'; dot.style.top = ty+'px'; };
+  window.addEventListener('mousemove', move);
+
+  const tick = ()=>{
+    bx += (tx - bx) * 0.12;
+    by += (ty - by) * 0.12;
+    blob.style.left = bx + 'px';
+    blob.style.top  = by + 'px';
+    requestAnimationFrame(tick);
+  };
+  tick();
+})();
 
 /* ===== Intro / Splash (auto close & go Home) ===== */
 (function(){
@@ -55,7 +125,6 @@ document.addEventListener('mousemove',(e)=>{
   document.body.classList.add('intro-lock');
 
   const clearToHome = ()=>{
-    // ลบ hash (#about/#work) และเลื่อนกลับบนสุด
     if (location.hash) {
       history.replaceState(null,'', location.pathname + location.search);
     }
@@ -71,7 +140,7 @@ document.addEventListener('mousemove',(e)=>{
     }, 700);
   };
 
-  window.addEventListener('load', ()=> setTimeout(closeIntro, 1800));
+  window.addEventListener('load', ()=> setTimeout(closeIntro, 1600));
 })();
 
 /* ===== Typewriter for Intro subtitle ===== */
@@ -87,11 +156,27 @@ document.addEventListener('mousemove',(e)=>{
     const w = words[wi];
     el.textContent = deleting ? w.slice(0, --ci) : w.slice(0, ++ci);
     let d = deleting ? 45 : 80;
-    if(!deleting && ci === w.length){ d = 1200; deleting = true; }
+    if(!deleting && ci === w.length){ d = 900; deleting = true; }
     else if(deleting && ci === 0){ deleting = false; wi = (wi+1)%words.length; d = 300; }
     setTimeout(tick, d);
   };
   setTimeout(tick, 300);
+})();
+
+/* ===== Split Text (About name) ===== */
+(() => {
+  const el = document.querySelector('.about-name.split');
+  if(!el) return;
+  const text = el.textContent.trim();
+  el.innerHTML = [...text].map((c,i)=>`<span class="ch" style="display:inline-block;transform:translateY(16px);opacity:0;transition:.5s ${i*40}ms; ">${c}</span>`).join('');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      e.target.querySelectorAll('.ch').forEach(ch=>{ ch.style.transform='translateY(0)'; ch.style.opacity='1'; });
+      io.unobserve(e.target);
+    });
+  },{threshold:.7});
+  io.observe(el);
 })();
 
 /* ===== Stats counter (About) ===== */
@@ -132,6 +217,15 @@ document.addEventListener('mousemove',(e)=>{
     });
   };
   tabs.forEach(t=>t.addEventListener('click', ()=>show(t.dataset.tab)));
+
+  // keyboard support
+  document.addEventListener('keydown', (e)=>{
+    if(!['ArrowLeft','ArrowRight'].includes(e.key)) return;
+    const arr = Array.from(tabs);
+    const i = arr.findIndex(t=>t.classList.contains('active'));
+    const ni = e.key==='ArrowRight' ? (i+1)%arr.length : (i-1+arr.length)%arr.length;
+    arr[ni].focus(); arr[ni].click();
+  });
 })();
 
 /* ===== ScrollSpy (active nav link) ===== */
@@ -146,4 +240,17 @@ document.addEventListener('mousemove',(e)=>{
     links.forEach(a=>a.classList.toggle('active', a===active));
   };
   spy(); window.addEventListener('scroll', spy);
+})();
+
+/* ===== Scroll progress bar ===== */
+(() => {
+  const bar = document.querySelector('.progress span');
+  if(!bar) return;
+  const onScroll = rafThrottle(()=>{
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    bar.style.width = (scrolled*100).toFixed(2) + '%';
+  });
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
 })();
