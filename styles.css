@@ -19,16 +19,15 @@ body{
     linear-gradient(180deg,var(--bg),var(--bg2));
   background-attachment: fixed;
 }
-
 .container{max-width:1100px;margin:0 auto;padding:0 20px}
 .center{text-align:center}
 
-/* background blur blobs */
+/* background blur blobs (ตกแต่ง) */
 .bg-blur{position:fixed;filter:blur(80px);opacity:.35;z-index:-1}
 .bg-1{width:420px;height:420px;background:#5ca9ff;left:-120px;top:-120px}
 .bg-2{width:360px;height:360px;background:#8d7dff;right:-120px;top:-80px}
 
-/* nav */
+/* navbar */
 .nav{position:sticky;top:0;backdrop-filter:saturate(180%) blur(12px);background:rgba(7,11,26,.7);border-bottom:1px solid var(--line);z-index:50}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;min-height:64px}
 .brand{font-weight:700;color:#cfe4ff;letter-spacing:.5px}
@@ -57,7 +56,7 @@ body{
 .chips{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;justify-content:center}
 .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#0d142a;color:#cfe4ff}
 
-/* about */
+/* sections */
 .section{padding:64px 0}
 .grid-2{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:stretch}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
