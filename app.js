@@ -28,3 +28,25 @@ document.addEventListener('mousemove', (e)=>{
     b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`;
   });
 });
+// ===== Intro / Splash control =====
+(function(){
+  const intro = document.getElementById('intro');
+  if(!intro) return;
+
+  const closeIntro = () => {
+    intro.classList.add('hide');
+    // เอาออกจาก DOM เพื่อไม่ให้บังการคลิกหลังเฟด
+    setTimeout(()=> intro.remove(), 700);
+  };
+
+  // ปิดอัตโนมัติหลังรอ ~1.8s (ปรับได้)
+  window.addEventListener('load', () => {
+    setTimeout(closeIntro, 1800);
+  });
+
+  // ให้ผู้ใช้กด Enter ข้ามได้ทันที
+  intro.querySelector('.skip')?.addEventListener('click', (e)=>{
+    e.preventDefault();
+    closeIntro();
+  });
+})();
