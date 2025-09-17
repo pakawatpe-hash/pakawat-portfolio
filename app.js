@@ -10,34 +10,26 @@ const rafThrottle = (fn) => {
 
 const isFinePointer = matchMedia('(pointer: fine)').matches;
 
-/* ===== Reveal on scroll (elements) ===== */
+/* ===== Reveal on scroll ===== */
 const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('in');
-      io.unobserve(e.target);
-    }
+    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
   });
 },{threshold:0.15});
 revealEls.forEach(el=>io.observe(el));
 
-/* ===== Reveal whole sections ===== */
+/* ===== Section lazy ===== */
 (() => {
   const secs = document.querySelectorAll('section.lazy');
   if(!secs.length) return;
   const obs = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if (e.isIntersecting) {
-        e.target.classList.add('entered');
-        obs.unobserve(e.target);
-      }
-    });
+    entries.forEach(e=>{ if (e.isIntersecting) { e.target.classList.add('entered'); obs.unobserve(e.target); } });
   },{threshold:0.12});
   secs.forEach(s=>obs.observe(s));
 })();
 
-/* ===== Tilt + Glare (soft) ===== */
+/* ===== Tilt + Glare ===== */
 document.querySelectorAll('.tilt').forEach(el=>{
   const glare = el.querySelector('.glare-spot');
   const handle = (e)=>{
@@ -52,10 +44,7 @@ document.querySelectorAll('.tilt').forEach(el=>{
     }
   };
   el.addEventListener('mousemove', handle, {passive:true});
-  el.addEventListener('mouseleave', ()=>{
-    el.style.transform='rotateX(0) rotateY(0)';
-    if(glare) glare.style.opacity=0;
-  }, {passive:true});
+  el.addEventListener('mouseleave', ()=>{ el.style.transform='rotateX(0) rotateY(0)'; if(glare) glare.style.opacity=0; }, {passive:true});
 });
 
 /* ===== Magnetic hover ===== */
@@ -80,11 +69,8 @@ if (isFinePointer) {
   document.addEventListener('mousemove', rafThrottle((e)=>{
     const x = (e.clientX / innerWidth - .5) * 8;
     const y = (e.clientY / innerHeight - .5) * 8;
-    document.querySelectorAll('.bg-blob').forEach((b,i)=>{
-      b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`;
-    });
+    document.querySelectorAll('.bg-blob').forEach((b,i)=>{ b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`; });
   }), {passive:true});
-
   document.addEventListener('mousemove', rafThrottle((e)=>{
     document.querySelectorAll('.parallax').forEach(el=>{
       const depth = parseFloat(el.dataset.depth||'0.1');
@@ -103,39 +89,23 @@ if (isFinePointer) {
   if(!blob || !dot) return;
   let bx = innerWidth/2, by = innerHeight/2;
   let tx = bx, ty = by;
-  window.addEventListener('mousemove', (e)=>{
-    tx=e.clientX; ty=e.clientY;
-    dot.style.left=`${tx}px`; dot.style.top =`${ty}px`;
-  }, {passive:true});
-  const tick = ()=>{
-    bx += (tx-bx)*0.12; by += (ty-by)*0.12;
-    blob.style.left=`${bx}px`; blob.style.top =`${by}px`;
-    requestAnimationFrame(tick);
-  };
+  window.addEventListener('mousemove', (e)=>{ tx=e.clientX; ty=e.clientY; dot.style.left=`${tx}px`; dot.style.top =`${ty}px`; }, {passive:true});
+  const tick = ()=>{ bx += (tx-bx)*0.12; by += (ty-by)*0.12; blob.style.left=`${bx}px`; blob.style.top =`${by}px`; requestAnimationFrame(tick); };
   tick();
 })();
 
-/* ===== Intro (auto close + typewriter caret) ===== */
+/* ===== Intro ===== */
 (() => {
   const intro = document.getElementById('intro');
   if(!intro) return;
   document.body.classList.add('intro-lock');
   const el = intro.querySelector('.intro-title .line-2');
   if(el){
-    const full = el.textContent.trim();
-    el.textContent = '';
-    let i = 0;
-    const step = () => { el.textContent = full.slice(0, ++i); if(i < full.length) setTimeout(step, 70); };
+    const full = el.textContent.trim(); el.textContent = '';
+    let i = 0; const step = () => { el.textContent = full.slice(0, ++i); if(i < full.length) setTimeout(step, 70); };
     setTimeout(step, 260);
   }
-  const closeIntro = ()=>{
-    intro.classList.add('hide');
-    setTimeout(()=>{
-      intro.remove();
-      document.body.classList.remove('intro-lock');
-      window.scrollTo({top:0,behavior:'auto'});
-    }, 650);
-  };
+  const closeIntro = ()=>{ intro.classList.add('hide'); setTimeout(()=>{ intro.remove(); document.body.classList.remove('intro-lock'); window.scrollTo({top:0,behavior:'auto'}); }, 650); };
   window.addEventListener('load', ()=> setTimeout(closeIntro, 2400), {once:true});
 })();
 
@@ -145,13 +115,10 @@ if (isFinePointer) {
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if(!e.isIntersecting) return;
-      const numEl = e.target;
-      const target = +numEl.parentElement.dataset.count || 0;
-      let cur = 0;
-      const step = Math.max(1, Math.floor(target/60));
+      const numEl = e.target; const target = +numEl.parentElement.dataset.count || 0;
+      let cur = 0; const step = Math.max(1, Math.floor(target/60));
       const inc = ()=>{ cur=Math.min(target, cur+step); numEl.textContent=cur; if(cur<target) requestAnimationFrame(inc); };
-      inc();
-      obs.unobserve(numEl);
+      inc(); obs.unobserve(numEl);
     });
   },{threshold:0.5});
   counters.forEach(n=>obs.observe(n));
@@ -160,61 +127,33 @@ if (isFinePointer) {
 /* ===== Tabs ===== */
 (() => {
   const tabs = document.querySelectorAll('.tab');
-  const panels = {
-    projects: document.getElementById('panel-projects'),
-    certs: document.getElementById('panel-certs'),
-    stack: document.getElementById('panel-stack'),
-  };
+  const panels = { projects: document.getElementById('panel-projects'), certs: document.getElementById('panel-certs'), stack: document.getElementById('panel-stack') };
   const show = (key)=>{
-    tabs.forEach(t=>{
-      const on = t.dataset.tab===key;
-      t.classList.toggle('active',on);
-      t.setAttribute('aria-selected', on?'true':'false');
-      if(on) t.focus();
-    });
-    Object.entries(panels).forEach(([k,p])=>{
-      if(!p) return;
-      if(k===key){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
-    });
+    tabs.forEach(t=>{ const on = t.dataset.tab===key; t.classList.toggle('active',on); t.setAttribute('aria-selected', on?'true':'false'); if(on) t.focus(); });
+    Object.entries(panels).forEach(([k,p])=>{ if(!p) return; if(k===key){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }});
   };
   tabs.forEach(t=>t.addEventListener('click', ()=>show(t.dataset.tab), {passive:true}));
-  document.addEventListener('keydown',(e)=>{
-    if(!['ArrowLeft','ArrowRight'].includes(e.key)) return;
-    const arr=[...tabs];
-    const i=arr.findIndex(t=>t.classList.contains('active'));
-    const ni=e.key==='ArrowRight'?(i+1)%arr.length:(i-1+arr.length)%arr.length;
-    arr[ni].click();
-  });
+  document.addEventListener('keydown',(e)=>{ if(!['ArrowLeft','ArrowRight'].includes(e.key)) return;
+    const arr=[...tabs]; const i=arr.findIndex(t=>t.classList.contains('active'));
+    const ni=e.key==='ArrowRight'?(i+1)%arr.length:(i-1+arr.length)%arr.length; arr[ni].click(); });
 })();
 
 /* ===== ScrollSpy ===== */
 (() => {
   const links = document.querySelectorAll('#navLinks a[href^="#"]');
   const sections = [...links].map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
-  const spy = ()=>{
-    const y=window.scrollY+120;
-    let active=links[0];
-    sections.forEach((sec,i)=>{ if(sec.offsetTop<=y) active=links[i]; });
-    links.forEach(a=>a.classList.toggle('active', a===active));
-  };
-  spy();
-  window.addEventListener('scroll', rafThrottle(spy), {passive:true});
+  const spy = ()=>{ const y=window.scrollY+120; let active=links[0]; sections.forEach((sec,i)=>{ if(sec.offsetTop<=y) active=links[i]; }); links.forEach(a=>a.classList.toggle('active', a===active)); };
+  spy(); window.addEventListener('scroll', rafThrottle(spy), {passive:true});
 })();
 
-/* ===== Scroll progress bar ===== */
+/* ===== Scroll progress ===== */
 (() => {
-  const bar = document.querySelector('.progress span');
-  if(!bar) return;
-  const onScroll = rafThrottle(()=>{
-    const h = document.documentElement;
-    const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
-    bar.style.width = `${(scrolled*100).toFixed(2)}%`;
-  });
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
+  const bar = document.querySelector('.progress span'); if(!bar) return;
+  const onScroll = rafThrottle(()=>{ const h = document.documentElement; const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight); bar.style.width = `${(scrolled*100).toFixed(2)}%`; });
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== Double-Track Marquee (seamless + auto speed) ===== */
+/* ===== Marquee ===== */
 (() => {
   const setupTrack = (track) => {
     if(!track) return;
@@ -225,15 +164,12 @@ if (isFinePointer) {
       track.appendChild(frag);
     }
     const half = Math.floor(track.children.length/2);
-    let halfWidth = 0;
-    const gap = parseFloat(getComputedStyle(track).gap || '0') || 0;
+    let halfWidth = 0; const gap = parseFloat(getComputedStyle(track).gap || '0') || 0;
     for(let i=0;i<half;i++){ halfWidth += track.children[i].getBoundingClientRect().width + gap; }
-    const pxPerSec = 120;
-    const duration = Math.max(14, halfWidth / pxPerSec);
+    const pxPerSec = 120; const duration = Math.max(14, halfWidth / pxPerSec);
     track.style.animationDuration = `${duration}s`;
   };
-  const t1 = document.getElementById('skillsTrack1');
-  const t2 = document.getElementById('skillsTrack2');
+  const t1 = document.getElementById('skillsTrack1'); const t2 = document.getElementById('skillsTrack2');
   setupTrack(t1); setupTrack(t2);
   window.addEventListener('load', ()=>{ setupTrack(t1); setupTrack(t2); }, {once:true});
   if (matchMedia('(pointer:fine)').matches) {
@@ -243,102 +179,94 @@ if (isFinePointer) {
   }
 })();
 
-/* ===== Dangling Badge physics (natural pendulum + wind + parallax) ===== */
+/* ===== Dangling Badge — TikTok-style (gusty wind + scroll impulse + hover wobble + click bounce) ===== */
 (() => {
   const root = document.getElementById('hangBadge');
   if (!root) return;
 
-  // ---- Parameters ----
-  const L = 120;             // rope length (px)
-  const g = 1200;            // gravity (px/s^2)
-  const damping = 0.996;     // air drag
-  const maxDeg = 32;         // clip angle
-  const mouseTorque = 0.002; // mouse influence
-  const windStrength = 1.2;  // like in tiktok clip
-  const wobbleAmt = 0.015;   // micro wobble near rest
-  const parallax = 6;        // card tilt
-  const stringStretch = 0.04;// rope stretch factor
+  // Tunables (คล้ายคลิป)
+  const L = 120;          // rope length (px)
+  const g = 1200;         // gravity
+  const damping = 0.995;  // air drag
+  const maxDeg = 34;      // clip angle
+  const mouseTorque = 0.0025;
+  const windStrength = 1.4;  // stronger
+  const parallax = 7;        // card tilt
+  const stringStretch = 0.05;
 
-  // ---- State ----
-  let angle = 0.22;          // rad
-  let vel = 0;               // rad/s
+  // State
+  let angle = 0.3;         // rad (เริ่มเอียงให้เห็นชัด)
+  let vel = 0;
   let lastT = performance.now();
-  let dragging = false, dragStartX = 0, grabVel = 0;
   let mouseXNorm = 0;
 
-  const elCard = root.querySelector('.hb-card');
-  const elString = root.querySelector('.hb-string');
-  const elShadow = root.querySelector('.hb-shadow');
+  const card = root.querySelector('.hb-card');
+  const string = root.querySelector('.hb-string');
+  const shadow = root.querySelector('.hb-shadow');
 
-  // pseudo 1D noise for wind
-  let windPhase = Math.random() * 1000;
-  const noise1D = (t) => {
-    const i = Math.floor(t), f = t - i;
-    const r1 = Math.sin(i*127.1)*43758.5453 % 1;
-    const r2 = Math.sin((i+1)*127.1)*43758.5453 % 1;
-    const s = f*f*(3-2*f);
-    return (r1*(1-s) + r2*s)*2 - 1;
-  };
+  // Wind (gusts)
+  let windPhase = Math.random()*1000;
+  let gust = 0, gustTimer = 0;
+  const noise1D = (t) => { const i=Math.floor(t), f=t-i, s=f*f*(3-2*f); const r1=(Math.sin(i*127.1)*43758.5453)%1, r2=(Math.sin((i+1)*127.1)*43758.5453)%1; return (r1*(1-s)+r2*s)*2-1; };
 
-  window.addEventListener('mousemove', (e) => {
-    mouseXNorm = ((e.clientX / innerWidth) - 0.5) * 2;
-  }, { passive:true });
+  // Mouse torque
+  window.addEventListener('mousemove', (e)=>{ mouseXNorm = ((e.clientX/innerWidth)-0.5)*2; }, {passive:true});
 
-  elCard.addEventListener('mousedown', (e) => {
-    dragging = true; dragStartX = e.clientX; grabVel = 0; e.preventDefault();
-  });
-  window.addEventListener('mouseup', () => (dragging = false));
-  window.addEventListener('mousemove', (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - dragStartX;
-    dragStartX = e.clientX;
-    grabVel = dx * 0.003;
-    vel += grabVel;
-  }, { passive:true });
+  // Scroll impulse (เขย่านิดๆ เหมือนคลิป)
+  let lastY = window.scrollY;
+  window.addEventListener('scroll', rafThrottle(()=>{
+    const dy = window.scrollY - lastY; lastY = window.scrollY;
+    vel += Math.max(-0.6, Math.min(0.6, dy * 0.004)); // impulse
+  }), {passive:true});
 
-  root.addEventListener('dblclick', (e) => { e.preventDefault(); root.classList.toggle('min'); });
-  document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'm') root.classList.toggle('min'); });
+  // Hover wobble
+  root.addEventListener('mouseenter', ()=>{ vel += 0.5 * (Math.random()>.5?1:-1); }, {passive:true});
 
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  // Click bounce
+  root.addEventListener('click', (e)=>{ e.preventDefault(); vel += 1.2 * (Math.random()>.5?1:-1); }, {passive:false});
 
-  function tick(now) {
-    const dt = Math.min(0.032, (now - lastT) / 1000);
-    lastT = now;
+  // Min toggle
+  root.addEventListener('dblclick', (e)=>{ e.preventDefault(); root.classList.toggle('min'); });
 
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function tick(now){
+    const dt = Math.min(0.032, (now-lastT)/1000); lastT = now;
+
+    // wind base + gusts
     windPhase += dt * 0.35;
-    const wind = noise1D(windPhase) * windStrength;
+    if (gustTimer <= 0 && Math.random() < 0.008) { gust = (Math.random()*2-1)*1.8; gustTimer = 0.6 + Math.random()*0.8; }
+    else { gust *= 0.98; gustTimer -= dt; }
+    const wind = (noise1D(windPhase) * windStrength + gust);
     const windTorque = wind * 0.06;
-    const mouseT = mouseXNorm * mouseTorque;
 
-    const acc = -(g / L) * Math.sin(angle) + mouseT + windTorque;
-
+    // equation
+    const acc = -(g/L) * Math.sin(angle) + mouseXNorm * mouseTorque + windTorque;
     vel += acc * dt;
     vel *= damping;
     angle += vel * dt;
 
-    if (Math.abs(vel) < 0.04 && Math.abs(angle) < (maxDeg * Math.PI/180)*0.6) {
-      angle += Math.sin(now * 0.02) * wobbleAmt * dt;
-    }
-
+    // clamp
     const maxRad = maxDeg * Math.PI / 180;
     if (angle > maxRad) { angle = maxRad; vel = -Math.abs(vel)*0.7; }
     if (angle < -maxRad){ angle = -maxRad; vel =  Math.abs(vel)*0.7; }
 
+    // Apply
     const deg = angle * 180 / Math.PI;
     root.style.transform = `rotate(${deg.toFixed(2)}deg)`;
 
-    const stretch = 1 + Math.min(0.12, Math.abs(vel) * stringStretch);
-    elString.style.transform = `translateX(-50%) scaleY(${stretch.toFixed(3)})`;
+    const stretch = 1 + Math.min(0.14, Math.abs(vel) * stringStretch);
+    string.style.transform = `translateX(-50%) scaleY(${stretch.toFixed(3)})`;
 
-    const rx = clamp(-deg * 0.15, -parallax, parallax);
-    const ry = clamp(deg * 0.25, -parallax*1.4, parallax*1.4);
-    elCard.style.transform = `translateZ(0) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+    const rx = clamp(-deg * 0.18, -parallax, parallax);
+    const ry = clamp(deg * 0.28, -parallax*1.5, parallax*1.5);
+    card.style.transform = `translateZ(0) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
 
     const sway = Math.sin(angle);
-    const shadowOffset = 12 + Math.abs(vel)*3;
-    const shadowScale = clamp(1 + Math.abs(deg)*0.01, 1, 1.45);
-    elShadow.style.transform = `translate(calc(-50% + ${sway*14}px), ${shadowOffset}px) scale(${shadowScale.toFixed(3)}, 1)`;
-    elShadow.style.opacity = String(0.45 + Math.min(0.25, Math.abs(vel)*0.1));
+    const shadowOffset = 14 + Math.abs(vel)*3.6;
+    const shadowScale = clamp(1 + Math.abs(deg)*0.012, 1, 1.55);
+    shadow.style.transform = `translate(calc(-50% + ${sway*16}px), ${shadowOffset}px) scale(${shadowScale.toFixed(3)}, 1)`;
+    shadow.style.opacity = String(0.55 + Math.min(0.3, Math.abs(vel)*0.12));
 
     requestAnimationFrame(tick);
   }
