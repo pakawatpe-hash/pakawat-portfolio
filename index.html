@@ -19,7 +19,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=17" />
+  <link rel="stylesheet" href="app.css?v=18" />
 </head>
 <body>
   <noscript>
@@ -65,7 +65,7 @@
         <a href="#contact" class="btn small magnetic">Contact</a>
       </nav>
     </div>
-    <!-- Dangling Badge -->
+    <!-- Dangling Badge (แบบคลิป) -->
     <a class="hang-badge" id="hangBadge" aria-label="Open About" href="#about">
       <span class="hb-string" aria-hidden="true"></span>
       <span class="hb-ring" aria-hidden="true"></span>
@@ -80,6 +80,7 @@
           <small class="hb-id">ID: PKW-2025</small>
         </span>
       </span>
+      <span class="hb-shadow" aria-hidden="true"></span>
     </a>
   </header>
 
@@ -88,7 +89,10 @@
     <div class="container hero-grid">
       <div class="hero-copy reveal">
         <span class="pill"><i class='bx bx-bolt-circle'></i> Frontend / Developer</span>
+
+        <!-- แก้บั๊ก gradient bar: ตัวอักษรไล่สีจริง ไม่ใช่แท่ง -->
         <h1 class="headline gradient">Hello, I'm <span>Pakawat</span></h1>
+
         <p class="sub">DekCom • CE Candidate @ KMUTNB • Flutter • Python • Roblox • Web</p>
         <div class="cta">
           <a class="btn primary magnetic" href="#work"><i class='bx bx-rocket'></i> View Projects</a>
@@ -115,7 +119,7 @@
     </div>
   </section>
 
-  <!-- Skills Marquee — Double Track, Full-Bleed -->
+  <!-- Skills Marquee -->
   <div class="marquee full-bleed" id="skillsMarquee" aria-hidden="true">
     <div class="row row-1">
       <div class="track" id="skillsTrack1">
@@ -196,16 +200,13 @@
       <h2 class="center reveal">Portfolio Showcase</h2>
       <p class="section-sub center">Explore my journey through projects, certificates, and technical expertise.</p>
 
-      <!-- Tabs -->
       <div class="tabs reveal" role="tablist" aria-label="Showcase Tabs">
         <button class="tab active magnetic" data-tab="projects" role="tab" aria-selected="true" aria-controls="panel-projects" id="tab-projects">Projects</button>
         <button class="tab magnetic" data-tab="certs" role="tab" aria-selected="false" aria-controls="panel-certs" id="tab-certs">Certificates</button>
         <button class="tab magnetic" data-tab="stack" role="tab" aria-selected="false" aria-controls="panel-stack" id="tab-stack">Tech Stack</button>
       </div>
 
-      <!-- Panels -->
       <div class="tab-panels">
-        <!-- Projects -->
         <div class="panel show" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects">
           <div class="cards">
             <article class="card glass reveal tilt glare">
@@ -243,7 +244,6 @@
           </div>
         </div>
 
-        <!-- Certificates -->
         <div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
           <div class="cards">
             <article class="card glass reveal">
@@ -267,7 +267,6 @@
           </div>
         </div>
 
-        <!-- Tech stack -->
         <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
           <div class="skill-grid">
             <article class="skill-tile glass reveal tilt"><i class='bx bxl-flutter'></i><span>Flutter</span></article>
@@ -280,11 +279,8 @@
           </div>
         </div>
       </div>
-      <!-- .tab-panels -->
     </div>
-    <!-- .container -->
   </section>
-  <!-- #work -->
 
   <!-- CONTACT -->
   <section id="contact" class="section lazy" aria-label="Contact">
@@ -309,6 +305,6 @@
   </footer>
 
   <!-- JS -->
-  <script src="app.js?v=17" defer></script>
+  <script src="app.js?v=18" defer></script>
 </body>
 </html>
