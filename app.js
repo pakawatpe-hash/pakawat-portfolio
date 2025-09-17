@@ -10,19 +10,16 @@ const rafThrottle = (fn) => {
 const isFinePointer = matchMedia('(pointer: fine)').matches;
 
 /* ===== Reveal on scroll (elements) ===== */
-(() => {
-  const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
-  if (!revealEls.length) return;
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('in');
-        io.unobserve(e.target);
-      }
-    });
-  },{threshold:0.15});
-  revealEls.forEach(el=>io.observe(el));
-})();
+const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:0.15});
+revealEls.forEach(el=>io.observe(el));
 
 /* ===== Reveal whole sections ===== */
 (() => {
@@ -37,35 +34,27 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
 })();
 
 /* ===== Tilt + Glare (soft) ===== */
-(() => {
-  const tilts = document.querySelectorAll('.tilt');
-  if(!tilts.length) return;
-  tilts.forEach(el=>{
-    const glare = el.querySelector('.glare-spot');
-    const handle = (e)=>{
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left)/r.width - .5;
-      const y = (e.clientY - r.top)/r.height - .5;
-      el.style.transform = `rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*8).toFixed(2)}deg)`;
-      if(glare){
-        glare.style.left = (e.clientX - r.left) + 'px';
-        glare.style.top  = (e.clientY - r.top)  + 'px';
-        glare.style.opacity = .65;
-      }
-    };
-    el.addEventListener('mousemove', handle);
-    el.addEventListener('mouseleave', ()=>{
-      el.style.transform='rotateX(0) rotateY(0)';
-      if(glare) glare.style.opacity=0;
-    });
-  });
-})();
+document.querySelectorAll('.tilt').forEach(el=>{
+  const glare = el.querySelector('.glare-spot');
+  const handle = (e)=>{
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width - .5;
+    const y = (e.clientY - r.top)/r.height - .5;
+    el.style.transform = `rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*8).toFixed(2)}deg)`;
+    if(glare){
+      glare.style.left = (e.clientX - r.left) + 'px';
+      glare.style.top  = (e.clientY - r.top)  + 'px';
+      glare.style.opacity = .65;
+    }
+  };
+  el.addEventListener('mousemove', handle);
+  el.addEventListener('mouseleave', ()=>{ el.style.transform='rotateX(0) rotateY(0)'; if(glare) glare.style.opacity=0; });
+});
 
 /* ===== Magnetic hover ===== */
 (() => {
   if(!isFinePointer) return;
   const magnets = document.querySelectorAll('.magnetic');
-  if(!magnets.length) return;
   const strength = 12;
   magnets.forEach(m=>{
     const onMove = rafThrottle((e)=>{
@@ -80,14 +69,11 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
 })();
 
 /* ===== Parallax blobs & thumbs ===== */
-(() => {
-  if (!isFinePointer) return;
+if (isFinePointer) {
   document.addEventListener('mousemove', rafThrottle((e)=>{
     const x = (e.clientX / innerWidth - .5) * 8;
     const y = (e.clientY / innerHeight - .5) * 8;
-    document.querySelectorAll('.bg-blob').forEach((b,i)=>{
-      b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`;
-    });
+    document.querySelectorAll('.bg-blob').forEach((b,i)=>{ b.style.transform = `translate(${x*(i+1)}px, ${y*(i+1)}px)`; });
   }));
   document.addEventListener('mousemove', rafThrottle((e)=>{
     document.querySelectorAll('.parallax').forEach(el=>{
@@ -97,7 +83,7 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
       el.style.transform = `translate(${x}px, ${y}px)`;
     });
   }));
-})();
+}
 
 /* ===== Cursor blob & dot ===== */
 (() => {
@@ -141,7 +127,6 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
 /* ===== Stats counter ===== */
 (() => {
   const counters = document.querySelectorAll('.stat-card[data-count] .num');
-  if(!counters.length) return;
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if(!e.isIntersecting) return;
@@ -158,23 +143,14 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
 /* ===== Tabs ===== */
 (() => {
   const tabs = document.querySelectorAll('.tab');
-  if(!tabs.length) return;
   const panels = {
     projects: document.getElementById('panel-projects'),
     certs: document.getElementById('panel-certs'),
     stack: document.getElementById('panel-stack'),
   };
   const show = (key)=>{
-    tabs.forEach(t=>{
-      const on = t.dataset.tab===key;
-      t.classList.toggle('active',on);
-      t.setAttribute('aria-selected', on?'true':'false');
-    });
-    Object.entries(panels).forEach(([k,p])=>{
-      if(!p) return;
-      if(k===key){ p.removeAttribute('hidden'); }
-      else { p.setAttribute('hidden',''); }
-    });
+    tabs.forEach(t=>{ const on = t.dataset.tab===key; t.classList.toggle('active',on); t.setAttribute('aria-selected', on?'true':'false'); });
+    Object.entries(panels).forEach(([k,p])=>{ if(!p) return; if(k===key){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }});
   };
   tabs.forEach(t=>t.addEventListener('click', ()=>show(t.dataset.tab)));
   document.addEventListener('keydown',(e)=>{
@@ -188,13 +164,8 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
 /* ===== ScrollSpy ===== */
 (() => {
   const links = document.querySelectorAll('#navLinks a[href^="#"]');
-  if(!links.length) return;
   const sections = [...links].map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
-  const spy = ()=>{
-    const y=window.scrollY+120; let active=links[0];
-    sections.forEach((sec,i)=>{ if(sec && sec.offsetTop<=y) active=links[i]; });
-    links.forEach(a=>a.classList.toggle('active', a===active));
-  };
+  const spy = ()=>{ const y=window.scrollY+120; let active=links[0]; sections.forEach((sec,i)=>{ if(sec.offsetTop<=y) active=links[i]; }); links.forEach(a=>a.classList.toggle('active', a===active)); };
   spy(); window.addEventListener('scroll', spy, {passive:true});
 })();
 
@@ -228,9 +199,7 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
     const half = Math.floor(track.children.length/2);
     let halfWidth = 0;
     const gap = parseFloat(getComputedStyle(track).gap || '0') || 0;
-    for(let i=0;i<half;i++){
-      halfWidth += track.children[i].getBoundingClientRect().width + gap;
-    }
+    for(let i=0;i<half;i++){ halfWidth += track.children[i].getBoundingClientRect().width + gap; }
     const pxPerSec = 120;
     const duration = Math.max(14, halfWidth / pxPerSec);
     track.style.animationDuration = `${duration}s`;
@@ -238,10 +207,7 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
 
   setupTrack(document.getElementById('skillsTrack1'));
   setupTrack(document.getElementById('skillsTrack2'));
-  window.addEventListener('load', ()=>{
-    setupTrack(document.getElementById('skillsTrack1'));
-    setupTrack(document.getElementById('skillsTrack2'));
-  });
+  window.addEventListener('load', ()=>{ setupTrack(document.getElementById('skillsTrack1')); setupTrack(document.getElementById('skillsTrack2')); });
 
   // pause on hover (desktop)
   if (matchMedia('(pointer:fine)').matches) {
@@ -249,64 +215,4 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
     marquee?.addEventListener('mouseenter', ()=> marquee.querySelectorAll('.track').forEach(t=>t.style.animationPlayState='paused'));
     marquee?.addEventListener('mouseleave', ()=> marquee.querySelectorAll('.track').forEach(t=>t.style.animationPlayState='running'));
   }
-})();
-
-/* ===== Dangling Badge physics (spring + mouse sway) ===== */
-(() => {
-  const el = document.getElementById('hangBadge');
-  if(!el) return;
-
-  // พารามิเตอร์สปริง
-  let angle = 0;       // องศาปัจจุบัน
-  let vel = 0;         // ความเร็ว
-  const origin = 6;    // องศาพัก
-  const k = 0.015;     // สปริง
-  const damp = 0.985;  // หน่วง
-
-  // สวิงตามเมาส์
-  const sway = (e) => {
-    const x = (e.clientX / innerWidth - .5) * 2; // -1..1
-    angle += x * 0.6;
-  };
-  window.addEventListener('mousemove', sway, {passive:true});
-
-  // สั่นเบา ๆ ตอนสกรอลล์
-  let lastY = scrollY;
-  window.addEventListener('scroll', () => {
-    const dy = scrollY - lastY; lastY = scrollY;
-    vel += Math.max(-6, Math.min(6, dy * 0.02));
-  }, {passive:true});
-
-  // ดับเบิลคลิก -> ย่อ/ขยาย
-  el.addEventListener('dblclick', (e)=>{ e.preventDefault(); el.classList.toggle('min'); });
-
-  // กด m เพื่อซ่อน/โชว์แบบย่อ
-  document.addEventListener('keydown', (e)=>{
-    if(e.key.toLowerCase()==='m') el.classList.toggle('min');
-  });
-
-  // ลากด้วยเมาส์เล็กน้อย (เพิ่มแรง)
-  let dragging = false, startX = 0;
-  el.addEventListener('mousedown', (e)=>{ dragging=true; startX=e.clientX; e.preventDefault(); });
-  window.addEventListener('mouseup', ()=> dragging=false);
-  window.addEventListener('mousemove', (e)=>{
-    if(!dragging) return;
-    const dx = e.clientX - startX; startX = e.clientX;
-    vel += dx * 0.02;
-  });
-
-  // วงจรฟิสิกส์
-  const tick = () => {
-    const target = origin;
-    const force = -(angle - target) * k;
-    vel += force;
-    vel *= damp;
-    angle += vel;
-
-    angle = Math.max(-22, Math.min(22, angle));
-    el.style.transform = `rotate(${angle.toFixed(2)}deg)`;
-
-    requestAnimationFrame(tick);
-  };
-  tick();
 })();
