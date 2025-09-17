@@ -216,6 +216,7 @@ if (isFinePointer) {
     marquee?.addEventListener('mouseleave', ()=> marquee.querySelectorAll('.track').forEach(t=>t.style.animationPlayState='running'));
   }
 })();
+
 /* ===== Dangling Badge physics (spring + mouse sway) ===== */
 (() => {
   const el = document.getElementById('hangBadge');
