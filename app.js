@@ -216,3 +216,63 @@ if (isFinePointer) {
     marquee?.addEventListener('mouseleave', ()=> marquee.querySelectorAll('.track').forEach(t=>t.style.animationPlayState='running'));
   }
 })();
+/* ===== Dangling Badge physics (spring + mouse sway) ===== */
+(() => {
+  const el = document.getElementById('hangBadge');
+  if(!el) return;
+
+  // พารามิเตอร์สปริง
+  let angle = 0;       // องศาปัจจุบัน
+  let vel = 0;         // ความเร็ว
+  const origin = 6;    // องศาพัก
+  const k = 0.015;     // สปริง
+  const damp = 0.985;  // หน่วง
+
+  // สวิงตามเมาส์
+  const sway = (e) => {
+    const x = (e.clientX / innerWidth - .5) * 2; // -1..1
+    angle += x * 0.6;
+  };
+  window.addEventListener('mousemove', sway, {passive:true});
+
+  // สั่นเบา ๆ ตอนสกรอลล์
+  let lastY = scrollY;
+  window.addEventListener('scroll', () => {
+    const dy = scrollY - lastY; lastY = scrollY;
+    vel += Math.max(-6, Math.min(6, dy * 0.02));
+  }, {passive:true});
+
+  // ดับเบิลคลิก -> ย่อ/ขยาย
+  el.addEventListener('dblclick', (e)=>{ e.preventDefault(); el.classList.toggle('min'); });
+
+  // กด m เพื่อซ่อน/โชว์แบบย่อ
+  document.addEventListener('keydown', (e)=>{
+    if(e.key.toLowerCase()==='m') el.classList.toggle('min');
+  });
+
+  // ลากด้วยเมาส์เล็กน้อย (เพิ่มแรง)
+  let dragging = false, startX = 0;
+  el.addEventListener('mousedown', (e)=>{ dragging=true; startX=e.clientX; e.preventDefault(); });
+  window.addEventListener('mouseup', ()=> dragging=false);
+  window.addEventListener('mousemove', (e)=>{
+    if(!dragging) return;
+    const dx = e.clientX - startX; startX = e.clientX;
+    vel += dx * 0.02;
+  });
+
+  // วงจรฟิสิกส์
+  const tick = () => {
+    const target = origin;                 // อยากกลับไปมุมพัก
+    const force = -(angle - target) * k;   // แรงสปริง
+    vel += force;                          // เพิ่มความเร็ว
+    vel *= damp;                           // หน่วง
+    angle += vel;                          // อัปเดตมุม
+
+    // จำกัดสุด ๆ
+    angle = Math.max(-22, Math.min(22, angle));
+    el.style.transform = `rotate(${angle.toFixed(2)}deg)`;
+
+    requestAnimationFrame(tick);
+  };
+  tick();
+})();
