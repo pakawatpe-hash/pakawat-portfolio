@@ -67,57 +67,17 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 .links a{color:var(--ink);opacity:.9;text-decoration:none;margin:0 10px;position:relative}
 .links a.active::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;background:linear-gradient(90deg,var(--primary),var(--primary-2));border-radius:2px}
 
-/* =============== HERO =============== */
-.hero{padding:96px 0 48px; position:relative; overflow:clip;}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
-.pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:#cfe4ff}
-.headline{font-size:44px;line-height:1.15;margin:14px 0 10px 0}
-.headline.gradient{background:linear-gradient(90deg,#fff,#9ec5ff,#d6ccff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 10px 42px rgba(120,160,255,.35);animation:shine 6s ease-in-out infinite}
-.headline span{font-weight:800}
-@keyframes shine{0%{filter:drop-shadow(0 0 0 rgba(106,165,255,0))}50%{filter:drop-shadow(0 0 10px rgba(106,165,255,.3))}100%{filter:drop-shadow(0 0 0 rgba(106,165,255,0))}}
-.sub{color:var(--muted);max-width:560px}
-.cta{display:flex;gap:10px;margin-top:14px}
-.social a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin-top:10px;margin-right:6px;border-radius:10px;border:1px solid var(--line);color:#cfe4ff;text-decoration:none;background:rgba(255,255,255,.06)}
+/* =============== HOME STAGE (แทน HERO) =============== */
+.home-stage{padding:96px 0 36px; position:relative; overflow:clip;}
+.stage-box{position:relative; height:280px; display:flex; align-items:flex-start; justify-content:flex-end; padding:18px; overflow:visible;}
+/* จุดติดสีทองเล็ก ๆ */
+.badge-mount{position:absolute; top:10px; right:64px; width:22px; height:28px; border-radius:6px; background:#f3c05a; box-shadow:inset 0 0 0 2px rgba(0,0,0,.08), 0 6px 14px rgba(0,0,0,.25)}
 
-/* Aurora glow */
-.hero::before,
-.hero::after{
-  content:""; position:absolute; inset:-12% -18% 32% -18%;
-  pointer-events:none; filter:blur(78px); opacity:.62;
-  background:
-    radial-gradient(560px 300px at 25% 10%, rgba(106,165,255,.42), transparent 60%),
-    radial-gradient(520px 300px at 75% 10%, rgba(155,140,255,.34), transparent 60%),
-    radial-gradient(420px 260px at 50% 70%, rgba(77,212,255,.30), transparent 60%);
-  animation: auroraMove 14s ease-in-out infinite alternate;
-}
-.hero::after{
-  inset:-18% -24% 42% -24%;
-  opacity:.42; filter:blur(96px);
-  transform: rotate(8deg);
-  animation-duration: 18s;
-}
-@keyframes auroraMove{
-  0%   { transform: translateY(0) rotate(-2deg); }
-  50%  { transform: translateY(-14px) rotate(2deg); }
-  100% { transform: translateY(0) rotate(-2deg); }
-}
-
-/* =============== FULL-BLEED (ชนขอบจอ) =============== */
-.full-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);box-sizing:border-box}
-
-/* =============== DOUBLE-TRACK MARQUEE =============== */
-.marquee.full-bleed{
-  position:relative; overflow:hidden;
-  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-  border-left:none; border-right:none; border-radius:0; box-shadow:none;
-  background:rgba(255,255,255,.02);
-}
+/* =============== MARQUEE =============== */
+.full-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+.marquee.full-bleed{position:relative; overflow:hidden; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(255,255,255,.02)}
 .marquee .row{overflow:hidden;padding:12px 0}
-.marquee .row + .row{border-top:1px solid rgba(255,255,255,.06)}
-.marquee .track{
-  display:flex; align-items:center; gap:40px; white-space:nowrap;
-  will-change:transform; animation-timing-function:linear; animation-iteration-count:infinite;
-}
+.marquee .track{display:flex; align-items:center; gap:40px; white-space:nowrap; will-change:transform; animation-timing-function:linear; animation-iteration-count:infinite}
 .row-1 .track{animation-name:marquee-left}
 .row-2 .track{animation-name:marquee-right}
 .marquee .track > span{display:inline-flex; align-items:center; gap:8px; font-weight:600; opacity:.92}
@@ -125,23 +85,7 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 @keyframes marquee-left {from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes marquee-right{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 
-/* =============== ILLUSTRATION / TILT + GLARE =============== */
-.hero-art{padding:16px;position:relative;overflow:hidden}
-.code-window{border-radius:14px;border:1px solid var(--line);background:#0f152d;position:relative}
-.dots{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.05)}
-.dots span{width:10px;height:10px;border-radius:999px;background:#ff6b6b}
-.dots span:nth-child(2){background:#ffd93d}
-.dots span:nth-child(3){background:#6bcb77}
-pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:auto}
-.kw{color:#ffadad}.id{color:#ffd6a5}.fn{color:#baffc9}
-.gears{position:absolute;right:-10px;bottom:-10px;opacity:.6}
-.gear{width:90px;height:90px;border:6px solid rgba(255,255,255,.14);border-radius:50%;position:absolute;animation:spin 14s linear infinite}
-.g2{width:60px;height:60px;right:50px;bottom:50px;animation-duration:10s}
-@keyframes spin{to{transform:rotate(360deg)}}
-.glare{position:relative;overflow:hidden}
-.glare-spot{position:absolute;inset:auto;width:140px;height:140px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.28),rgba(255,255,255,.06),transparent 70%);filter:blur(10px);pointer-events:none;transform:translate(-50%,-50%);opacity:0;transition:opacity .2s ease}
-
-/* =============== SECTION GENERIC =============== */
+/* =============== SECTIONS =============== */
 .section{padding:72px 0}
 .mini-cta{display:flex;gap:10px;margin-top:10px}
 .section-title{font-weight:800;letter-spacing:.3px;margin:0 0 6px}
@@ -201,6 +145,8 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .card.reveal.in,.contact-card.reveal.in{transform:none;opacity:1;transition:opacity .6s ease, transform .6s ease}
 .tilt{will-change:transform;transition:transform .12s linear}
 .parallax{will-change:transform}
+.glare{position:relative;overflow:hidden}
+.glare-spot{position:absolute;inset:auto;width:140px;height:140px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.28),rgba(255,255,255,.06),transparent 70%);filter:blur(10px);pointer-events:none;transform:translate(-50%,-50%);opacity:0;transition:opacity .2s ease}
 
 /* =============== INTRO (auto close + typewriter) =============== */
 .intro{
@@ -226,82 +172,33 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 
 /* =============== RESPONSIVE & PERF =============== */
 @media (max-width:900px){
-  .hero-grid,.about-layout{grid-template-columns:1fr}
+  .about-layout{grid-template-columns:1fr}
   .avatar-glow{width:200px;height:200px}
   .stats-row{grid-template-columns:1fr 1fr}
+  .stage-box{height:250px}
 }
-@media (max-width:520px){ .stats-row{grid-template-columns:1fr} }
+@media (max-width:520px){
+  .stats-row{grid-template-columns:1fr}
+  .stage-box{height:220px}
+}
 @media (pointer:coarse){
   body{background-attachment:scroll}
   .cursor-blob,.cursor-dot{display:none}
   .bg-blob{filter:blur(60px);opacity:.28}
 }
 @media (prefers-reduced-motion:reduce){
-  .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after{animation:none}
+  .bg-blob{animation:none}
   .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
 
-/* ===== Tech Stack Grid (like TikTok) ===== */
-.skill-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
-  gap:16px;
-  margin-top:18px;
-}
-.skill-tile{
-  height:140px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:10px;
-  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
-  position:relative;
-  overflow:hidden;
-}
-.skill-tile::before{
-  content:"";
-  position:absolute; inset:-40% -40%;
-  background:conic-gradient(from 0turn, rgba(106,165,255,.0), rgba(106,165,255,.35), rgba(155,140,255,.0));
-  filter:blur(30px);
-  transform:rotate(0deg);
-  transition:opacity .25s ease;
-  opacity:0;
-}
-.skill-tile i{
-  font-size:42px; color:#cfe4ff; opacity:.95;
-  text-shadow:0 6px 24px rgba(120,160,255,.45);
-}
-.skill-tile span{
-  font-weight:700; letter-spacing:.2px;
-  color:#e8eef6; opacity:.95;
-}
-.skill-tile:hover{
-  transform:translateY(-6px);
-  border-color:rgba(155,140,255,.45);
-  box-shadow:0 20px 50px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.05);
-}
-.skill-tile:hover::before{
-  opacity:.9;
-  animation:spin 4s linear infinite;
-}
-@media (max-width:560px){
-  .skill-grid{ gap:12px; }
-  .skill-tile{ height:120px; }
-  .skill-tile i{ font-size:36px; }
-}
-
-/* ===== Dangling Badge (เดิม) ===== */
+/* =============== BADGE (เหมือนคลิป) =============== */
 .hang-badge{
-  position:fixed; top:76px; right:22px; z-index:60;
-  display:inline-block; text-decoration:none; transform-origin:0 -40px;
-  transform:rotate(4deg);
-  will-change:transform;
+  display:inline-block; text-decoration:none;
+  transform-origin:0 -40px; transform:rotate(4deg); will-change:transform;
 }
 .hb-string{
   position:absolute; top:-40px; left:50%; width:2px; height:46px;
-  background:linear-gradient(#cbd8ff,#9fb3ff);
-  transform:translateX(-50%);
+  background:linear-gradient(#cbd8ff,#9fb3ff); transform:translateX(-50%);
   box-shadow:0 0 6px rgba(120,160,255,.35);
 }
 .hb-ring{
@@ -315,9 +212,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   padding:10px 12px; border-radius:14px; border:1px solid var(--line);
   background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
   box-shadow:0 14px 40px rgba(0,0,0,.35);
-  color:var(--ink);
-  transform:translateZ(0);
-  min-width:180px;
+  color:var(--ink); min-width:180px; position:relative;
 }
 .hb-chip{
   position:absolute; inset:auto 10px 10px auto; width:34px; height:24px;
@@ -330,27 +225,21 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
 }
 .hb-photo img{width:100%; height:100%; object-fit:cover; display:block}
+
 .hb-info{display:flex; flex-direction:column; line-height:1.12}
 .hb-info strong{font-weight:800}
 .hb-info small{opacity:.9; color:#cfe0ff}
 .hb-info .hb-id{opacity:.6; font-size:11px}
+
 .hang-badge:hover .hb-card{ box-shadow:0 18px 50px rgba(0,0,0,.42) }
 .hang-badge:active{ transform:rotate(0deg) scale(.98) }
-.hang-badge.min{ right:14px; top:74px }
-.hang-badge.min .hb-card{ transform:scale(.88); opacity:.9 }
-.hang-badge.min .hb-string{ height:30px }
-@media (prefers-reduced-motion:reduce){
-  .hang-badge{ transition:none !important; animation:none !important }
-}
 
-/* ====== OVERRIDE: แสดงบัตรเฉพาะหน้า Home (ภายใน hero-art) ====== */
+/* โหมดย่อ */
+.hang-badge.min .hb-card{ transform:scale(.88); opacity:.95 }
+.hang-badge.min .hb-string{ height:30px }
+
+/* แสดงเฉพาะหน้า Home: วางไว้ใน stage-box */
 .hang-badge--home{
-  position:absolute !important;   /* ทับจาก fixed -> absolute */
-  top:-28px;                      /* ปรับตำแหน่งให้โผล่พ้นมุมการ์ดเล็กน้อย */
-  right:-28px;
-  z-index:2;                      /* ให้อยู่บนเนื้อหาใน .hero-art */
-  transform-origin:0 -40px;
+  position:absolute; top:6px; right:72px; z-index:2;
 }
-/* ไม่ให้เชือก/ห่วงบังการลาก */
-.hang-badge .hb-string,
-.hang-badge .hb-ring{ pointer-events:none; }
+.hang-badge .hb-string, .hang-badge .hb-ring{ pointer-events:none; }
