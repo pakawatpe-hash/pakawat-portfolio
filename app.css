@@ -63,19 +63,25 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 .hero{padding:96px 0 48px;position:relative;overflow:clip;}
 .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:#cfe4ff}
+
+/* Headline */
 .headline{font-size:56px;line-height:1.12;margin:14px 0 10px 0;font-weight:800}
 .headline.gradient{
   display:inline-block;
   background:linear-gradient(90deg,#ffffff 0%,#b2c9ff 45%,#d8cffc 100%);
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
-  animation:shine 6s ease-in-out infinite;
+  text-shadow:none; animation:shine 6s ease-in-out infinite;
 }
+.headline span{font-weight:800}
 @keyframes shine{0%{filter:drop-shadow(0 0 0 rgba(106,165,255,0))}50%{filter:drop-shadow(0 0 10px rgba(106,165,255,.25))}100%{filter:drop-shadow(0 0 0 rgba(106,165,255,0))}}
+@supports not (-webkit-background-clip:text){ .headline.gradient{background:none;color:#e8eef6} }
+
 .sub{color:var(--muted);max-width:560px}
 .cta{display:flex;gap:10px;margin-top:14px}
+.social a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin-top:10px;margin-right:6px;border-radius:10px;border:1px solid var(--line);color:#cfe4ff;text-decoration:none;background:rgba(255,255,255,.06)}
 
-/* Aurora */
+/* Aurora glow */
 .hero::before, .hero::after{content:"";position:absolute;inset:-12% -18% 32% -18%;pointer-events:none;filter:blur(78px);opacity:.62;
   background:radial-gradient(560px 300px at 25% 10%, rgba(106,165,255,.42), transparent 60%),
   radial-gradient(520px 300px at 75% 10%, rgba(155,140,255,.34), transparent 60%),
@@ -86,9 +92,12 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 /* FULL-BLEED */
 .full-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);box-sizing:border-box}
 
-/* === MARQUEE (เวอร์ชันใหม่: เริ่มนอกจอ, ออกหมดก่อนสับเปลี่ยน, 2 แถวคนละทาง) === */
-.marquee{position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+/* ===== MARQUEE (Sequential—เข้า/ออกจากขอบจอจริง, ไม่ทับ, ไม่โผล่กลาง) ===== */
+.marquee.full-bleed{position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
 .marquee .row{position:relative;overflow:hidden;padding:12px 0}
+.marquee .row + .row{border-top:1px solid rgba(255,255,255,.06)}
+/* ซ่อน .track เดิมเพื่อกันแฟลชตอน JS ยังไม่สร้าง unit */
+.marquee .track{display:none}
 .marquee .unit{position:absolute;top:0;left:0;display:flex;align-items:center;gap:40px;white-space:nowrap;will-change:transform}
 .marquee .unit > span{display:inline-flex;align-items:center;gap:8px;font-weight:600;opacity:.92}
 .marquee .unit i{color:#cfe4ff;font-size:20px}
@@ -157,7 +166,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 /* CONTACT */
 .contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
 .contact-card{display:flex;align-items:center;gap:10px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);text-decoration:none;color:var(--ink);transform:translateY(10px);opacity:0}
-.contact-card i{font-size:20px;color:#cfe4ff}
 
 /* FOOTER */
 .foot{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);background:rgba(7,11,26,.6)}
@@ -186,11 +194,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 @keyframes caret-blink{50%{opacity:0}}
 @keyframes intro-pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeInUp{to{opacity:1;transform:translateY(0)}}
-
-/* Tech Stack grid */
-.skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-top:20px}
-.skill-tile{display:flex;align-items:center;gap:10px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card)}
-.skill-tile i{font-size:22px;color:#cfe0ff}
 
 /* RESPONSIVE */
 @media (max-width:900px){
