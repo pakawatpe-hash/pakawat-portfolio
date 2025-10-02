@@ -67,7 +67,7 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 /* FIX: headline stays on its own line + gradient text across wraps */
 .headline{font-size:56px;line-height:1.12;margin:14px 0 10px 0;font-weight:800}
 .headline.gradient{
-  display:inline-block; /* สำคัญ: แยกบรรทัดจาก pill และไม่กิน width ทั้งบล็อก */
+  display:inline-block;
   background:linear-gradient(90deg,#ffffff 0%,#b2c9ff 45%,#d8cffc 100%);
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
@@ -218,7 +218,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 }
 
 /* === Dangling Badge (Real Pendulum + Glass) === */
-/* ✅ แก้เฉพาะส่วนนี้ */
 .hang-badge{
   position:fixed; top:76px; right:22px; z-index:100; display:inline-block; text-decoration:none;
   transform-origin:50% -34px; transform:rotate(0deg); will-change:transform; perspective:800px;
