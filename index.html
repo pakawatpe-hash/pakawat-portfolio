@@ -5,28 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Pakawat — Portfolio</title>
-
-    <!-- SEO / Meta -->
-    <meta
-      name="description"
-      content="Pakawat Portfolio — Frontend/Mobile Dev • Flutter • Python • Roblox • Web. Projects, Certificates & Contact."
-    />
+    <meta name="description" content="Pakawat Portfolio — Frontend/Mobile Dev • Flutter • Python • Roblox • Web. Projects, Certificates & Contact." />
     <meta name="theme-color" content="#070b1a" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content="Pakawat — Portfolio" />
+    <meta property="og:description" content="Frontend/Mobile Developer — Flutter • Python • Roblox • Web" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="me.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://unpkg.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
     <!-- CSS -->
-    <link rel="stylesheet" href="app.css?v=17" />
+    <link rel="stylesheet" href="app.css?v=18" />
   </head>
 
   <body>
@@ -70,14 +67,14 @@
         </nav>
       </div>
 
-      <!-- Dangling Badge -->
+      <!-- Dangling Glass Badge (ตัวเต็ม + ใส) -->
       <a class="hang-badge" id="hangBadge" aria-label="Open About" href="#about">
         <span class="hb-string" aria-hidden="true"></span>
         <span class="hb-ring" aria-hidden="true"></span>
         <span class="hb-card glass">
           <span class="hb-chip" aria-hidden="true"></span>
           <span class="hb-photo">
-            <img src="me.jpg" alt="Pakawat portrait" />
+            <img src="me.jpg" alt="Pakawat portrait" loading="lazy" width="80" height="100" />
           </span>
           <span class="hb-info">
             <strong>Pakawat</strong>
@@ -85,6 +82,7 @@
             <small class="hb-id">ID: PKW-2025</small>
           </span>
         </span>
+        <span class="hb-shadow"></span>
       </a>
     </header>
 
@@ -105,7 +103,8 @@
         <div class="hero-art glass tilt glare reveal" aria-hidden="true">
           <div class="code-window">
             <div class="dots"><span></span><span></span><span></span></div>
-            <pre><code><span class="kw">class</span> <span class="id">Dr.Pharma Stock</span> { <span class="kw">fun</span> scan(){ <span class="fn">updateSheets</span>() } } <span class="kw">def</span> doc_manager(): <span class="fn">send_to_forms</span>()</code></pre>
+            <pre><code>class Dr.Pharma&nbsp;Stock { fun scan(){ updateSheets() } }
+def doc_manager(): send_to_forms()</code></pre>
           </div>
           <div class="gears">
             <div class="gear g1"></div>
@@ -201,15 +200,15 @@
 
         <!-- Tabs -->
         <div class="tabs reveal" role="tablist" aria-label="Showcase Tabs">
-          <button class="tab active magnetic" data-tab="projects" role="tab" aria-selected="true">Projects</button>
-          <button class="tab magnetic" data-tab="certs" role="tab" aria-selected="false">Certificates</button>
-          <button class="tab magnetic" data-tab="stack" role="tab" aria-selected="false">Tech Stack</button>
+          <button class="tab active magnetic" id="tab-projects" data-tab="projects" role="tab" aria-selected="true" aria-controls="panel-projects">Projects</button>
+          <button class="tab magnetic" id="tab-certs" data-tab="certs" role="tab" aria-selected="false" aria-controls="panel-certs">Certificates</button>
+          <button class="tab magnetic" id="tab-stack" data-tab="stack" role="tab" aria-selected="false" aria-controls="panel-stack">Tech Stack</button>
         </div>
 
         <!-- Panels -->
         <div class="tab-panels">
           <!-- Projects -->
-          <div class="panel show" id="panel-projects" role="tabpanel">
+          <div class="panel show" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects">
             <div class="cards">
               <article class="card glass reveal tilt glare">
                 <div class="thumb gradient-1 parallax" data-depth="0.15"></div>
@@ -247,7 +246,7 @@
           </div>
 
           <!-- Certificates -->
-          <div class="panel" id="panel-certs" role="tabpanel" hidden>
+          <div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
             <div class="cards">
               <article class="card glass reveal">
                 <div class="cert">
@@ -273,29 +272,15 @@
           </div>
 
           <!-- Tech stack -->
-          <div class="panel" id="panel-stack" role="tabpanel" hidden>
+          <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
             <div class="skill-grid">
-              <article class="skill-tile glass reveal tilt">
-                <i class="bx bxl-flutter"></i> <span>Flutter</span>
-              </article>
-              <article class="skill-tile glass reveal tilt">
-                <i class="bx bxl-python"></i> <span>Python</span>
-              </article>
-              <article class="skill-tile glass reveal tilt">
-                <i class="bx bxl-java"></i> <span>Java</span>
-              </article>
-              <article class="skill-tile glass reveal tilt">
-                <i class="bx bxl-html5"></i> <span>HTML</span>
-              </article>
-              <article class="skill-tile glass reveal tilt">
-                <i class="bx bxl-css3"></i> <span>CSS</span>
-              </article>
-              <article class="skill-tile glass reveal tilt">
-                <i class="bx bxl-javascript"></i> <span>JavaScript</span>
-              </article>
-              <article class="skill-tile glass reveal tilt">
-                <i class="bx bxl-github"></i> <span>GitHub</span>
-              </article>
+              <article class="skill-tile glass reveal tilt"><i class="bx bxl-flutter"></i> <span>Flutter</span></article>
+              <article class="skill-tile glass reveal tilt"><i class="bx bxl-python"></i> <span>Python</span></article>
+              <article class="skill-tile glass reveal tilt"><i class="bx bxl-java"></i> <span>Java</span></article>
+              <article class="skill-tile glass reveal tilt"><i class="bx bxl-html5"></i> <span>HTML</span></article>
+              <article class="skill-tile glass reveal tilt"><i class="bx bxl-css3"></i> <span>CSS</span></article>
+              <article class="skill-tile glass reveal tilt"><i class="bx bxl-javascript"></i> <span>JavaScript</span></article>
+              <article class="skill-tile glass reveal tilt"><i class="bx bxl-github"></i> <span>GitHub</span></article>
             </div>
           </div>
         </div>
@@ -313,12 +298,7 @@
           <a class="contact-card glass reveal magnetic" href="mailto:pakawatpe@gmail.com">
             <i class="bx bx-envelope"></i> pakawatpe@gmail.com
           </a>
-          <a
-            class="contact-card glass reveal magnetic"
-            href="https://github.com/pakawatpe-hash"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a class="contact-card glass reveal magnetic" href="https://github.com/pakawatpe-hash" target="_blank" rel="noopener noreferrer">
             <i class="bx bxl-github"></i> @pakawatpe-hash
           </a>
           <a class="contact-card glass reveal magnetic" href="#">
@@ -333,6 +313,6 @@
     </footer>
 
     <!-- JS -->
-    <script src="app.js?v=17" defer></script>
+    <script src="app.js?v=18" defer></script>
   </body>
 </html>
