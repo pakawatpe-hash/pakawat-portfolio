@@ -15,9 +15,8 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=30" />
+  <link rel="stylesheet" href="app.css?v=33" />
 </head>
-
 <body>
   <!-- Cursor Glow + Dot -->
   <div class="cursor-blob" aria-hidden="true"></div>
@@ -91,57 +90,63 @@
     </div>
   </section>
 
-  <!-- SKILLS MARQUEE (CSS-only, seamless, enter/exit from screen edges) -->
+  <!-- SKILLS MARQUEE: CSS-only seamless (เข้า/ออกจากขอบจอจริง) -->
   <div class="marquee full-bleed" id="skillsMarquee" aria-label="Skills marquee">
-    <!-- Row 1: move LEFT (เริ่มนอกจอด้านขวา -> วิ่งจนพ้นซ้าย) -->
+    <!-- Row 1 (ซ้าย) -->
     <div class="row row-1">
-      <div class="track">
-        <span><i class="bx bxl-html5"></i> HTML</span>
-        <span><i class="bx bxl-css3"></i> CSS</span>
-        <span><i class="bx bxl-github"></i> GitHub</span>
-        <span><i class="bx bx-joystick"></i> Roblox</span>
-        <span><i class="bx bxl-flutter"></i> Flutter</span>
-        <span><i class="bx bxl-python"></i> Python</span>
-        <span><i class="bx bx-chip"></i> C</span>
-        <span><i class="bx bx-brain"></i> AI</span>
-        <span><i class="bx bxl-javascript"></i> JavaScript</span>
-
-        <!-- duplicate for seamless -->
-        <span><i class="bx bxl-html5"></i> HTML</span>
-        <span><i class="bx bxl-css3"></i> CSS</span>
-        <span><i class="bx bxl-github"></i> GitHub</span>
-        <span><i class="bx bx-joystick"></i> Roblox</span>
-        <span><i class="bx bxl-flutter"></i> Flutter</span>
-        <span><i class="bx bxl-python"></i> Python</span>
-        <span><i class="bx bx-chip"></i> C</span>
-        <span><i class="bx bx-brain"></i> AI</span>
-        <span><i class="bx bxl-javascript"></i> JavaScript</span>
+      <div class="scroller">
+        <div class="content">
+          <span><i class="bx bxl-html5"></i> HTML</span>
+          <span><i class="bx bxl-css3"></i> CSS</span>
+          <span><i class="bx bxl-github"></i> GitHub</span>
+          <span><i class="bx bx-joystick"></i> Roblox</span>
+          <span><i class="bx bxl-flutter"></i> Flutter</span>
+          <span><i class="bx bxl-python"></i> Python</span>
+          <span><i class="bx bx-chip"></i> C</span>
+          <span><i class="bx bx-brain"></i> AI</span>
+          <span><i class="bx bxl-javascript"></i> JavaScript</span>
+        </div>
+        <!-- duplicate -->
+        <div class="content" aria-hidden="true">
+          <span><i class="bx bxl-html5"></i> HTML</span>
+          <span><i class="bx bxl-css3"></i> CSS</span>
+          <span><i class="bx bxl-github"></i> GitHub</span>
+          <span><i class="bx bx-joystick"></i> Roblox</span>
+          <span><i class="bx bxl-flutter"></i> Flutter</span>
+          <span><i class="bx bxl-python"></i> Python</span>
+          <span><i class="bx bx-chip"></i> C</span>
+          <span><i class="bx bx-brain"></i> AI</span>
+          <span><i class="bx bxl-javascript"></i> JavaScript</span>
+        </div>
       </div>
     </div>
 
-    <!-- Row 2: move RIGHT (เริ่มนอกจอด้านซ้าย -> วิ่งจนพ้นขวา) -->
+    <!-- Row 2 (ขวา) -->
     <div class="row row-2">
-      <div class="track">
-        <span><i class="bx bxl-javascript"></i> JavaScript</span>
-        <span><i class="bx bx-brain"></i> AI</span>
-        <span><i class="bx bx-chip"></i> C</span>
-        <span><i class="bx bxl-python"></i> Python</span>
-        <span><i class="bx bxl-flutter"></i> Flutter</span>
-        <span><i class="bx bx-joystick"></i> Roblox</span>
-        <span><i class="bx bxl-github"></i> GitHub</span>
-        <span><i class="bx bxl-css3"></i> CSS</span>
-        <span><i class="bx bxl-html5"></i> HTML</span>
-
-        <!-- duplicate for seamless -->
-        <span><i class="bx bxl-javascript"></i> JavaScript</span>
-        <span><i class="bx bx-brain"></i> AI</span>
-        <span><i class="bx bx-chip"></i> C</span>
-        <span><i class="bx bxl-python"></i> Python</span>
-        <span><i class="bx bxl-flutter"></i> Flutter</span>
-        <span><i class="bx bx-joystick"></i> Roblox</span>
-        <span><i class="bx bxl-github"></i> GitHub</span>
-        <span><i class="bx bxl-css3"></i> CSS</span>
-        <span><i class="bx bxl-html5"></i> HTML</span>
+      <div class="scroller">
+        <div class="content">
+          <span><i class="bx bxl-javascript"></i> JavaScript</span>
+          <span><i class="bx bx-brain"></i> AI</span>
+          <span><i class="bx bx-chip"></i> C</span>
+          <span><i class="bx bxl-python"></i> Python</span>
+          <span><i class="bx bxl-flutter"></i> Flutter</span>
+          <span><i class="bx bx-joystick"></i> Roblox</span>
+          <span><i class="bx bxl-github"></i> GitHub</span>
+          <span><i class="bx bxl-css3"></i> CSS</span>
+          <span><i class="bx bxl-html5"></i> HTML</span>
+        </div>
+        <!-- duplicate -->
+        <div class="content" aria-hidden="true">
+          <span><i class="bx bxl-javascript"></i> JavaScript</span>
+          <span><i class="bx bx-brain"></i> AI</span>
+          <span><i class="bx bx-chip"></i> C</span>
+          <span><i class="bx bxl-python"></i> Python</span>
+          <span><i class="bx bxl-flutter"></i> Flutter</span>
+          <span><i class="bx bx-joystick"></i> Roblox</span>
+          <span><i class="bx bxl-github"></i> GitHub</span>
+          <span><i class="bx bxl-css3"></i> CSS</span>
+          <span><i class="bx bxl-html5"></i> HTML</span>
+        </div>
       </div>
     </div>
   </div>
@@ -208,6 +213,7 @@
       </div>
 
       <div class="tab-panels">
+        <!-- Projects (เหมือนเดิม) -->
         <div class="panel show" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects">
           <div class="cards">
             <article class="card glass reveal tilt glare">
@@ -245,6 +251,7 @@
           </div>
         </div>
 
+        <!-- Certificates (เหมือนเดิม) -->
         <div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
           <div class="cards">
             <article class="card glass reveal">
@@ -259,15 +266,18 @@
           </div>
         </div>
 
+        <!-- Tech Stack (แก้เป็น Grid ชิปไอคอน) -->
         <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
           <div class="skill-grid">
-            <article class="skill-tile glass reveal tilt"><i class='bx bxl-flutter'></i><span>Flutter</span></article>
-            <article class="skill-tile glass reveal tilt"><i class='bx bxl-python'></i><span>Python</span></article>
-            <article class="skill-tile glass reveal tilt"><i class='bx bxl-java'></i><span>Java</span></article>
-            <article class="skill-tile glass reveal tilt"><i class='bx bxl-html5'></i><span>HTML</span></article>
-            <article class="skill-tile glass reveal tilt"><i class='bx bxl-css3'></i><span>CSS</span></article>
-            <article class="skill-tile glass reveal tilt"><i class='bx bxl-javascript'></i><span>JavaScript</span></article>
-            <article class="skill-tile glass reveal tilt"><i class='bx bxl-github'></i><span>GitHub</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bxl-flutter'></i><span>Flutter</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bxl-python'></i><span>Python</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bxl-java'></i><span>Java</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bxl-html5'></i><span>HTML</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bxl-css3'></i><span>CSS</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bxl-javascript'></i><span>JavaScript</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bxl-github'></i><span>GitHub</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bx-chip'></i><span>C</span></article>
+            <article class="skill-chip glass reveal"><i class='bx bx-brain'></i><span>AI</span></article>
           </div>
         </div>
       </div>
@@ -289,6 +299,6 @@
   <footer class="foot"><div class="container">© 2025 Pakawat — Portfolio</div></footer>
 
   <!-- JS -->
-  <script src="app.js?v=30" defer></script>
+  <script src="app.js?v=33" defer></script>
 </body>
 </html>
