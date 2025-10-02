@@ -15,8 +15,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-  <!-- CSS (พาธสัมพัทธ์ + กันแคช) -->
-  <link rel="stylesheet" href="./app.css?v=24" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="./app.css?v=30" />
 </head>
 <body>
   <!-- Cursor Glow + Dot -->
@@ -31,7 +31,7 @@
   <div class="bg-blob b2" aria-hidden="true"></div>
   <div class="bg-blob b3" aria-hidden="true"></div>
 
-  <!-- INTRO / SPLASH -->
+  <!-- INTRO -->
   <div id="intro" class="intro" aria-label="Intro">
     <div class="intro-inner">
       <div class="icons" aria-hidden="true">
@@ -46,6 +46,7 @@
     </div>
   </div>
 
+  <!-- NAV -->
   <header class="nav glass">
     <div class="container nav-inner">
       <a class="brand" href="#home">Pakawat</a>
@@ -56,24 +57,6 @@
         <a href="#contact" class="btn small magnetic">Contact</a>
       </nav>
     </div>
-
-    <!-- Dangling Badge (ลาก/ดึง/ปล่อยเป็นลูกตุ้ม) -->
-    <a class="hang-badge" id="hangBadge" aria-label="Open About" href="#about">
-      <span class="hb-string" aria-hidden="true"></span>
-      <span class="hb-ring" aria-hidden="true"></span>
-      <span class="hb-card glass">
-        <span class="hb-chip" aria-hidden="true"></span>
-        <span class="hb-photo">
-          <img src="./me.jpg" alt="Pakawat portrait" loading="lazy" />
-        </span>
-        <span class="hb-info">
-          <strong>Pakawat</strong>
-          <small>Frontend / Mobile</small>
-          <small class="hb-id">ID: PKW-2025</small>
-        </span>
-      </span>
-      <span class="hb-shadow" aria-hidden="true"></span>
-    </a>
   </header>
 
   <!-- HERO -->
@@ -108,29 +91,16 @@
     </div>
   </section>
 
-  <!-- Marquee -->
+  <!-- MARQUEE -->
   <div class="marquee full-bleed" id="skillsMarquee" aria-hidden="true">
-    <div class="row row-1">
-      <div class="track" id="skillsTrack1">
-        <span><i class="bx bxl-flutter"></i> Flutter</span>
-        <span><i class="bx bxl-python"></i> Python</span>
-        <span><i class="bx bxl-javascript"></i> JavaScript</span>
-        <span><i class="bx bxl-html5"></i> HTML</span>
-        <span><i class="bx bxl-css3"></i> CSS</span>
-        <span><i class="bx bxl-github"></i> GitHub</span>
-        <span><i class="bx bx-joystick"></i> Roblox</span>
-      </div>
-    </div>
-    <div class="row row-2">
-      <div class="track" id="skillsTrack2">
-        <span><i class="bx bx-joystick"></i> Roblox</span>
-        <span><i class="bx bxl-github"></i> GitHub</span>
-        <span><i class="bx bxl-css3"></i> CSS</span>
-        <span><i class="bx bxl-html5"></i> HTML</span>
-        <span><i class="bx bxl-javascript"></i> JavaScript</span>
-        <span><i class="bx bxl-python"></i> Python</span>
-        <span><i class="bx bxl-flutter"></i> Flutter</span>
-      </div>
+    <div class="track">
+      <span><i class="bx bxl-flutter"></i> Flutter</span>
+      <span><i class="bx bxl-python"></i> Python</span>
+      <span><i class="bx bxl-javascript"></i> JavaScript</span>
+      <span><i class="bx bxl-html5"></i> HTML</span>
+      <span><i class="bx bxl-css3"></i> CSS</span>
+      <span><i class="bx bxl-github"></i> GitHub</span>
+      <span><i class="bx bx-joystick"></i> Roblox</span>
     </div>
   </div>
 
@@ -190,21 +160,22 @@
       <p class="section-sub center">Explore my journey through projects, certificates, and technical expertise.</p>
 
       <div class="tabs reveal" role="tablist" aria-label="Showcase Tabs">
-        <button class="tab active magnetic" data-tab="projects" role="tab" aria-selected="true" aria-controls="panel-projects" id="tab-projects">Projects</button>
-        <button class="tab magnetic" data-tab="certs" role="tab" aria-selected="false" aria-controls="panel-certs" id="tab-certs">Certificates</button>
-        <button class="tab magnetic" data-tab="stack" role="tab" aria-selected="false" aria-controls="panel-stack" id="tab-stack">Tech Stack</button>
+        <button class="tab active magnetic" data-tab="projects" role="tab" aria-selected="true">Projects</button>
+        <button class="tab magnetic" data-tab="certs" role="tab" aria-selected="false">Certificates</button>
+        <button class="tab magnetic" data-tab="stack" role="tab" aria-selected="false">Tech Stack</button>
       </div>
 
       <div class="tab-panels">
-        <div class="panel show" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects">
+        <!-- Projects -->
+        <div class="panel show" id="panel-projects" role="tabpanel">
           <div class="cards">
             <article class="card glass reveal tilt glare">
               <div class="thumb gradient-1 parallax" data-depth="0.15"></div>
               <div class="card-head"><i class="bx bxl-flutter"></i><h3>StockApp</h3></div>
               <p>Flutter + Google Sheets + Barcode Scan</p>
               <div class="card-actions">
-                <a class="btn tiny magnetic" href="#" target="_blank" rel="noopener">Demo</a>
-                <a class="btn tiny ghost magnetic" href="#" target="_blank" rel="noopener">GitHub</a>
+                <a class="btn tiny magnetic" href="#" target="_blank">Demo</a>
+                <a class="btn tiny ghost magnetic" href="#" target="_blank">GitHub</a>
               </div>
               <span class="glare-spot"></span>
             </article>
@@ -214,8 +185,8 @@
               <div class="card-head"><i class="bx bxl-python"></i><h3>Document Manager</h3></div>
               <p>Python/Tkinter + Google Forms Automation</p>
               <div class="card-actions">
-                <a class="btn tiny magnetic" href="#" target="_blank" rel="noopener">Overview</a>
-                <a class="btn tiny ghost magnetic" href="#" target="_blank" rel="noopener">Repo</a>
+                <a class="btn tiny magnetic" href="#" target="_blank">Overview</a>
+                <a class="btn tiny ghost magnetic" href="#" target="_blank">Repo</a>
               </div>
               <span class="glare-spot"></span>
             </article>
@@ -225,37 +196,44 @@
               <div class="card-head"><i class="bx bx-joystick"></i><h3>Roblox Game</h3></div>
               <p>M1 Combo • Skills • Quest System</p>
               <div class="card-actions">
-                <a class="btn tiny magnetic" href="#" target="_blank" rel="noopener">Video</a>
-                <a class="btn tiny ghost magnetic" href="#" target="_blank" rel="noopener">Docs</a>
+                <a class="btn tiny magnetic" href="#" target="_blank">Video</a>
+                <a class="btn tiny ghost magnetic" href="#" target="_blank">Docs</a>
               </div>
               <span class="glare-spot"></span>
             </article>
           </div>
         </div>
 
-        <div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
+        <!-- Certificates -->
+        <div class="panel" id="panel-certs" role="tabpanel" hidden>
           <div class="cards">
             <article class="card glass reveal">
-              <div class="cert"><div class="cert-head"><span class="seal"></span><h3>Algorithm & DS</h3></div><p>Online Course / 2024</p></div>
+              <div class="cert"><div class="cert-head"><h3>Algorithm & DS</h3></div><p>Online Course / 2024</p></div>
             </article>
             <article class="card glass reveal">
-              <div class="cert"><div class="cert-head"><span class="seal"></span><h3>Flutter App Dev</h3></div><p>Bootcamp / 2024</p></div>
+              <div class="cert"><div class="cert-head"><h3>Flutter App Dev</h3></div><p>Bootcamp / 2024</p></div>
             </article>
             <article class="card glass reveal">
-              <div class="cert"><div class="cert-head"><span class="seal"></span><h3>Python Automation</h3></div><p>Workshop / 2023</p></div>
+              <div class="cert"><div class="cert-head"><h3>Python Automation</h3></div><p>Workshop / 2023</p></div>
             </article>
           </div>
         </div>
 
-        <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
+        <!-- Tech Stack -->
+        <div class="panel" id="panel-stack" role="tabpanel" hidden>
           <div class="skill-grid">
-            <article class="skill-tile glass reveal tilt"><i class="bx bxl-flutter"></i><span>Flutter</span></article>
-            <article class="skill-tile glass reveal tilt"><i class="bx bxl-python"></i><span>Python</span></article>
-            <article class="skill-tile glass reveal tilt"><i class="bx bxl-java"></i><span>Java</span></article>
-            <article class="skill-tile glass reveal tilt"><i class="bx bxl-html5"></i><span>HTML</span></article>
-            <article class="skill-tile glass reveal tilt"><i class="bx bxl-css3"></i><span>CSS</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-visual-studio"></i><span>VS Code</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-react"></i><span>React.js</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-nodejs"></i><span>Node.js</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-tailwind-css"></i><span>Tailwind</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-bootstrap"></i><span>Bootstrap</span></article>
             <article class="skill-tile glass reveal tilt"><i class="bx bxl-javascript"></i><span>JavaScript</span></article>
             <article class="skill-tile glass reveal tilt"><i class="bx bxl-github"></i><span>GitHub</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-html5"></i><span>HTML</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-css3"></i><span>CSS</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-python"></i><span>Python</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-java"></i><span>Java</span></article>
+            <article class="skill-tile glass reveal tilt"><i class="bx bxl-flutter"></i><span>Flutter</span></article>
           </div>
         </div>
       </div>
@@ -268,7 +246,7 @@
       <h2 class="center reveal">Contact</h2>
       <div class="contact-grid">
         <a class="contact-card glass reveal magnetic" href="mailto:pakawatpe@gmail.com"><i class="bx bx-envelope"></i> <span>pakawatpe@gmail.com</span></a>
-        <a class="contact-card glass reveal magnetic" href="https://github.com/pakawatpe-hash" target="_blank" rel="noopener noreferrer"><i class="bx bxl-github"></i> <span>@pakawatpe-hash</span></a>
+        <a class="contact-card glass reveal magnetic" href="https://github.com/pakawatpe-hash" target="_blank"><i class="bx bxl-github"></i> <span>@pakawatpe-hash</span></a>
         <a class="contact-card glass reveal magnetic" href="#"><i class="bx bxl-line"></i> <span>LINE: ใส่ลิงก์/QR</span></a>
       </div>
     </div>
@@ -276,7 +254,7 @@
 
   <footer class="foot"><div class="container">© 2025 Pakawat — Portfolio</div></footer>
 
-  <!-- JS (พาธสัมพัทธ์ + กันแคช) -->
-  <script src="./app.js?v=24" defer></script>
+  <!-- JS -->
+  <script src="./app.js?v=30" defer></script>
 </body>
 </html>
