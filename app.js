@@ -1,5 +1,5 @@
 /* =======================
-   Pakawat Portfolio - app.js (v21)
+   Pakawat Portfolio - app.js (v23)
    ======================= */
 
 /* ===== Utils ===== */
@@ -106,7 +106,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   });
 })();
 
-/* ===== Parallax blobs & thumbs (1 handler) ===== */
+/* ===== Parallax blobs & thumbs ===== */
 (() => {
   if (!isFinePointer || prefersReducedMotion) return;
 
@@ -142,27 +142,17 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   const dot = document.querySelector(".cursor-dot");
   if (!blob || !dot) return;
 
-  let bx = innerWidth / 2,
-    by = innerHeight / 2;
-  let tx = bx,
-    ty = by;
+  let bx = innerWidth / 2, by = innerHeight / 2;
+  let tx = bx, ty = by;
 
-  window.addEventListener(
-    "mousemove",
-    (e) => {
-      tx = e.clientX;
-      ty = e.clientY;
-      dot.style.left = `${tx}px`;
-      dot.style.top = `${ty}px`;
-    },
-    { passive: true }
-  );
+  window.addEventListener("mousemove", (e) => {
+    tx = e.clientX; ty = e.clientY;
+    dot.style.left = `${tx}px`; dot.style.top = `${ty}px`;
+  }, { passive: true });
 
   const tick = () => {
-    bx += (tx - bx) * 0.12;
-    by += (ty - by) * 0.12;
-    blob.style.left = `${bx}px`;
-    blob.style.top = `${by}px`;
+    bx += (tx - bx) * 0.12; by += (ty - by) * 0.12;
+    blob.style.left = `${bx}px`; blob.style.top = `${by}px`;
     requestAnimationFrame(tick);
   };
   tick();
@@ -189,8 +179,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
 
   let closed = false;
   const closeIntro = () => {
-    if (closed) return;
-    closed = true;
+    if (closed) return; closed = true;
     intro.classList.add("hide");
     setTimeout(() => {
       intro.remove();
@@ -199,20 +188,15 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     }, 650);
   };
 
-  // ปิดปกติหลัง load
   window.addEventListener("load", () => setTimeout(closeIntro, 2400), { once: true });
 
-  // เผื่อโหลดช้า: DOMContentLoaded + fonts.ready แข่งกัน
   const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
   document.addEventListener("DOMContentLoaded", () => {
     Promise.race([fontsReady, new Promise(r => setTimeout(r, 1200))])
       .then(() => setTimeout(closeIntro, 1200));
   }, { once: true });
 
-  // Watchdog ปิดสูงสุด 6 วิ
-  setTimeout(closeIntro, 6000);
-
-  // ผู้ใช้กด/แตะเพื่อปิด
+  setTimeout(closeIntro, 6000); // watchdog
   intro.addEventListener("click", closeIntro);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeIntro(); });
 })();
@@ -222,28 +206,22 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   const counters = document.querySelectorAll(".stat-card[data-count] .num");
   if (!counters.length) return;
 
-  const obs = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-
-        const numEl = e.target;
-        const target = +numEl.parentElement.dataset.count || 0;
-        let cur = 0;
-        const step = Math.max(1, Math.floor(target / 60));
-
-        const inc = () => {
-          cur = Math.min(target, cur + step);
-          numEl.textContent = cur;
-          if (cur < target) requestAnimationFrame(inc);
-        };
-
-        inc();
-        obs.unobserve(numEl);
-      });
-    },
-    { threshold: 0.5 }
-  );
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const numEl = e.target;
+      const target = +numEl.parentElement.dataset.count || 0;
+      let cur = 0;
+      const step = Math.max(1, Math.floor(target / 60));
+      const inc = () => {
+        cur = Math.min(target, cur + step);
+        numEl.textContent = cur;
+        if (cur < target) requestAnimationFrame(inc);
+      };
+      inc();
+      obs.unobserve(numEl);
+    });
+  }, { threshold: 0.5 });
 
   counters.forEach((n) => obs.observe(n));
 })();
@@ -265,7 +243,6 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
       t.classList.toggle("active", on);
       t.setAttribute("aria-selected", on ? "true" : "false");
     });
-
     Object.entries(panels).forEach(([k, p]) => {
       if (!p) return;
       if (k === key) p.removeAttribute("hidden");
@@ -279,8 +256,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     const arr = [...tabs];
     const i = arr.findIndex((t) => t.classList.contains("active"));
     const ni = e.key === "ArrowRight" ? (i + 1) % arr.length : (i - 1 + arr.length) % arr.length;
-    arr[ni].focus();
-    arr[ni].click();
+    arr[ni].focus(); arr[ni].click();
   });
 })();
 
@@ -296,9 +272,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   const spy = () => {
     const y = window.scrollY + 120;
     let active = links[0];
-    sections.forEach((sec, i) => {
-      if (sec.offsetTop <= y) active = links[i];
-    });
+    sections.forEach((sec, i) => { if (sec.offsetTop <= y) active = links[i]; });
     links.forEach((a) => a.classList.toggle("active", a === active));
   };
 
@@ -310,13 +284,11 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
 (() => {
   const bar = document.querySelector(".progress span");
   if (!bar) return;
-
   const onScroll = rafThrottle(() => {
     const h = document.documentElement;
     const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
     bar.style.width = `${(scrolled * 100).toFixed(2)}%`;
   });
-
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 })();
@@ -325,21 +297,14 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
 (() => {
   const setupTrack = (track) => {
     if (!track) return;
-
     const original = Array.from(track.children);
     if (!original.some((n) => n.hasAttribute && n.hasAttribute("data-dup"))) {
       const frag = document.createDocumentFragment();
-      original.forEach((n) => {
-        const c = n.cloneNode(true);
-        c.setAttribute("data-dup", "");
-        frag.appendChild(c);
-      });
+      original.forEach((n) => { const c = n.cloneNode(true); c.setAttribute("data-dup", ""); frag.appendChild(c); });
       track.appendChild(frag);
     }
-
     const half = Math.floor(track.children.length / 2);
-    let halfWidth = 0;
-    const gap = parseFloat(getComputedStyle(track).gap || "0") || 0;
+    let halfWidth = 0; const gap = parseFloat(getComputedStyle(track).gap || "0") || 0;
     for (let i = 0; i < half; i++) {
       halfWidth += track.children[i].getBoundingClientRect().width + gap;
     }
@@ -350,23 +315,8 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
 
   const t1 = document.getElementById("skillsTrack1");
   const t2 = document.getElementById("skillsTrack2");
-  setupTrack(t1);
-  setupTrack(t2);
-
-  window.addEventListener("load", () => {
-    setupTrack(t1);
-    setupTrack(t2);
-  });
-
-  if (isFinePointer) {
-    const marquee = document.getElementById("skillsMarquee");
-    marquee?.addEventListener("mouseenter", () => {
-      marquee.querySelectorAll(".track").forEach((t) => (t.style.animationPlayState = "paused"));
-    });
-    marquee?.addEventListener("mouseleave", () => {
-      marquee.querySelectorAll(".track").forEach((t) => (t.style.animationPlayState = "running"));
-    });
-  }
+  setupTrack(t1); setupTrack(t2);
+  window.addEventListener("load", () => { setupTrack(t1); setupTrack(t2); });
 })();
 
 /* ===== Dangling Badge — Real Pendulum (drag to pull & release) ===== */
@@ -380,15 +330,14 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   const ring   = root.querySelector(".hb-ring");
 
   // Parameters
-  let theta = 8 * Math.PI/180; // initial angle (rad)
+  let theta = 8 * Math.PI/180; // initial angle
   let omega = 0;               // angular velocity
-  let L = 100;                 // rope length (px)
+  let L = 100;                 // rope length
   const G = 2500;              // gravity-like accel
   const DAMP = 0.995;          // air drag
-  const MAX_DEG = 70;          // hard clamp
-  const STR_STRETCH = 0.06;    // string stretch factor
+  const MAX_DEG = 70;          // clamp
+  const STR_STRETCH = 0.06;
 
-  // Measure effective length ring->card center
   const measure = () => {
     const r = ring.getBoundingClientRect();
     const b = root.getBoundingClientRect();
@@ -399,11 +348,8 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   measure();
   addEventListener("resize", measure);
 
-  const rad = (deg)=>deg*Math.PI/180;
-  const clampAngle = (a)=>{
-    const max = rad(MAX_DEG);
-    return Math.max(-max, Math.min(max, a));
-  };
+  const rad = d => d*Math.PI/180;
+  const clampAngle = a => Math.max(-rad(MAX_DEG), Math.min(rad(MAX_DEG), a));
 
   // Drag to pull
   let dragging = false, lastT = performance.now(), lastMoveT = lastT;
@@ -430,7 +376,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     const dt = Math.max(1, tNow - lastMoveT) / 1000;
     const prev = theta;
     setFromPointer(p.clientX, p.clientY);
-    omega = (theta - prev) / dt; // momentum for release
+    omega = (theta - prev) / dt; // carry momentum
     lastMoveT = tNow;
   };
   const onUp = () => { dragging=false; root.classList.remove("dragging"); };
@@ -463,7 +409,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
       omega *= DAMP;
       theta += omega * dt;
 
-      const hard = rad(MAX_DEG);
+      const hard = Math.PI * MAX_DEG / 180;
       if (Math.abs(theta) > hard){
         theta = Math.sign(theta) * hard;
         omega *= 0.6;
