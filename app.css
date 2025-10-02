@@ -3,6 +3,10 @@
   --bg:#070b1a; --bg2:#0b1737; --ink:#e8eef6; --muted:#a6b3c7;
   --primary:#6aa5ff; --primary-2:#9b8cff;
   --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
+
+  /* ระยะรอให้เข้า/ออกจากขอบจอของ marquee */
+  --lead: 60vw;   /* ยิ่งมาก ยิ่งไม่เห็นตั้งแต่แรก */
+  --row-gap: 40px;
 }
 
 /* BASE */
@@ -69,9 +73,9 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 .headline.gradient{
   display:inline-block;
   background:linear-gradient(90deg,#ffffff 0%,#b2c9ff 45%,#d8cffc 100%);
-  -webkit-background-clip:text;background-clip:text;
-  color:transparent;-webkit-text-fill-color:transparent;
-  text-shadow:none;animation:shine 6s ease-in-out infinite;
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  text-shadow:none; animation:shine 6s ease-in-out infinite;
 }
 .headline span{font-weight:800}
 @keyframes shine{0%{filter:drop-shadow(0 0 0 rgba(106,165,255,0))}50%{filter:drop-shadow(0 0 10px rgba(106,165,255,.25))}100%{filter:drop-shadow(0 0 0 rgba(106,165,255,0))}}
@@ -91,19 +95,54 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 /* FULL-BLEED */
 .full-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);box-sizing:border-box}
 
-/* ===== MARQUEE (วิ่งจากขอบเข้า-ออกลื่น ไม่มีโผล่กลาง) ===== */
-.marquee.full-bleed{position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
-.marquee .row{overflow:hidden;padding:12px 0}
-.marquee .row + .row{border-top:1px solid rgba(255,255,255,.06)}
-.marquee .track{display:flex;align-items:center;gap:40px;white-space:nowrap;will-change:transform;animation-timing-function:linear;animation-iteration-count:infinite}
-.row-1 .track{animation-name:marquee-left}
-.row-2 .track{animation-name:marquee-right}
-.marquee .track > span{display:inline-flex;align-items:center;gap:8px;font-weight:600;opacity:.92}
-.marquee .track i{color:#cfe4ff;font-size:20px}
-/* ออกซ้าย->ขวา เริ่มนอกจอซ้าย ออกนอกจอขวา */
-@keyframes marquee-left {from{transform:translateX(-100%)} to{transform:translateX(100%)}}
-/* ออกขวา->ซ้าย เริ่มนอกจอขวา ออกนอกจอซ้าย */
-@keyframes marquee-right{from{transform:translateX(100%)} to{transform:translateX(-100%)}}
+/* === MARQUEE (CSS-Only, seamless, enter/exit from edges) === */
+.marquee{position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+.marquee .row{display:flex;overflow:hidden;padding:12px 0}
+.marquee .track{
+  display:flex;align-items:center;gap:var(--row-gap);
+  will-change:transform; animation:marquee-left 28s linear infinite;
+  padding-right: var(--row-gap);
+}
+/* ให้ Row-1 เริ่มนอกจอด้านขวา */
+.marquee .row-1 .track::before{
+  content:""; flex:0 0 var(--lead);
+}
+/* Row-2 วิ่งขวา เริ่มนอกจอด้านซ้าย */
+.marquee .row-2 .track{
+  animation:marquee-right 28s linear infinite;
+}
+.marquee .row-2 .track::after{
+  content:""; flex:0 0 var(--lead);
+}
+.marquee span{display:inline-flex;align-items:center;font-weight:700;opacity:.95;color:#dbe6ff}
+.marquee span i{font-size:20px;margin-right:8px;opacity:.9}
+
+/* วิ่งไปซ้าย: จาก 0 -> - (ความยาวครึ่งหนึ่ง + lead) */
+@keyframes marquee-left{
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - var(--lead))); }
+}
+/* วิ่งไปขวา: จาก + (ครึ่งหนึ่ง + lead) -> 0 */
+@keyframes marquee-right{
+  0%   { transform: translateX(calc(50% + var(--lead))); }
+  100% { transform: translateX(0); }
+}
+
+/* ILLUSTRATION */
+.hero-art{padding:16px;position:relative;overflow:hidden}
+.code-window{border-radius:14px;border:1px solid var(--line);background:#0f152d;position:relative}
+.dots{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.05)}
+.dots span{width:10px;height:10px;border-radius:999px;background:#ff6b6b}
+.dots span:nth-child(2){background:#ffd93d}
+.dots span:nth-child(3){background:#6bcb77}
+pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:auto}
+.kw{color:#ffadad}.id{color:#ffd6a5}.fn{color:#baffc9}
+.gears{position:absolute;right:-10px;bottom:-10px;opacity:.6}
+.gear{width:90px;height:90px;border:6px solid rgba(255,255,255,.14);border-radius:50%;position:absolute;animation:spin 14s linear infinite}
+.g2{width:60px;height:60px;right:50px;bottom:50px;animation-duration:10s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.glare{position:relative;overflow:hidden}
+.glare-spot{position:absolute;inset:auto;width:140px;height:140px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.28),rgba(255,255,255,.06),transparent 70%);filter:blur(10px);pointer-events:none;transform:translate(-50%,-50%);opacity:0;transition:opacity .2s ease}
 
 /* SECTION */
 .section{padding:72px 0}
@@ -132,36 +171,13 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 .stat-card .num{font-size:26px;font-weight:800;line-height:1}
 .stat-card .label{color:var(--muted);margin-top:2px}
 
-/* TABS / PANELS */
+/* TABS / CARDS */
 .tabs{display:flex;gap:8px;justify-content:center;margin:6px 0 14px}
 .tab{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);cursor:pointer}
 .tab.active{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#0b1022;border:none}
 .tab-panels{margin-top:4px}
 .panel{display:block}
 .panel[hidden]{display:none}
-
-/* === Tech Stack Grid (จำกัดเฉพาะ #panel-stack ไม่ทับหน้าอื่น) === */
-#panel-stack .skill-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:18px;
-  margin-top:18px;
-}
-#panel-stack .skill-tile{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 16px;border-radius:16px;
-  border:1px solid var(--line);background:var(--card);
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
-  backdrop-filter:saturate(140%) blur(6px);
-  transition:transform .18s ease,border-color .18s ease, box-shadow .18s ease;
-  will-change:transform;
-}
-#panel-stack .skill-tile i{font-size:22px;color:#cfe4ff;flex:0 0 auto}
-#panel-stack .skill-tile span{font-weight:700;letter-spacing:.1px;color:#eaf0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#panel-stack .skill-tile:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.28);box-shadow:0 12px 30px rgba(0,0,0,.32)}
-#panel-stack .skill-tile.tilt{transition:transform .1s linear}
-
-/* CARDS (Projects / Certs) */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px}
 .card{padding:0;border-radius:16px;border:1px solid var(--line);background:var(--card);overflow:hidden;transform:translateY(10px);opacity:0;transition:transform .25s ease}
 .card .thumb{width:100%;height:160px;display:block}
@@ -214,9 +230,6 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 @media (max-width:520px){
   .headline{font-size:42px}
   .stats-row{grid-template-columns:1fr}
-  #panel-stack .skill-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
-  #panel-stack .skill-tile{padding:12px}
-  #panel-stack .skill-tile i{font-size:20px}
 }
 @media (pointer:coarse){
   body{background-attachment:scroll}
@@ -224,6 +237,6 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
   .bg-blob{filter:blur(60px);opacity:.28}
 }
 @media (prefers-reduced-motion:reduce){
-  .bg-blob,.headline.gradient,.hero::before,.hero::after{animation:none}
-  .reveal,.card,.contact-card,.section.lazy.entered{transition:none}
+  .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after{animation:none}
+  .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
