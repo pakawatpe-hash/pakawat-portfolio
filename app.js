@@ -1,5 +1,5 @@
 /* =======================
-   Pakawat Portfolio - app.js (v31)
+   Pakawat Portfolio - app.js (v40)
    ======================= */
 
 /* ===== Utils ===== */
@@ -103,7 +103,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   });
 })();
 
-/* ===== Parallax blobs & thumbs (1 handler) ===== */
+/* ===== Parallax blobs & thumbs ===== */
 (() => {
   if (!isFinePointer || prefersReducedMotion) return;
 
@@ -115,13 +115,11 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     const nx = e.clientX / window.innerWidth - 0.5;
     const ny = e.clientY / window.innerHeight - 0.5;
 
-    // BG blobs (soft sway)
     blobs.forEach((b, i) => {
       const mul = (i + 1);
       b.style.transform = `translate(${nx * 8 * mul}px, ${ny * 8 * mul}px)`;
     });
 
-    // Card thumbs parallax (depth-based)
     parallaxes.forEach((el) => {
       const d = parseFloat(el.dataset.depth || "0.1");
       const x = nx * d * 40;
@@ -160,14 +158,13 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   tick();
 })();
 
-/* ===== Intro (auto close + typewriter caret) ===== */
+/* ===== Intro ===== */
 (() => {
   const intro = document.getElementById("intro");
   if (!intro) return;
 
   document.body.classList.add("intro-lock");
 
-  // typewriter
   const el = intro.querySelector(".intro-title .line-2");
   if (el) {
     const full = el.textContent.trim();
@@ -189,7 +186,6 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     }, 650);
   };
 
-  // เมื่อโหลดเสร็จหน่วงปิด
   window.addEventListener("load", () => setTimeout(closeIntro, 2400), { once: true });
 })();
 
@@ -252,7 +248,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   tabs.forEach((t) => t.addEventListener("click", () => show(t.dataset.tab)));
   document.addEventListener("keydown", (e) => {
     if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
-    const arr = [...tabs];
+    const arr = [...document.querySelectorAll(".tab")];
     const i = arr.findIndex((t) => t.classList.contains("active"));
     const ni = e.key === "ArrowRight" ? (i + 1) % arr.length : (i - 1 + arr.length) % arr.length;
     arr[ni].focus();
@@ -302,41 +298,37 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   const marquee = document.getElementById("skillsMarquee");
   if (!marquee) return;
 
-  // track เดิม + สร้างสำเนาเพื่อให้ความยาว 200% แล้วเลื่อน -50% วนได้เนียน
   const track1 = marquee.querySelector(".track");
   if (!track1) return;
 
-  // สร้างสำเนาแค่ครั้งเดียว
+  // clone อีกแทร็กเพื่อทำความยาว 200% แล้วเลื่อน -50% แบบเนียน
   if (!marquee.querySelectorAll(".track")[1]) {
     const clone = track1.cloneNode(true);
     clone.setAttribute("aria-hidden", "true");
     marquee.appendChild(clone);
   }
 
-  // ปรับ speed จากความกว้างของครึ่งหนึ่ง (px/sec คงที่ -> duration แปรผัน)
+  // คำนวณความเร็วตามความกว้างจริงของครึ่งหนึ่ง
   const setDuration = () => {
     const tracks = marquee.querySelectorAll(".track");
-    if (tracks.length < 2) return;
+    const gap = parseFloat(getComputedStyle(track1).gap || "0") || 0;
 
-    // วัดความกว้างเนื้อหาของ track1
-    const rects = [...track1.children].map((c) => c.getBoundingClientRect());
-    const gap =
-      parseFloat(getComputedStyle(track1).gap || "0") || 0;
-    const width =
-      rects.reduce((sum, r) => sum + r.width, 0) +
-      (track1.children.length - 1) * gap;
+    let width = 0;
+    [...track1.children].forEach((c, i, arr) => {
+      const rect = c.getBoundingClientRect();
+      width += rect.width;
+      if (i < arr.length - 1) width += gap;
+    });
 
-    // px/sec
     const pxPerSec = 120;
     const duration = Math.max(14, width / pxPerSec);
     tracks.forEach((t) => (t.style.animationDuration = `${duration}s`));
   };
 
-  // คำนวณตอนโหลด + หลังโหลดฟอนต์
   setDuration();
   window.addEventListener("load", setDuration, { once: true });
 
-  // pause on hover (เดสก์ท็อป)
+  // pause on hover (desktop)
   if (isFinePointer && !prefersReducedMotion) {
     marquee.addEventListener("mouseenter", () => {
       marquee.querySelectorAll(".track").forEach((t) => (t.style.animationPlayState = "paused"));
