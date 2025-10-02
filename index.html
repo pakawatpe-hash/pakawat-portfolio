@@ -15,7 +15,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=33" />
+  <link rel="stylesheet" href="app.css?v=40" />
 </head>
 <body>
   <!-- Cursor Glow + Dot -->
@@ -90,12 +90,12 @@
     </div>
   </section>
 
-  <!-- SKILLS MARQUEE: CSS-only seamless (เข้า/ออกจากขอบจอจริง) -->
-  <div class="marquee full-bleed" id="skillsMarquee" aria-label="Skills marquee">
-    <!-- Row 1 (ซ้าย) -->
-    <div class="row row-1">
-      <div class="scroller">
-        <div class="content">
+  <!-- SKILLS MARQUEE (ใหม่, ไม่ชนของเก่า) -->
+  <div class="mk full-bleed" aria-label="Skills marquee">
+    <!-- Row A: ซ้าย -> ขวา -->
+    <div class="mk-row mk-a">
+      <div class="mk-track">
+        <div class="mk-set">
           <span><i class="bx bxl-html5"></i> HTML</span>
           <span><i class="bx bxl-css3"></i> CSS</span>
           <span><i class="bx bxl-github"></i> GitHub</span>
@@ -106,8 +106,7 @@
           <span><i class="bx bx-brain"></i> AI</span>
           <span><i class="bx bxl-javascript"></i> JavaScript</span>
         </div>
-        <!-- duplicate -->
-        <div class="content" aria-hidden="true">
+        <div class="mk-set" aria-hidden="true">
           <span><i class="bx bxl-html5"></i> HTML</span>
           <span><i class="bx bxl-css3"></i> CSS</span>
           <span><i class="bx bxl-github"></i> GitHub</span>
@@ -120,11 +119,10 @@
         </div>
       </div>
     </div>
-
-    <!-- Row 2 (ขวา) -->
-    <div class="row row-2">
-      <div class="scroller">
-        <div class="content">
+    <!-- Row B: ขวา -> ซ้าย -->
+    <div class="mk-row mk-b">
+      <div class="mk-track">
+        <div class="mk-set">
           <span><i class="bx bxl-javascript"></i> JavaScript</span>
           <span><i class="bx bx-brain"></i> AI</span>
           <span><i class="bx bx-chip"></i> C</span>
@@ -135,8 +133,7 @@
           <span><i class="bx bxl-css3"></i> CSS</span>
           <span><i class="bx bxl-html5"></i> HTML</span>
         </div>
-        <!-- duplicate -->
-        <div class="content" aria-hidden="true">
+        <div class="mk-set" aria-hidden="true">
           <span><i class="bx bxl-javascript"></i> JavaScript</span>
           <span><i class="bx bx-brain"></i> AI</span>
           <span><i class="bx bx-chip"></i> C</span>
@@ -191,7 +188,7 @@
           <div class="num">0</div>
           <div class="label">Certificates</div>
         </div>
-        <div class="stat-card glass reveal" data-count="7">
+        <div class="stat-card glass reveal" data-count="9">
           <div class="icon"><i class='bx bx-briefcase'></i></div>
           <div class="num">0</div>
           <div class="label">Tech Stack</div>
@@ -213,7 +210,7 @@
       </div>
 
       <div class="tab-panels">
-        <!-- Projects (เหมือนเดิม) -->
+        <!-- Projects -->
         <div class="panel show" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects">
           <div class="cards">
             <article class="card glass reveal tilt glare">
@@ -251,7 +248,7 @@
           </div>
         </div>
 
-        <!-- Certificates (เหมือนเดิม) -->
+        <!-- Certificates -->
         <div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
           <div class="cards">
             <article class="card glass reveal">
@@ -266,18 +263,18 @@
           </div>
         </div>
 
-        <!-- Tech Stack (แก้เป็น Grid ชิปไอคอน) -->
+        <!-- Tech Stack (Grid Chip ใหม่ ชื่อ class ไม่ชนของเก่า) -->
         <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
-          <div class="skill-grid">
-            <article class="skill-chip glass reveal"><i class='bx bxl-flutter'></i><span>Flutter</span></article>
-            <article class="skill-chip glass reveal"><i class='bx bxl-python'></i><span>Python</span></article>
-            <article class="skill-chip glass reveal"><i class='bx bxl-java'></i><span>Java</span></article>
-            <article class="skill-chip glass reveal"><i class='bx bxl-html5'></i><span>HTML</span></article>
-            <article class="skill-chip glass reveal"><i class='bx bxl-css3'></i><span>CSS</span></article>
-            <article class="skill-chip glass reveal"><i class='bx bxl-javascript'></i><span>JavaScript</span></article>
-            <article class="skill-chip glass reveal"><i class='bx bxl-github'></i><span>GitHub</span></article>
-            <article class="skill-chip glass reveal"><i class='bx bx-chip'></i><span>C</span></article>
-            <article class="skill-chip glass reveal"><i class='bx bx-brain'></i><span>AI</span></article>
+          <div class="stack-grid">
+            <article class="stack-chip glass reveal"><i class='bx bxl-flutter'></i><span>Flutter</span></article>
+            <article class="stack-chip glass reveal"><i class='bx bxl-python'></i><span>Python</span></article>
+            <article class="stack-chip glass reveal"><i class='bx bxl-java'></i><span>Java</span></article>
+            <article class="stack-chip glass reveal"><i class='bx bxl-html5'></i><span>HTML</span></article>
+            <article class="stack-chip glass reveal"><i class='bx bxl-css3'></i><span>CSS</span></article>
+            <article class="stack-chip glass reveal"><i class='bx bxl-javascript'></i><span>JavaScript</span></article>
+            <article class="stack-chip glass reveal"><i class='bx bxl-github'></i><span>GitHub</span></article>
+            <article class="stack-chip glass reveal"><i class='bx bx-chip'></i><span>C</span></article>
+            <article class="stack-chip glass reveal"><i class='bx bx-brain'></i><span>AI</span></article>
           </div>
         </div>
       </div>
@@ -299,6 +296,6 @@
   <footer class="foot"><div class="container">© 2025 Pakawat — Portfolio</div></footer>
 
   <!-- JS -->
-  <script src="app.js?v=33" defer></script>
+  <script src="app.js?v=40" defer></script>
 </body>
 </html>
