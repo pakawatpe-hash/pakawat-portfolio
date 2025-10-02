@@ -63,20 +63,15 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 .hero{padding:96px 0 48px;position:relative;overflow:clip;}
 .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:#cfe4ff}
-
-/* Headline gradient */
 .headline{font-size:56px;line-height:1.12;margin:14px 0 10px 0;font-weight:800}
 .headline.gradient{
   display:inline-block;
   background:linear-gradient(90deg,#ffffff 0%,#b2c9ff 45%,#d8cffc 100%);
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
-  text-shadow:none; animation:shine 6s ease-in-out infinite;
+  animation:shine 6s ease-in-out infinite;
 }
-.headline span{font-weight:800}
 @keyframes shine{0%{filter:drop-shadow(0 0 0 rgba(106,165,255,0))}50%{filter:drop-shadow(0 0 10px rgba(106,165,255,.25))}100%{filter:drop-shadow(0 0 0 rgba(106,165,255,0))}}
-@supports not (-webkit-background-clip:text){ .headline.gradient{background:none;color:#e8eef6} }
-
 .sub{color:var(--muted);max-width:560px}
 .cta{display:flex;gap:10px;margin-top:14px}
 
@@ -88,15 +83,15 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 .hero::after{inset:-18% -24% 42% -24%;opacity:.42;filter:blur(96px);transform: rotate(8deg);animation-duration: 18s}
 @keyframes auroraMove{0%{transform: translateY(0) rotate(-2deg)}50%{transform: translateY(-14px) rotate(2deg)}100%{transform: translateY(0) rotate(-2deg)}}
 
-/* FULL-BLEED */
+/* FULL-BLEED helper */
 .full-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);box-sizing:border-box}
 
-/* ===== MARQUEE (seamless, no snap) ===== */
-.marquee.full-bleed{position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
-.marquee .track{display:inline-flex;align-items:center;gap:40px;white-space:nowrap;animation:marquee 20s linear infinite;will-change:transform}
+/* === MARQUEE (2 แถว, คนละทาง, เริ่มนอกจอ, ไม่มีสะดุด) === */
+.marquee{position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+.marquee .row{overflow:hidden;padding:12px 0}
+.marquee .track{display:flex;align-items:center;gap:40px;white-space:nowrap;will-change:transform}
 .marquee .track span{display:inline-flex;align-items:center;gap:8px;font-weight:600;opacity:.92}
 .marquee .track i{color:#cfe4ff;font-size:20px}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ILLUSTRATION */
 .hero-art{padding:16px;position:relative;overflow:hidden}
@@ -114,7 +109,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .glare{position:relative;overflow:hidden}
 .glare-spot{position:absolute;inset:auto;width:140px;height:140px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.28),rgba(255,255,255,.06),transparent 70%);filter:blur(10px);pointer-events:none;transform:translate(-50%,-50%);opacity:0;transition:opacity .2s ease}
 
-/* SECTION */
+/* SECTION + ABOUT + WORK + CONTACT (เหมือนเดิม) */
 .section{padding:72px 0}
 .mini-cta{display:flex;gap:10px;margin-top:10px}
 .section-title{font-weight:800;letter-spacing:.3px;margin:0 0 6px}
@@ -122,7 +117,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .section.lazy{opacity:0;transform:translateY(18px)}
 .section.lazy.entered{opacity:1;transform:none;transition:opacity .7s ease, transform .7s ease}
 
-/* ABOUT */
 .about-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:26px;align-items:stretch}
 .about-text{padding:20px 22px}
 .about-text .eyebrow{margin:0;color:#cfe4ff;display:flex;align-items:center;gap:6px;opacity:.9}
@@ -141,7 +135,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .stat-card .num{font-size:26px;font-weight:800;line-height:1}
 .stat-card .label{color:var(--muted);margin-top:2px}
 
-/* TABS / CARDS */
 .tabs{display:flex;gap:8px;justify-content:center;margin:6px 0 14px}
 .tab{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);cursor:pointer}
 .tab.active{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#0b1022;border:none}
@@ -159,12 +152,10 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .card p{margin:0 12px 10px 12px;color:#d7e3f7}
 .card .card-actions{display:flex;gap:8px;margin:0 12px 14px 12px}
 
-/* CONTACT */
 .contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
 .contact-card{display:flex;align-items:center;gap:10px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);text-decoration:none;color:var(--ink);transform:translateY(10px);opacity:0}
 .contact-card i{font-size:20px;color:#cfe4ff}
 
-/* FOOTER */
 .foot{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);background:rgba(7,11,26,.6)}
 
 /* REVEAL */
