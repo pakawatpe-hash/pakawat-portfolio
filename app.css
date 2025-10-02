@@ -24,9 +24,10 @@ body.intro-lock{overflow:hidden}
 .center{text-align:center}
 a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:12px}
 :target{scroll-margin-top:84px}
+img{max-width:100%;height:auto;display:block}
 
 /* PROGRESS */
-.progress{position:fixed;inset:0 0 auto 0;height:3px;background:rgba(255,255,255,.08);z-index:80}
+.progress{position:fixed;inset:0 0 auto 0;height:3px;background:rgba(255,255,255,.08);z-index:80;contain:size layout paint}
 .progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-2));will-change:width}
 
 /* CURSOR */
@@ -64,10 +65,10 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:#cfe4ff}
 
-/* FIX: headline stays on its own line + gradient text across wraps */
-.headline{font-size:56px;line-height:1.12;margin:14px 0 10px 0;font-weight:800}
+/* Headline */
+.headline{font-size:clamp(32px,6vw,56px);line-height:1.12;margin:14px 0 10px 0;font-weight:800}
 .headline.gradient{
-  display:inline-block; /* สำคัญ: แยกบรรทัดจาก pill และไม่กิน width ทั้งบล็อก */
+  display:inline-block;
   background:linear-gradient(90deg,#ffffff 0%,#b2c9ff 45%,#d8cffc 100%);
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
@@ -197,11 +198,42 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 @keyframes intro-pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeInUp{to{opacity:1;transform:translateY(0)}}
 
+/* === Dangling Glass Badge (Ultra Clear + UX) === */
+.hang-badge{position:fixed; top:76px; right:22px; z-index:100; display:inline-block; text-decoration:none;
+  transform-origin:50% -34px; will-change:transform; perspective:800px; cursor:grab; user-select:none; touch-action:none;}
+.hang-badge.dragging{ cursor:grabbing }
+.hb-string{position:absolute; top:-34px; left:50%; width:2px; height:56px; transform:translateX(-50%);
+  background:linear-gradient(#dfe8ff66,#a5baff44); box-shadow:0 0 6px rgba(120,160,255,.18); transform-origin:50% 0;}
+.hb-ring{position:absolute; top:-6px; left:50%; transform:translate(-50%,-50%); width:18px; height:18px; border-radius:50%;
+  border:2px solid rgba(188,209,255,.55); background:rgba(255,255,255,.04);
+  box-shadow:0 2px 8px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.06)}
+.hb-card{display:flex; align-items:center; gap:10px; padding:10px 12px; min-width:180px; border-radius:14px;
+  border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.02); backdrop-filter:blur(10px) saturate(140%);
+  -webkit-backdrop-filter:blur(10px) saturate(140%); box-shadow:0 20px 46px rgba(0,0,0,.42); color:var(--ink);}
+.hang-badge:hover .hb-card, .hang-badge.dragging .hb-card{ background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.18) }
+.hb-chip{ position:absolute; inset:auto 10px 10px auto; width:34px; height:24px; background:linear-gradient(135deg,#ffd86b,#ffc24d); border-radius:4px; opacity:.75; box-shadow:0 2px 8px rgba(0,0,0,.25);}
+.hb-photo{ width:64px; height:86px; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,.12); background:rgba(15,23,42,.35) }
+.hb-photo img{ width:100%; height:100%; object-fit:cover; display:block }
+.hb-info{ display:flex; flex-direction:column; line-height:1.12 }
+.hb-info strong{ font-weight:800; text-shadow:0 1px 8px rgba(0,0,0,.25) }
+.hb-info .hb-id{ opacity:.6; font-size:11px }
+.hb-shadow{position:absolute; left:50%; top:100%; width:120px; height:24px; transform:translate(-50%, 12px);
+  background:radial-gradient(closest-side, rgba(0,0,0,.42), rgba(0,0,0,0)); filter:blur(7px); opacity:.65; pointer-events:none;}
+.hang-badge.min{ right:14px; top:74px }
+.hang-badge.min .hb-card{ transform:scale(.88) }
+.hang-badge.min .hb-string{ height:42px }
+
 /* RESPONSIVE */
 @media (max-width:900px){
   .hero-grid,.about-layout{grid-template-columns:1fr}
   .avatar-glow{width:200px;height:200px}
   .stats-row{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .nav-inner{flex-wrap:wrap;gap:8px}
+  .links{width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .hero{padding:72px 0 36px}
+  .cta{flex-wrap:wrap}
 }
 @media (max-width:520px){
   .headline{font-size:42px}
@@ -211,29 +243,9 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   body{background-attachment:scroll}
   .cursor-blob,.cursor-dot{display:none}
   .bg-blob{filter:blur(60px);opacity:.28}
+  .tilt{transform:none !important}
 }
 @media (prefers-reduced-motion:reduce){
   .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after{animation:none}
   .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
-
-/* === Dangling Badge (Natural Pendulum) === */
-.hang-badge{position:fixed; top:76px; right:22px; z-index:100; display:inline-block; text-decoration:none;
-  transform-origin:50% -34px; transform:rotate(0deg); will-change:transform; perspective:800px;}
-.hb-string{position:absolute; top:-34px; left:50%; width:2px; height:56px; transform:translateX(-50%);
-  background:linear-gradient(#cbd8ff,#9fb3ff); box-shadow:0 0 6px rgba(120,160,255,.25); transform-origin:50% 0;}
-.hb-ring{position:absolute; top:-6px; left:50%; transform:translate(-50%,-50%); width:18px; height:18px; border-radius:50%; border:2px solid #bcd1ff; background:rgba(255,255,255,.06);
-  box-shadow:0 2px 8px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.05);}
-.hb-card{display:flex; align-items:center; gap:10px; padding:10px 12px; min-width:180px; border-radius:14px; border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); box-shadow:0 20px 46px rgba(0,0,0,.42);
-  color:var(--ink); transform: translateZ(0) rotateX(0deg) rotateY(0deg);}
-.hb-chip{ position:absolute; inset:auto 10px 10px auto; width:34px; height:24px; background:linear-gradient(135deg,#ffd86b,#ffc24d); border-radius:4px; opacity:.9; box-shadow:0 2px 8px rgba(0,0,0,.25);}
-.hb-photo{ width:64px; height:86px; border-radius:10px; overflow:hidden; border:1px solid var(--line); background:#0f172a; box-shadow:inset 0 0 0 1px rgba(255,255,255,.04) }
-.hb-photo img{ width:100%; height:100%; object-fit:cover; display:block }
-.hb-info{ display:flex; flex-direction:column; line-height:1.12 }
-.hb-info .hb-id{ opacity:.6; font-size:11px }
-.hb-shadow{position:absolute; left:50%; top:100%; width:120px; height:24px; transform:translate(-50%, 12px);
-  background:radial-gradient(closest-side, rgba(0,0,0,.42), rgba(0,0,0,0)); filter:blur(7px); opacity:.65; pointer-events:none;}
-.hang-badge.min{ right:14px; top:74px }
-.hang-badge.min .hb-card{ transform:scale(.88) }
-.hang-badge.min .hb-string{ height:42px }
