@@ -171,24 +171,18 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== MARQUEE — Offscreen In/Out Conveyor (2 rows opposite) ===== */
+/* ===== MARQUEE — Offscreen In/Out Conveyor (no mid reset, 2 rows opposite) ===== */
 (() => {
   const root = document.getElementById("skillsMarquee");
   if (!root) return;
 
-  // สร้าง "สายพาน" ต่อแถว: มี 2 ขบวน (A/B) สลับกันเข้า-ออกจอ
+  // row: .row.left  = วิ่งไปทางซ้าย  (เริ่มนอกขวา -> ไหลซ้าย -> ออกซ้ายจนหมด -> วน)
+  // row: .row.right = วิ่งไปทางขวา  (เริ่มนอกซ้าย -> ไหลขวา -> ออกขวาจนหมด -> วน)
   const buildRow = (rowEl, direction /* 'left' | 'right' */) => {
-    const template = rowEl.querySelector(".track"); // ใช้รายการเดิมใน HTML
+    const template = rowEl.querySelector(".track");
     if (!template) return;
 
-    // วัดความสูงก่อน
-    const tmp = template.cloneNode(true);
-    tmp.style.visibility = "hidden";
-    rowEl.appendChild(tmp);
-    const rowHeight = tmp.getBoundingClientRect().height || 44;
-    tmp.remove();
-
-    // สร้าง unit A/B จาก template (หนึ่ง unit = 1 ขบวน)
+    // สร้าง unit A/B จาก template เดิม
     const makeUnit = () => {
       const u = document.createElement("div");
       u.className = "unit";
@@ -198,45 +192,20 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     };
     const unitA = makeUnit();
     const unitB = makeUnit();
+    template.remove(); // ลบ track เดิมออก ป้องกันซ้ำ
 
-    // ลบ template เดิมออก (ป้องกันซ้ำ)
-    template.remove();
+    // helper วัดกว้างแบบสด (กันเคสฟอนต์โหลดช้า)
+    const widthA = () => unitA.getBoundingClientRect().width;
+    const widthB = () => unitB.getBoundingClientRect().width;
 
-    // คำนวณความกว้างขบวนจาก unitA (กว้างสุดในสองตัว)
-    const measureWidth = () => {
-      const aW = unitA.getBoundingClientRect().width;
-      const bW = unitB.getBoundingClientRect().width;
-      return Math.max(aW, bW);
-    };
-
-    // สถานะ
+    // state
     const state = {
-      dir: direction === "left" ? -1 : 1,  // -1 = เคลื่อนซ้าย, 1 = ขวา
-      speed: 120,                           // px/sec
-      width: 0,
-      ax: 0,
-      bx: 0,
-    };
-
-    // เริ่มต้นให้อยู่นอกจอ แล้วค่อยๆ ไหลเข้ามา
-    const setupPositions = () => {
-      rowEl.style.height = `${rowHeight}px`;
-      state.width = measureWidth();
-
-      const vw = rowEl.clientWidth || window.innerWidth;
-      const gap = 48; // ระยะเว้นระหว่างขบวน (จะไม่เห็นซ้อนกัน)
-
-      if (state.dir < 0) {
-        // วิ่งไปทางซ้าย: ให้เริ่มจากขอบขวา (นอกจอ) แล้วไหลเข้า
-        state.ax = vw;                      // เริ่มนอกจอขวา
-        state.bx = state.ax + state.width + gap; // B ต่อท้าย A
-      } else {
-        // วิ่งไปทางขวา: ให้เริ่มจากขอบซ้าย (นอกจอ) แล้วไหลเข้า
-        state.ax = -state.width - vw;       // เริ่มนอกจอซ้าย
-        state.bx = state.ax - state.width - gap; // B อยู่ซ้ายกว่า A
-      }
-
-      apply();
+      dir: direction === "left" ? -1 : 1,  // -1 = ไปซ้าย, 1 = ไปขวา
+      speed: 120,                           // px/sec ปรับได้
+      ax: 0, bx: 0,
+      aW: 0, bW: 0,
+      gap: 48,
+      edgePad: 10,                          // ออก/เข้าอยู่นอกจอเล็กน้อย
     };
 
     const apply = () => {
@@ -244,42 +213,75 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
       unitB.style.transform = `translateX(${state.bx.toFixed(2)}px)`;
     };
 
+    const setup = () => {
+      const h = (rowEl.querySelector(".unit")?.getBoundingClientRect().height) || 44;
+      rowEl.style.height = `${h}px`;
+
+      state.aW = widthA();
+      state.bW = widthB();
+      const vw = rowEl.clientWidth || window.innerWidth;
+
+      if (state.dir < 0) {
+        // ไปซ้าย: เริ่มนอกจอขวา
+        state.ax = vw + state.edgePad;
+        state.bx = state.ax + state.aW + state.gap;
+      } else {
+        // ไปขวา: เริ่มนอกจอซ้าย
+        state.ax = -state.aW - state.edgePad;
+        state.bx = state.ax - state.bW - state.gap;
+      }
+      apply();
+    };
+
     let last = performance.now();
     const tick = (now) => {
       const dt = Math.min(0.033, (now - last) / 1000);
       last = now;
 
+      const vw = rowEl.clientWidth || window.innerWidth;
       const v = state.speed * state.dir;
+
       state.ax += v * dt;
       state.bx += v * dt;
 
-      const vw = rowEl.clientWidth || window.innerWidth;
-      const w = state.width;
-      const gap = 48;
+      // อัปเดตกว้างสดๆ (กันฟอนต์/รีไซส์)
+      state.aW = widthA();
+      state.bW = widthB();
 
       if (state.dir < 0) {
-        // ไปซ้าย: ถ้าขบวนใด "ออกซ้ายจนหมด" (x + w <= 0) ให้ย้ายไปต่อท้ายอีกขบวน "นอกขวา"
-        if (state.ax + w <= 0) state.ax = Math.max(state.ax, state.bx) + w + gap;
-        if (state.bx + w <= 0) state.bx = Math.max(state.ax, state.bx) + w + gap;
+        // ไปซ้าย: รีเมื่อ x + width <= 0 (พ้นซ้ายทั้งหมด)
+        if (state.ax + state.aW <= 0) {
+          // ย้าย A ไปต่อท้าย B ด้านขวา (นอกจอขวาอย่างน้อย)
+          state.ax = Math.max(state.bx + state.bW + state.gap, vw + state.edgePad);
+        }
+        if (state.bx + state.bW <= 0) {
+          state.bx = Math.max(state.ax + state.aW + state.gap, vw + state.edgePad);
+        }
       } else {
-        // ไปขวา: ถ้าขบวนใด "ออกขวาจนหมด" (x >= vw) ให้ย้ายไปต่อหน้าอีกขบวน "นอกซ้าย"
-        if (state.ax >= vw) state.ax = Math.min(state.ax, state.bx) - w - gap;
-        if (state.bx >= vw) state.bx = Math.min(state.ax, state.bx) - w - gap;
+        // ไปขวา: รีเมื่อ x >= vw + edgePad (พ้นขวาทั้งหมด)
+        if (state.ax >= vw + state.edgePad) {
+          // ย้าย A ไปไว้ซ้ายของขบวนที่อยู่ซ้ายสุด (นอกจอซ้าย)
+          const leftMost = Math.min(state.ax, state.bx);
+          state.ax = leftMost - state.aW - state.gap;
+        }
+        if (state.bx >= vw + state.edgePad) {
+          const leftMost = Math.min(state.ax, state.bx);
+          state.bx = leftMost - state.bW - state.gap;
+        }
       }
 
       apply();
       requestAnimationFrame(tick);
     };
 
-    setupPositions();
+    setup();
     requestAnimationFrame(tick);
 
-    const ro = new ResizeObserver(() => { setupPositions(); });
-    ro.observe(rowEl);
+    // ปรับตำแหน่งใหม่เมื่อรีไซส์
+    new ResizeObserver(setup).observe(rowEl);
   };
 
-  const rowLeft  = root.querySelector(".row.left");
-  const rowRight = root.querySelector(".row.right");
-  if (rowLeft)  buildRow(rowLeft,  "left");
-  if (rowRight) buildRow(rowRight, "right");
+  buildRow(root.querySelector(".row.left"),  "left");
+  buildRow(root.querySelector(".row.right"), "right");
 })();
+
