@@ -1,6 +1,6 @@
 /* =======================
-   Pakawat Portfolio - app.js (v40)
-   ======================= */
+   Pakawat Portfolio - app.js (Marquee smooth, bidirectional)
+======================= */
 
 /* ===== Utils ===== */
 const rafThrottle = (fn) => {
@@ -103,7 +103,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   });
 })();
 
-/* ===== Parallax blobs & thumbs ===== */
+/* ===== Parallax blobs & thumbs (1 handler) ===== */
 (() => {
   if (!isFinePointer || prefersReducedMotion) return;
 
@@ -115,11 +115,13 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     const nx = e.clientX / window.innerWidth - 0.5;
     const ny = e.clientY / window.innerHeight - 0.5;
 
+    // BG blobs
     blobs.forEach((b, i) => {
       const mul = (i + 1);
       b.style.transform = `translate(${nx * 8 * mul}px, ${ny * 8 * mul}px)`;
     });
 
+    // Parallax
     parallaxes.forEach((el) => {
       const d = parseFloat(el.dataset.depth || "0.1");
       const x = nx * d * 40;
@@ -158,7 +160,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   tick();
 })();
 
-/* ===== Intro ===== */
+/* ===== Intro (auto close) ===== */
 (() => {
   const intro = document.getElementById("intro");
   if (!intro) return;
@@ -261,9 +263,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   const links = document.querySelectorAll('#navLinks a[href^="#"]');
   if (!links.length) return;
 
-  const sections = [...links]
-    .map((a) => document.querySelector(a.getAttribute("href")))
-    .filter(Boolean);
+  const sections = [...links].map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
 
   const spy = () => {
     const y = window.scrollY + 120;
@@ -293,48 +293,92 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   onScroll();
 })();
 
-/* ===== Marquee (seamless, no snap at loop) ===== */
+/* ===== Marquee (JS rAF — 2 แถว, วิ่งคนละทาง, เริ่มนอกจอ, ไหลลื่นไม่สะดุด) ===== */
 (() => {
-  const marquee = document.getElementById("skillsMarquee");
-  if (!marquee) return;
+  const root = document.getElementById("skillsMarquee");
+  if (!root) return;
 
-  const track1 = marquee.querySelector(".track");
-  if (!track1) return;
+  /** สร้าง runner ต่อแถวละ 1 ตัว */
+  const setupRow = (rowEl, dir) => {
+    const track = rowEl.querySelector(".track");
+    if (!track) return;
 
-  // clone อีกแทร็กเพื่อทำความยาว 200% แล้วเลื่อน -50% แบบเนียน
-  if (!marquee.querySelectorAll(".track")[1]) {
-    const clone = track1.cloneNode(true);
-    clone.setAttribute("aria-hidden", "true");
-    marquee.appendChild(clone);
-  }
+    // ทำให้เป็น seamless ด้วยการโคลน 1 ชุด (รวมเป็น 200%)
+    if (!track.dataset.duped) {
+      const frag = document.createDocumentFragment();
+      Array.from(track.children).forEach((n) => frag.appendChild(n.cloneNode(true)));
+      track.appendChild(frag);
+      track.dataset.duped = "1";
+    }
 
-  // คำนวณความเร็วตามความกว้างจริงของครึ่งหนึ่ง
-  const setDuration = () => {
-    const tracks = marquee.querySelectorAll(".track");
-    const gap = parseFloat(getComputedStyle(track1).gap || "0") || 0;
+    const state = {
+      offset: 0,          // px
+      speed: 120,         // px/sec
+      halfWidth: 0,       // ความกว้างครึ่งหนึ่ง (ก่อนโคลน)
+      dir: dir === "left" ? -1 : 1,
+    };
 
-    let width = 0;
-    [...track1.children].forEach((c, i, arr) => {
-      const rect = c.getBoundingClientRect();
-      width += rect.width;
-      if (i < arr.length - 1) width += gap;
-    });
+    const compute = () => {
+      // คำนวณความกว้างของครึ่งหนึ่ง (รายการจริงก่อนโคลน)
+      const children = Array.from(track.children).slice(0, track.children.length / 2);
+      const styles = getComputedStyle(track);
+      const gap = parseFloat(styles.gap || "0") || 0;
+      let w = 0;
+      children.forEach((c, i) => {
+        const r = c.getBoundingClientRect();
+        w += r.width + (i < children.length - 1 ? gap : 0);
+      });
+      state.halfWidth = Math.max(1, w);
 
-    const pxPerSec = 120;
-    const duration = Math.max(14, width / pxPerSec);
-    tracks.forEach((t) => (t.style.animationDuration = `${duration}s`));
+      // เริ่ม “นอกจอ”: ฝั่งซ้ายให้เริ่มทางขวาทั้งแผง, ฝั่งขวาให้เริ่มทางซ้าย
+      const vw = rowEl.clientWidth || window.innerWidth;
+      state.offset = state.dir < 0 ? vw : -vw; // เริ่มนอกจอฝั่งตรงข้าม
+      apply();
+    };
+
+    const apply = () => {
+      track.style.transform = `translateX(${state.offset.toFixed(2)}px)`;
+    };
+
+    let last = performance.now();
+    const tick = (now) => {
+      const dt = Math.min(0.033, (now - last) / 1000);
+      last = now;
+
+      state.offset += state.dir * state.speed * dt;
+
+      // wrap โดยอิงความยาวครึ่งหนึ่ง เพื่อความเนียน (ไม่เด้ง)
+      if (state.dir < 0 && state.offset <= -state.halfWidth) {
+        state.offset += state.halfWidth;
+      } else if (state.dir > 0 && state.offset >= state.halfWidth) {
+        state.offset -= state.halfWidth;
+      }
+
+      apply();
+      requestAnimationFrame(tick);
+    };
+
+    compute();
+    requestAnimationFrame(tick);
+
+    // ปรับเมื่อ resize
+    const ro = new ResizeObserver(() => compute());
+    ro.observe(rowEl);
   };
 
-  setDuration();
-  window.addEventListener("load", setDuration, { once: true });
+  const rowLeft  = root.querySelector(".row.left");
+  const rowRight = root.querySelector(".row.right");
+  if (rowLeft)  setupRow(rowLeft,  "left");
+  if (rowRight) setupRow(rowRight, "right");
 
-  // pause on hover (desktop)
+  // hover pause (desktop)
   if (isFinePointer && !prefersReducedMotion) {
-    marquee.addEventListener("mouseenter", () => {
-      marquee.querySelectorAll(".track").forEach((t) => (t.style.animationPlayState = "paused"));
+    root.addEventListener("mouseenter", () => {
+      root.dataset.pause = "1";
+      root.querySelectorAll(".track").forEach(t => t.style.transition = "none");
     });
-    marquee.addEventListener("mouseleave", () => {
-      marquee.querySelectorAll(".track").forEach((t) => (t.style.animationPlayState = "running"));
+    root.addEventListener("mouseleave", () => {
+      delete root.dataset.pause;
     });
   }
 })();
