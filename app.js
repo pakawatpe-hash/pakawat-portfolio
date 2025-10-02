@@ -1,5 +1,5 @@
 /* =======================
-   Pakawat Portfolio - app.js
+   Pakawat Portfolio - app.js (v21)
    ======================= */
 
 /* ===== Utils ===== */
@@ -8,7 +8,10 @@ const rafThrottle = (fn) => {
   return (...args) => {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(() => { fn(...args); ticking = false; });
+    requestAnimationFrame(() => {
+      fn(...args);
+      ticking = false;
+    });
   };
 };
 
@@ -67,21 +70,23 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
       el.style.transform = `rotateX(${(-y * 6).toFixed(2)}deg) rotateY(${(x * 8).toFixed(2)}deg)`;
       if (glare) {
         glare.style.left = `${e.clientX - r.left}px`;
-        glare.style.top  = `${e.clientY - r.top}px`;
-        glare.style.opacity = ".65";
+        glare.style.top = `${e.clientY - r.top}px`;
+        glare.style.opacity = 0.65;
       }
     };
-    el.addEventListener("mousemove", onMove, { passive:true });
+
+    el.addEventListener("mousemove", onMove, { passive: true });
     el.addEventListener("mouseleave", () => {
       el.style.transform = "rotateX(0) rotateY(0)";
       if (glare) glare.style.opacity = 0;
-    }, { passive:true });
+    });
   });
 })();
 
 /* ===== Magnetic hover ===== */
 (() => {
   if (!isFinePointer || prefersReducedMotion) return;
+
   const magnets = document.querySelectorAll(".magnetic");
   if (!magnets.length) return;
 
@@ -89,16 +94,19 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   magnets.forEach((m) => {
     const onMove = rafThrottle((e) => {
       const r = m.getBoundingClientRect();
-      const x = ((e.clientX - r.left)/r.width - .5) * strength;
-      const y = ((e.clientY - r.top)/r.height - .5) * strength;
+      const x = ((e.clientX - r.left) / r.width - 0.5) * strength;
+      const y = ((e.clientY - r.top) / r.height - 0.5) * strength;
       m.style.transform = `translate(${x}px, ${y}px)`;
     });
-    m.addEventListener("mousemove", onMove, { passive:true });
-    m.addEventListener("mouseleave", () => { m.style.transform = "translate(0,0)"; }, { passive:true });
+
+    m.addEventListener("mousemove", onMove, { passive: true });
+    m.addEventListener("mouseleave", () => {
+      m.style.transform = "translate(0,0)";
+    });
   });
 })();
 
-/* ===== Parallax blobs & thumbs ===== */
+/* ===== Parallax blobs & thumbs (1 handler) ===== */
 (() => {
   if (!isFinePointer || prefersReducedMotion) return;
 
@@ -110,11 +118,13 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     const nx = e.clientX / window.innerWidth - 0.5;
     const ny = e.clientY / window.innerHeight - 0.5;
 
+    // BG blobs (soft sway)
     blobs.forEach((b, i) => {
       const mul = i + 1;
       b.style.transform = `translate(${nx * 8 * mul}px, ${ny * 8 * mul}px)`;
     });
 
+    // Card thumbs parallax (depth-based)
     parallaxes.forEach((el) => {
       const d = parseFloat(el.dataset.depth || "0.1");
       const x = nx * d * 40;
@@ -122,28 +132,39 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
       el.style.transform = `translate(${x}px, ${y}px)`;
     });
   });
-  document.addEventListener("mousemove", onMouseMove, { passive:true });
+
+  document.addEventListener("mousemove", onMouseMove, { passive: true });
 })();
 
 /* ===== Cursor blob & dot ===== */
 (() => {
   if (!isFinePointer || prefersReducedMotion) return;
+
   const blob = document.querySelector(".cursor-blob");
-  const dot  = document.querySelector(".cursor-dot");
+  const dot = document.querySelector(".cursor-dot");
   if (!blob || !dot) return;
 
-  let bx = innerWidth/2, by = innerHeight/2;
-  let tx = bx, ty = by;
+  let bx = innerWidth / 2,
+    by = innerHeight / 2;
+  let tx = bx,
+    ty = by;
 
-  window.addEventListener("mousemove", (e) => {
-    tx = e.clientX; ty = e.clientY;
-    dot.style.left = `${tx}px`; dot.style.top = `${ty}px`;
-  }, { passive:true });
+  window.addEventListener(
+    "mousemove",
+    (e) => {
+      tx = e.clientX;
+      ty = e.clientY;
+      dot.style.left = `${tx}px`;
+      dot.style.top = `${ty}px`;
+    },
+    { passive: true }
+  );
 
   const tick = () => {
     bx += (tx - bx) * 0.12;
     by += (ty - by) * 0.12;
-    blob.style.left = `${bx}px`; blob.style.top = `${by}px`;
+    blob.style.left = `${bx}px`;
+    blob.style.top = `${by}px`;
     requestAnimationFrame(tick);
   };
   tick();
@@ -156,12 +177,16 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
 
   document.body.classList.add("intro-lock");
 
+  // typewriter
   const el = intro.querySelector(".intro-title .line-2");
   if (el) {
     const full = el.textContent.trim();
     el.textContent = "";
     let i = 0;
-    const step = () => { el.textContent = full.slice(0, ++i); if (i < full.length) setTimeout(step, 70); };
+    const step = () => {
+      el.textContent = full.slice(0, ++i);
+      if (i < full.length) setTimeout(step, 70);
+    };
     setTimeout(step, 260);
   }
 
@@ -170,10 +195,18 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     setTimeout(() => {
       intro.remove();
       document.body.classList.remove("intro-lock");
-      window.scrollTo({ top:0, behavior:"auto" });
+      window.scrollTo({ top: 0, behavior: "auto" });
     }, 650);
   };
-  window.addEventListener("load", () => setTimeout(closeIntro, 2400), { once:true });
+
+  // เมื่อโหลดเสร็จหน่วงปิด + กันหลุดค้าง
+  let closed = false;
+  const safeClose = () => { if (!closed) { closed = true; closeIntro(); } };
+  window.addEventListener("load", () => setTimeout(safeClose, 2200), { once: true });
+  // คลิกข้ามได้
+  intro.addEventListener("click", safeClose, { passive: true });
+  // เผื่อ fail-safe 5s
+  setTimeout(safeClose, 5000);
 })();
 
 /* ===== Stats counter ===== */
@@ -181,17 +214,29 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   const counters = document.querySelectorAll(".stat-card[data-count] .num");
   if (!counters.length) return;
 
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (!e.isIntersecting) return;
-      const numEl = e.target;
-      const target = +numEl.parentElement.dataset.count || 0;
-      let cur = 0;
-      const step = Math.max(1, Math.floor(target/60));
-      const inc = () => { cur = Math.min(target, cur + step); numEl.textContent = cur; if (cur < target) requestAnimationFrame(inc); };
-      inc(); obs.unobserve(numEl);
-    });
-  }, { threshold:0.5 });
+  const obs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+
+        const numEl = e.target;
+        const target = +numEl.parentElement.dataset.count || 0;
+        let cur = 0;
+        const step = Math.max(1, Math.floor(target / 60));
+
+        const inc = () => {
+          cur = Math.min(target, cur + step);
+          numEl.textContent = cur;
+          if (cur < target) requestAnimationFrame(inc);
+        };
+
+        inc();
+        obs.unobserve(numEl);
+      });
+    },
+    { threshold: 0.5 }
+  );
+
   counters.forEach((n) => obs.observe(n));
 })();
 
@@ -202,8 +247,8 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
 
   const panels = {
     projects: document.getElementById("panel-projects"),
-    certs:    document.getElementById("panel-certs"),
-    stack:    document.getElementById("panel-stack"),
+    certs: document.getElementById("panel-certs"),
+    stack: document.getElementById("panel-stack"),
   };
 
   const show = (key) => {
@@ -212,6 +257,7 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
       t.classList.toggle("active", on);
       t.setAttribute("aria-selected", on ? "true" : "false");
     });
+
     Object.entries(panels).forEach(([k, p]) => {
       if (!p) return;
       if (k === key) p.removeAttribute("hidden");
@@ -222,11 +268,12 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   tabs.forEach((t) => t.addEventListener("click", () => show(t.dataset.tab)));
 
   document.addEventListener("keydown", (e) => {
-    if (!["ArrowLeft","ArrowRight"].includes(e.key)) return;
+    if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
     const arr = [...tabs];
     const i = arr.findIndex((t) => t.classList.contains("active"));
     const ni = e.key === "ArrowRight" ? (i + 1) % arr.length : (i - 1 + arr.length) % arr.length;
-    arr[ni].focus(); arr[ni].click();
+    arr[ni].focus();
+    arr[ni].click();
   });
 })();
 
@@ -235,17 +282,21 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
   const links = document.querySelectorAll('#navLinks a[href^="#"]');
   if (!links.length) return;
 
-  const sections = [...links].map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  const sections = [...links]
+    .map((a) => document.querySelector(a.getAttribute("href")))
+    .filter(Boolean);
 
   const spy = () => {
     const y = window.scrollY + 120;
     let active = links[0];
-    sections.forEach((sec, i) => { if (sec.offsetTop <= y) active = links[i]; });
+    sections.forEach((sec, i) => {
+      if (sec.offsetTop <= y) active = links[i];
+    });
     links.forEach((a) => a.classList.toggle("active", a === active));
   };
 
   spy();
-  window.addEventListener("scroll", rafThrottle(spy), { passive:true });
+  window.addEventListener("scroll", rafThrottle(spy), { passive: true });
 })();
 
 /* ===== Scroll progress bar ===== */
@@ -259,78 +310,54 @@ const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matc
     bar.style.width = `${(scrolled * 100).toFixed(2)}%`;
   });
 
-  window.addEventListener("scroll", onScroll, { passive:true });
+  window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 })();
 
-/* ===== Sequential Marquee (เข้า/ออกจากขอบจอจริง — ไม่โผล่กลาง, ไม่ทับ, 2 แถวคนละทิศ) ===== */
+/* ===== Double-Row Marquee (start off-screen, exit off-screen, no mid-pop) ===== */
 (() => {
-  const root = document.getElementById("skillsMarquee");
-  if (!root) return;
+  const tracks = [document.getElementById("skillsTrack1"), document.getElementById("skillsTrack2")].filter(Boolean);
+  if (!tracks.length) return;
 
-  const buildSequentialRow = (rowEl, dir = "left") => {
-    const track = rowEl.querySelector(".track");
-    if (!track) return;
+  const MIN_FILL = 2.2; // เติมความยาวอย่างน้อย 2.2x viewport เพื่อลื่นและไม่เว้นช่อง
+  const PX_PER_SEC = 120; // ความเร็วโดยประมาณ
 
-    // สร้างก้อนเดียว (unit) จากไอคอนเดิมทั้งหมด
-    const unit = document.createElement("div");
-    unit.className = "unit";
-    Array.from(track.children).forEach((ch) => unit.appendChild(ch.cloneNode(true)));
-    rowEl.appendChild(unit);
-    track.remove();
+  const fillAndDuration = (track) => {
+    // Duplicate items จนกว่าความกว้างรวม >= MIN_FILL * viewport
+    const vw = window.innerWidth;
+    const base = Array.from(track.children);
+    let total = track.scrollWidth;
 
-    let startX = 0;
-    let endX   = 0;
-    let x      = 0;
+    if (!base.some(n => n.hasAttribute && n.hasAttribute("data-base"))) {
+      base.forEach(n => n.setAttribute("data-base",""));
+    }
 
-    const speed = 90; // px/sec ปรับได้
-    const measure = () => {
-      const vw = rowEl.clientWidth || window.innerWidth;
-      const w  = unit.offsetWidth;
+    // เติมซ้ำจนยาวพอ
+    while (total < vw * MIN_FILL) {
+      base.forEach(n => track.appendChild(n.cloneNode(true)));
+      total = track.scrollWidth;
+    }
 
-      // เซ็ตความสูงแถวให้พอดีกับไอคอน
-      const h = unit.getBoundingClientRect().height || 44;
-      rowEl.style.height = `${h + 2}px`;
-
-      if (dir === "left") {
-        startX = vw;        // เริ่มนอกขวา
-        endX   = -w;        // เป้าหมายพ้นซ้าย
-      } else {
-        startX = -w;        // เริ่มนอกซ้าย
-        endX   = vw;        // เป้าหมายพ้นขวา
-      }
-      x = startX;
-      unit.style.transform = `translateX(${x}px)`;
-    };
-
-    let last = performance.now();
-    const tick = (now) => {
-      const dt = Math.min(0.033, (now - last) / 1000);
-      last = now;
-
-      const v = (dir === "left" ? -1 : 1) * speed;
-      x += v * dt;
-      unit.style.transform = `translateX(${x}px)`;
-
-      // เงื่อนไขรีเซ็ตจะเกิดเมื่อ "ออกพ้นจอทั้งหมด" เท่านั้น
-      if ((dir === "left" && x <= endX) || (dir === "right" && x >= endX)) {
-        // reset เริ่มนอกจอฝั่งเดิมอีกครั้ง
-        x = startX;
-        unit.style.transform = `translateX(${x}px)`;
-      }
-
-      requestAnimationFrame(tick);
-    };
-
-    measure();
-    requestAnimationFrame(tick);
-
-    new ResizeObserver(() => measure()).observe(rowEl);
+    // คำนวณ duration ตามความยาวรวม + viewport (ให้เข้า-ออกนอกจอ)
+    const travel = total + vw; // เริ่ม -100% ไป +100% (หรือกลับกัน)
+    const duration = Math.max(14, travel / PX_PER_SEC);
+    track.style.animationDuration = `${duration}s`;
   };
 
-  const rowLeft  = root.querySelector(".row.left")  || root.querySelector(".row.row-1");
-  const rowRight = root.querySelector(".row.right") || root.querySelector(".row.row-2");
+  const setup = () => tracks.forEach(fillAndDuration);
 
-  if (rowLeft)  buildSequentialRow(rowLeft,  "left");   // แถวบน → ซ้าย
-  if (rowRight) buildSequentialRow(rowRight, "right");  // แถวล่าง → ขวา
+  setup();
+  window.addEventListener("load", setup, { once: true });
+  window.addEventListener("resize", rafThrottle(setup));
+
+  // Pause on hover (desktop)
+  if (isFinePointer) {
+    const marquee = document.getElementById("skillsMarquee");
+    marquee?.addEventListener("mouseenter", () => {
+      marquee.querySelectorAll(".track").forEach((t) => (t.style.animationPlayState = "paused"));
+    });
+    marquee?.addEventListener("mouseleave", () => {
+      marquee.querySelectorAll(".track").forEach((t) => (t.style.animationPlayState = "running"));
+    });
+  }
 })();
