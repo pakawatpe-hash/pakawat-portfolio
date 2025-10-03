@@ -158,62 +158,101 @@ if (isFinePointer) {
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== Sync Marquee (สองแถวออก/เข้าแบบซิงก์กัน) ===== */
-(function(){
-  const cssVar = (name) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
-  const SPEED = cssVar('--mk-speed') || 120; // px/sec
+/* ===== Marquee (rAF, time-based, modulo, seamless for hours) ===== */
+(function () {
+  const ROOT = document.documentElement;
 
-  function fillTrack(track) {
-    const row = track.closest('.mk-row');
-    const base = track.querySelector('.mk-set');
-    if (!row || !base) return;
+  const cssVar = (name) => {
+    const v = getComputedStyle(ROOT).getPropertyValue(name);
+    return parseFloat(v) || 0;
+  };
 
-    // ล้าง clone เดิม
-    track.querySelectorAll('.mk-set').forEach((s,i)=>{ if(i>0) s.remove(); });
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const BASE_SPEED = Math.max(20, cssVar('--mk-speed') || 120); // px/sec (กำหนดใน :root)
+  const SPEED = prefersReduced ? 0 : BASE_SPEED;
 
-    // clone จนกว้างอย่างน้อย 2 เท่าของ row → วิ่งได้ต่อเนื่อง
-    while (track.scrollWidth < row.clientWidth * 2) {
-      track.appendChild(base.cloneNode(true));
+  const belt = document.getElementById('skillsBelt');
+  if (!belt) return;
+
+  // สองแทร็ก: A = ซ้าย, B = ขวา (คงโครงสร้าง HTML เดิม; ถ้าไม่มี B ก็ข้าม)
+  const aTrack = belt.querySelector('.mk-a .mk-track');
+  const bTrack = belt.querySelector('.mk-b .mk-track') || null;
+
+  // สถานะของแต่ละแทร็ก
+  const tracks = [];
+  if (aTrack) tracks.push({ el: aTrack, dir: -1, half: 0, offset: 0 });
+  if (bTrack) tracks.push({ el: bTrack, dir: +1, half: 0, offset: 0 });
+
+  function fillTrack(trackEl, minFactor = 3) {
+    const row = trackEl.closest('.mk-row');
+    if (!row) return;
+
+    // เก็บชุด base แรกไว้ แล้วลบ clone เดิมทั้งหมด (เหลือแค่ชุดแรก)
+    const sets = [...trackEl.querySelectorAll('.mk-set')];
+    if (!sets.length) return;
+    const base = sets[0];
+    sets.slice(1).forEach((s) => s.remove());
+
+    // clone จนกว่าความกว้างรวม >= minFactor * ความกว้างแถว
+    while (trackEl.scrollWidth < row.clientWidth * minFactor) {
+      trackEl.appendChild(base.cloneNode(true));
+    }
+    // บังคับให้จำนวนชุดเป็นเลขคู่เสมอ เพื่อให้ half = ครึ่งทางพอดี (ไร้รอยต่อ)
+    if (trackEl.querySelectorAll('.mk-set').length % 2 !== 0) {
+      trackEl.appendChild(base.cloneNode(true));
     }
   }
 
-  function setupTrack(track, direction, syncTs) {
-    fillTrack(track);
-    const halfWidth = track.scrollWidth / 2;
-    const duration  = Math.max(14, halfWidth / SPEED); // ไม่ให้เร็วเกินไป
-
-    track.style.animationName = direction === 'left' ? 'mk-move-left' : 'mk-move-right';
-    track.style.animationTimingFunction = 'linear';
-    track.style.animationIterationCount = 'infinite';
-    track.style.animationDuration = `${duration}s`;
-
-    // ให้เริ่มพร้อมกันด้วย negative delay อ้างอิง timestamp เดียวกัน
-    const offset = -((syncTs/1000) % duration);
-    track.style.animationDelay = `${offset}s`;
+  function computeHalf(trackEl) {
+    return trackEl.scrollWidth / 2;
   }
 
-  function initSyncMarquee(){
-    const belt = document.getElementById('skillsBelt');
-    if (!belt) return;
+  function init(forceKeepProgressRatio = false) {
+    tracks.forEach((t) => {
+      const prevHalf = t.half || 0;
+      const prevProgress = prevHalf ? (t.offset % prevHalf) / prevHalf : 0;
 
-    const now = performance.now();
-    const aTrack = belt.querySelector('.mk-a .mk-track');
-    const bTrack = belt.querySelector('.mk-b .mk-track');
+      fillTrack(t.el, 3);
+      t.half = computeHalf(t.el);
 
-    if (aTrack) setupTrack(aTrack, 'left', now);
-    if (bTrack) setupTrack(bTrack, 'right', now);
+      if (forceKeepProgressRatio && t.half > 0) {
+        t.offset = (prevProgress * t.half) || 0;
+      } else {
+        t.offset = t.offset % (t.half || 1);
+      }
 
-    // ปรับใหม่เมื่อ resize (คงการ sync)
-    window.addEventListener('resize', ()=>{
-      const sync = performance.now();
-      if (aTrack) setupTrack(aTrack,'left',sync);
-      if (bTrack) setupTrack(bTrack,'right',sync);
-    }, {passive:true});
+      t.el.style.willChange = 'transform';
+      t.el.style.animation = 'none'; // กัน CSS keyframes เก่า
+      t.el.style.transform = 'translateX(0)';
+    });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSyncMarquee, {once:true});
-  } else {
-    initSyncMarquee();
+  // rAF loop (time-based)
+  let last = performance.now();
+
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); // clamp ≤50ms
+    last = now;
+
+    if (SPEED > 0) {
+      tracks.forEach((t) => {
+        t.offset += t.dir * SPEED * dt;
+
+        // modulo wrap ช่วง [-half, half)
+        while (t.offset <= -t.half) t.offset += t.half;
+        while (t.offset >=  t.half) t.offset -= t.half;
+
+        t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
+      });
+    }
+
+    requestAnimationFrame(frame);
   }
+
+  // Init ครั้งแรก + handle resize แบบลื่น
+  init(false);
+  const onResize = () => init(true);
+  window.addEventListener('resize', onResize, { passive: true });
+
+  requestAnimationFrame((t0) => { last = t0; frame(t0); });
 })();
