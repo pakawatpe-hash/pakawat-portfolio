@@ -4,9 +4,43 @@
   --primary:#6aa5ff; --primary-2:#9b8cff;
   --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
 
-  /* marquee speed config */
-  --mk-gap:48px;
-  --mk-speed:120; /* px/sec */
+/* ===== MARQUEE FIX (Sequential, No Overlap, No Mid-cut) ===== */
+.marquee.full-bleed {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: rgba(255,255,255,.02);
+}
+.marquee .row {
+  position: relative;
+  overflow: hidden;
+  padding: 12px 0;
+}
+.marquee .row + .row {
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.marquee .track { display: none } /* ซ่อน track เดิม ใช้ unit แทน */
+.marquee .unit {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  white-space: nowrap;
+  will-change: transform;
+}
+.marquee .unit > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  opacity: .92;
+}
+.marquee .unit i {
+  color: #cfe4ff;
+  font-size: 20px;
 }
 
 /* BASE */
