@@ -448,181 +448,123 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 }
 .about-desc p{ margin:.4rem 0 1rem; }
 .about-desc strong{ color:#fff; font-weight:700; }
-/* ===================== EDUCATION TIMELINE ===================== */
-.edu-section {
-  position: relative;
-  padding: 120px 0 140px;
+/* ===================== EDUCATION (fix bleeding + scroll spark) ===================== */
+
+/* คลิปไม่ให้แกนทะลุไป section อื่น */
+.edu-section{
+  position:relative;
+  padding:120px 0 160px;
+  overflow:hidden;                 /* <<< กันทะลุ */
 }
 
-.edu-timeline {
-  position: relative;
-  max-width: 1100px;
-  margin: 60px auto 0;
-  padding: 0 24px 600px; /* เพิ่มความยาวของเส้น */
+/* คอนเทนเนอร์แกน */
+.edu-timeline{
+  position:relative;
+  max-width:1100px;
+  margin:60px auto 0;
+  padding:0 24px 360px;            /* เว้นพื้นที่ด้านล่างให้เส้นดูยาว */
 }
 
-/* เส้นกลาง */
-.edu-timeline::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -160px;
-  transform: translateX(-50%);
-  width: 4px;
-  height: calc(100% + 1200px); /* <<< ยาวขึ้น */
-  border-radius: 3px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.35),
-    rgba(255, 255, 255, 0.1)
-  );
+/* ---------- Vertical axis (แสดงเฉพาะใน section นี้) ---------- */
+.edu-timeline::before{
+  content:"";
+  position:absolute;
+  top:0; bottom:0;                 /* <<< สูงเท่ากับคอนเทนเนอร์เท่านั้น */
+  left:50%; transform:translateX(-50%);
+  width:3px;
+  border-radius:2px;
+  background:linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.10));
+  z-index:0;
 }
 
-/* เส้น glow วิ่งตาม scroll */
-.edu-timeline::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -160px;
-  transform: translateX(-50%);
-  width: 6px;
-  height: calc(100% + 1200px);
-  border-radius: 4px;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.9) 40%,
-    rgba(120, 160, 255, 0.55) 50%,
-    transparent 60%
-  );
-  animation: edu-glow 6s linear infinite;
+/* Spark เรืองแสงวิ่งตามเลื่อน (ไม่มีวงกลมใหญ่) */
+.edu-timeline::after{
+  content:"";
+  position:absolute;
+  top:0; bottom:0;
+  left:50%; transform:translateX(-50%);
+  width:8px; pointer-events:none; z-index:0;
+  /* ใช้ตัวแปร --spark-y ที่ JS อัปเดตเป็น % บนแกน */
+  background:
+    radial-gradient(10px 14px at 50% var(--spark-y, 0%),
+      rgba(255,255,255,.95), rgba(120,160,255,.55) 55%, transparent 72%),
+    radial-gradient(20px 26px at 50% calc(var(--spark-y, 0%) + 5%),
+      rgba(255,255,255,.18), transparent 65%);
+  filter: blur(.2px);
+  mix-blend-mode:screen;
 }
 
-@keyframes edu-glow {
-  from {
-    background-position: 0 0;
+/* ---------- Items ---------- */
+:root{ --edu-conn: clamp(120px, 14vw, 180px); }
+
+.edu-item{
+  position:relative;
+  width:50%;
+  margin:260px 0;                 /* ระยะห่างยาว ๆ */
+  z-index:1;                      /* อยู่บนแกน */
+}
+
+/* ชิดแกนและจัดแนว */
+.edu-item.left  { left:0;    text-align:right; padding-right:calc(var(--edu-conn) + 22px); }
+.edu-item.right { left:50%;  text-align:left;  padding-left: calc(var(--edu-conn) + 22px); }
+
+/* จุดเล็กบนแกน (ถ้าอยากเอาออกหมด ให้คอมเมนต์บล็อกนี้) */
+.edu-item::before{
+  content:"";
+  position:absolute; top:42px; width:12px; height:12px; border-radius:50%;
+  background: radial-gradient(circle at 40% 40%, #fff, #dbe7ff 60%, rgba(255,255,255,.10) 70%);
+  box-shadow: 0 8px 18px rgba(120,160,255,.30);
+}
+.edu-item.left::before  { right:-6px; }
+.edu-item.right::before { left:-6px; }
+
+/* เส้นเชื่อมจากแกน → กล่องข้อความ */
+.edu-item::after{
+  content:""; position:absolute; top:50px; height:3px; width:var(--edu-conn);
+  background:linear-gradient(90deg, rgba(255,255,255,.28), rgba(255,255,255,.08));
+}
+.edu-item.left::after  { right:0; }
+.edu-item.right::after { left:0; }
+
+/* ไฟวิ่งบนเส้นเชื่อม (เล็ก ๆ เร็ว ๆ) */
+.edu-item .edu-content::before{
+  content:""; position:absolute; top:50px; height:3px; width:var(--edu-conn);
+  pointer-events:none; filter: blur(.2px); mix-blend-mode:screen;
+  background:
+    radial-gradient(9px 9px at calc(var(--line-prog,0)*100%) 50%,
+      rgba(255,255,255,.95), rgba(120,160,255,.55) 45%, transparent 70%);
+}
+.edu-item.left  .edu-content::before{ right:0; }
+.edu-item.right .edu-content::before{ left:0; }
+
+/* --------- Texts --------- */
+.edu-chip{
+  display:inline-block; padding:7px 16px;
+  background:linear-gradient(135deg,#6a9cff,#a777ff); color:#fff;
+  border-radius:999px; font-weight:800; margin-bottom:10px;
+}
+.edu-title{ margin:12px 0 4px; font-weight:800; font-size:22px; color:#fff; }
+.edu-desc{  margin:0; color:#cfdaf3; opacity:.92; }
+
+/* เข้า viewport ค่อย fade-in (ใช้คลาส reveal เดิมของคุณ) */
+.edu-item.reveal{ opacity:0; transform:translateY(14px); }
+.edu-item.reveal.in{ opacity:1; transform:none; transition:opacity .7s, transform .7s; }
+
+/* ---------- Mobile ---------- */
+@media (max-width:900px){
+  :root{ --edu-conn: clamp(90px, 24vw, 140px); }
+  .edu-item{
+    width:100%; left:0; text-align:left;
+    padding:0 0 0 calc(var(--edu-conn) + 46px);
+    margin:200px 0;
   }
-  to {
-    background-position: 0 200%;
-  }
-}
-
-/* ====== การ์ดแต่ละปี ====== */
-:root {
-  --edu-conn: clamp(120px, 14vw, 180px);
-}
-
-.edu-item {
-  position: relative;
-  width: 50%;
-  margin: 280px 0; /* เว้นระยะให้ยาว */
-}
-
-.edu-item.left {
-  left: 0;
-  text-align: right;
-  padding-right: calc(var(--edu-conn) + 22px);
-}
-.edu-item.right {
-  left: 50%;
-  text-align: left;
-  padding-left: calc(var(--edu-conn) + 22px);
-}
-
-/* จุดบนแกน */
-.edu-item::before {
-  content: "";
-  position: absolute;
-  top: 42px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 35%,
-    #fff,
-    #cfe0ff 45%,
-    rgba(255, 255, 255, 0.1) 65%
-  );
-  box-shadow: 0 10px 22px rgba(120, 160, 255, 0.35);
-}
-.edu-item.left::before {
-  right: -8px;
-}
-.edu-item.right::before {
-  left: -8px;
-}
-
-/* เส้นเชื่อม */
-.edu-item::after {
-  content: "";
-  position: absolute;
-  top: 50px;
-  height: 3px;
-  width: var(--edu-conn);
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.28),
-    rgba(255, 255, 255, 0.08)
-  );
-}
-.edu-item.left::after {
-  right: 0;
-}
-.edu-item.right::after {
-  left: 0;
-}
-
-/* ====== ข้อความ ====== */
-.edu-chip {
-  display: inline-block;
-  padding: 7px 16px;
-  background: linear-gradient(135deg, #6a9cff, #a777ff);
-  color: #fff;
-  border-radius: 999px;
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-
-.edu-title {
-  margin: 12px 0 4px;
-  font-weight: 800;
-  font-size: 22px;
-  color: #fff;
-}
-
-.edu-desc {
-  margin: 0;
-  color: #cfdaf3;
-  opacity: 0.92;
-}
-
-/* ====== มือถือ ====== */
-@media (max-width: 900px) {
-  :root {
-    --edu-conn: clamp(90px, 24vw, 140px);
-  }
-  .edu-item {
-    width: 100%;
-    margin: 200px 0;
-    text-align: left;
-    padding: 0 0 0 calc(var(--edu-conn) + 46px);
-    left: 0;
-  }
-  .edu-item::before {
-    left: 26px;
-    right: auto;
-    top: 40px;
-  }
-  .edu-item::after {
-    left: 34px;
-    width: calc(var(--edu-conn) + 6px);
-    top: 48px;
+  .edu-item::before{ left:26px; right:auto; top:40px; }
+  .edu-item::after,
+  .edu-item .edu-content::before{
+    left:34px; width:calc(var(--edu-conn) + 6px); top:48px;
   }
   .edu-timeline::before,
-  .edu-timeline::after {
-    left: 26px;
-    transform: none;
-  }
+  .edu-timeline::after{ left:26px; transform:none; }
 }
+
 
