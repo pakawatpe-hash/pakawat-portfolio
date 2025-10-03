@@ -251,3 +251,57 @@ if (isFinePointer) {
 
   window.addEventListener('resize', ()=>init(true), {passive:true});
 })();
+/* ===== Code window: word-by-word glow sweep ===== */
+(function(){
+  const code = document.querySelector('.code-window pre code');
+  if(!code) return;
+
+  // ห่อคำใน text node ให้เป็น span.glow-word โดยเก็บเว้นวรรคไว้เหมือนเดิม
+  function wrapWords(node){
+    if(node.nodeType === Node.TEXT_NODE){
+      const parts = node.textContent.split(/(\s+)/); // แยกคำและช่องว่าง
+      const frag = document.createDocumentFragment();
+      parts.forEach(p=>{
+        if(p.trim()===""){ // ช่องว่าง/ขึ้นบรรทัด
+          frag.appendChild(document.createTextNode(p));
+        }else{
+          const span = document.createElement('span');
+          span.className = 'glow-word';
+          span.textContent = p;
+          frag.appendChild(span);
+        }
+      });
+      node.parentNode.replaceChild(frag, node);
+    }else if(node.nodeType === Node.ELEMENT_NODE){
+      // เดินลงไปทุกลูก (รวม .kw .fn .id ฯลฯ) แต่ไม่ทำลายโครงเดิม
+      Array.from(node.childNodes).forEach(wrapWords);
+    }
+  }
+  wrapWords(code);
+
+  const words = Array.from(code.querySelectorAll('.glow-word'));
+  if(!words.length) return;
+
+  let i = 0;
+  const TRAIL = 4;      // จำนวนคำที่ยังทิ้งแสงอยู่ข้างหลัง
+  const STEP_MS = 80;   // ความเร็วไล่คำ (ยิ่งน้อยยิ่งเร็ว)
+
+  function tick(){
+    // จุดปัจจุบันเรือง
+    if(words[i]) words[i].classList.add('on');
+
+    // ลบแสงคำที่หลุดจากท้ายขบวน
+    const drop = i - TRAIL;
+    if(drop >= 0 && words[drop]) words[drop].classList.remove('on');
+
+    i++;
+    if(i >= words.length + TRAIL){
+      // รีเซ็ตแล้ววนใหม่
+      words.forEach(w=>w.classList.remove('on'));
+      i = 0;
+    }
+  }
+
+  const timer = setInterval(tick, STEP_MS);
+  window.addEventListener('beforeunload', ()=> clearInterval(timer));
+})();
