@@ -251,57 +251,81 @@ if (isFinePointer) {
 
   window.addEventListener('resize', ()=>init(true), {passive:true});
 })();
-/* ===== Code window: word-by-word glow sweep ===== */
-(function(){
-  const code = document.querySelector('.code-window pre code');
-  if(!code) return;
+/* ===== Code window: word-by-word glow sweep (robust) ===== */
+(function () {
+  // หาเป้าหมาย
+  var host = document.querySelector('.code-window pre code');
+  if (!host || host.dataset.glowInit === '1') return; // กันรันซ้ำ
+  host.dataset.glowInit = '1';
 
-  // ห่อคำใน text node ให้เป็น span.glow-word โดยเก็บเว้นวรรคไว้เหมือนเดิม
-  function wrapWords(node){
-    if(node.nodeType === Node.TEXT_NODE){
-      const parts = node.textContent.split(/(\s+)/); // แยกคำและช่องว่าง
-      const frag = document.createDocumentFragment();
-      parts.forEach(p=>{
-        if(p.trim()===""){ // ช่องว่าง/ขึ้นบรรทัด
+  // Fallback ค่าคงที่ของ NodeFilter (กันบาง env ที่ไม่มี)
+  var NF = window.NodeFilter || { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 };
+
+  // ใช้ TreeWalker เดินเฉพาะ text node → ไม่ชนตอนแทนที่
+  var walker = document.createTreeWalker(host, NF.SHOW_TEXT, {
+    acceptNode: function (n) {
+      return n.nodeValue && n.nodeValue.trim() ? NF.FILTER_ACCEPT : NF.FILTER_REJECT;
+    }
+  });
+
+  var textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+  // ห่อคำเป็น <span class="glow-word"> โดยเก็บช่องว่างเดิมไว้
+  try {
+    textNodes.forEach(function (tn) {
+      if (!tn.parentNode) return;
+      var parts = tn.nodeValue.split(/(\s+)/); // รวมทั้งช่องว่าง/ขึ้นบรรทัด
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        if (!p || /^\s+$/.test(p)) {
           frag.appendChild(document.createTextNode(p));
-        }else{
-          const span = document.createElement('span');
+        } else {
+          var span = document.createElement('span');
           span.className = 'glow-word';
           span.textContent = p;
           frag.appendChild(span);
         }
-      });
-      node.parentNode.replaceChild(frag, node);
-    }else if(node.nodeType === Node.ELEMENT_NODE){
-      // เดินลงไปทุกลูก (รวม .kw .fn .id ฯลฯ) แต่ไม่ทำลายโครงเดิม
-      Array.from(node.childNodes).forEach(wrapWords);
-    }
-  }
-  wrapWords(code);
-
-  const words = Array.from(code.querySelectorAll('.glow-word'));
-  if(!words.length) return;
-
-  let i = 0;
-  const TRAIL = 4;      // จำนวนคำที่ยังทิ้งแสงอยู่ข้างหลัง
-  const STEP_MS = 80;   // ความเร็วไล่คำ (ยิ่งน้อยยิ่งเร็ว)
-
-  function tick(){
-    // จุดปัจจุบันเรือง
-    if(words[i]) words[i].classList.add('on');
-
-    // ลบแสงคำที่หลุดจากท้ายขบวน
-    const drop = i - TRAIL;
-    if(drop >= 0 && words[drop]) words[drop].classList.remove('on');
-
-    i++;
-    if(i >= words.length + TRAIL){
-      // รีเซ็ตแล้ววนใหม่
-      words.forEach(w=>w.classList.remove('on'));
-      i = 0;
-    }
+      }
+      tn.parentNode.replaceChild(frag, tn);
+    });
+  } catch (e) {
+    // ถ้ามี error ใด ๆ ให้หยุดอย่างนิ่ม ๆ ไม่พังสคริปต์อื่น
+    console.warn('[glow-sweep] wrap failed:', e);
+    return;
   }
 
-  const timer = setInterval(tick, STEP_MS);
-  window.addEventListener('beforeunload', ()=> clearInterval(timer));
+  var words = Array.prototype.slice.call(host.querySelectorAll('.glow-word'));
+  if (!words.length) return;
+
+  // พารามิเตอร์ปรับแต่ง
+  var TRAIL = 4;   // จำนวนคำที่ยังทิ้งแสงไว้ด้านหลัง
+  var STEP  = 80;  // ms ต่อคำ (ยิ่งน้อยยิ่งเร็ว)
+
+  var idx = 0;
+  var timer;
+
+  function tick() {
+    if (idx < words.length) {
+      words[idx].classList.add('on');
+    }
+    var drop = idx - TRAIL;
+    if (drop >= 0 && drop < words.length) {
+      words[drop].classList.remove('on');
+    }
+    idx++;
+    if (idx > words.length + TRAIL) {
+      // รีเซ็ตลูป
+      for (var k = 0; k < words.length; k++) words[k].classList.remove('on');
+      idx = 0;
+    }
+    timer = setTimeout(tick, STEP);
+  }
+
+  tick();
+
+  // เคลียร์เมื่อออกหน้า/รีโหลด
+  window.addEventListener('pagehide', function () { clearTimeout(timer); });
+  window.addEventListener('beforeunload', function () { clearTimeout(timer); });
 })();
