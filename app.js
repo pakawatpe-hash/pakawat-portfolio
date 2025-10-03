@@ -158,7 +158,7 @@ if (isFinePointer) {
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== Marquee (2 แถวสวนทาง: เข้า-ข้าม-ออก แล้วกลับทิศวนซ้ำ) ===== */
+/* ===== Marquee (no-clone, one chunk each row, edge→edge then reset) ===== */
 (function () {
   const ROOT = document.documentElement;
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -174,6 +174,7 @@ if (isFinePointer) {
   const belt = document.getElementById('skillsBelt');
   if (!belt) return;
 
+  // ต้องมีสองแถว: .mk-a (ซ้าย←) และ .mk-b (ขวา→)
   const rowA = belt.querySelector('.mk-row.mk-a');
   const rowB = belt.querySelector('.mk-row.mk-b');
 
@@ -181,63 +182,46 @@ if (isFinePointer) {
   const bTrack = rowB?.querySelector('.mk-track') || null;
   if (!aTrack || !bTrack) return;
 
-  // เติมเนื้อหาให้ยาวพอ (อย่างน้อย 2 ชุดเพื่อไม่โล่ง)
-  function fillTrack(trackEl, minFactor = 2) {
-    const row = trackEl.closest('.mk-row');
-    if (!row) return;
-    const sets = [...trackEl.querySelectorAll('.mk-set')];
-    if (!sets.length) return;
-    const base = sets[0];
-    sets.slice(1).forEach(s => s.remove());
-    while (trackEl.scrollWidth < row.clientWidth * minFactor) {
-      trackEl.appendChild(base.cloneNode(true));
-    }
-  }
-
+  // helper วัดขนาด
   function metrics(trackEl) {
     const row = trackEl.closest('.mk-row');
     return {
       rowW: row?.clientWidth || 0,
-      contentW: trackEl.scrollWidth
+      contentW: trackEl.scrollWidth || 0
     };
   }
 
-  // สถานะแต่ละแทร็ก
+  // state ของแต่ละแถว (dir คงที่ตลอดอายุ)
   const tracks = [
-    { el: aTrack, dir: -1, offset: 0, rowW: 0, contentW: 0 }, // เริ่มจากขวาไปซ้าย
-    { el: bTrack, dir: +1, offset: 0, rowW: 0, contentW: 0 }  // เริ่มจากซ้ายไปขวา
+    { el: aTrack, dir: -1, rowW: 0, contentW: 0, offset: 0, start: 0, end: 0 }, // วิ่งจากขวา → ซ้าย
+    { el: bTrack, dir: +1, rowW: 0, contentW: 0, offset: 0, start: 0, end: 0 }  // วิ่งจากซ้าย → ขวา
   ];
 
-  // ตั้งค่าเริ่มเฟส: เข้า-ข้าม-ออก (เราเริ่มที่ "เข้า" โดย offset = start)
-  function setStartForDirection(t) {
-    // ถ้าทิศทางปัจจุบันเป็น -1 (ไปซ้าย) ให้เริ่มนอกจอขวา
-    // ระยะต้องวิ่งทั้งหมด = rowW + contentW
-    if (t.dir === -1) {
-      t.start = +t.rowW;         // เริ่มขอบขวา (นอกจอ)
-      t.end   = -t.contentW;     // ไปจนพ้นซ้าย
-    } else {
-      t.start = -t.rowW;         // เริ่มขอบซ้าย (นอกจอ)
-      t.end   = +t.contentW;     // ไปจนพ้นขวา
+  // ตั้งค่าจุดเริ่ม/จุดจบตามทิศ (ไม่สลับทิศ)
+  function setBounds(t) {
+    if (t.dir === -1) {        // ไปซ้าย: เริ่มนอกจอขวา → ออกพ้นซ้าย
+      t.start = t.rowW;
+      t.end   = -t.contentW;
+    } else {                   // ไปขวา: เริ่มนอกจอซ้าย → ออกพ้นขวา
+      t.start = -t.rowW;
+      t.end   =  t.contentW;
     }
-    t.offset = t.start;
   }
 
-  function init(keepPhase = false) {
+  // init/recalc โดย “รักษา progress สัดส่วนระยะทาง” ตอน resize
+  function init(keepProgress = false) {
     tracks.forEach(t => {
-      fillTrack(t.el, 2);
-      const m = metrics(t.el);
-      t.rowW = m.rowW;
-      t.contentW = Math.max(m.contentW, 1);
+      const { rowW, contentW } = metrics(t.el);
+      const oldStart = t.start, oldEnd = t.end;
+      const oldDist = (oldEnd - oldStart) || 1;
+      const oldP = keepProgress ? (t.offset - oldStart) / oldDist : 0;
 
-      if (!keepPhase) {
-        setStartForDirection(t);
-      } else {
-        // ถ้า resize ระหว่างวิ่ง ให้ map สัดส่วนระยะทางเดิม
-        const total = t.rowW + t.contentW;
-        const p = (t.offset - t.start) / (t.end - t.start || 1);
-        setStartForDirection(t);
-        t.offset = t.start + p * (t.end - t.start);
-      }
+      t.rowW = rowW;
+      t.contentW = Math.max(contentW, 1);
+      setBounds(t);
+
+      const newDist = (t.end - t.start) || 1;
+      t.offset = keepProgress ? (t.start + oldP * newDist) : t.start;
 
       t.el.style.willChange = 'transform';
       t.el.style.animation = 'none';
@@ -247,30 +231,25 @@ if (isFinePointer) {
 
   let last = performance.now();
   function frame(now) {
-    const dt = Math.min(0.05, (now - last) / 1000);
+    const dt = Math.min(0.05, (now - last) / 1000); // ≤ 50ms ป้องกันกระโดด
     last = now;
 
     if (SPEED > 0) {
       tracks.forEach(t => {
         t.offset += t.dir * SPEED * dt;
 
-        // เงื่อนไข “วิ่งจนหมด”:
-        // ไปซ้าย: offset <= end(-contentW)
-        // ไปขวา : offset >= end(+contentW)
-        const reachedEnd = t.dir === -1 ? (t.offset <= t.end) : (t.offset >= t.end);
-        if (reachedEnd) {
-          // สลับทิศ แล้วเริ่มใหม่จากอีกขอบ (reverse & restart)
-          t.dir *= -1;
-          setStartForDirection(t);
-        }
+        // เงื่อนไข: “ออกพ้นอีกฝั่งทั้งก้อน” แล้วค่อยรีที่ขอบเดิม
+        const done = t.dir === -1 ? (t.offset <= t.end) : (t.offset >= t.end);
+        if (done) t.offset = t.start; // รีเซ็ต “เริ่มใหม่จากขอบ” ทันที
 
         t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
       });
     }
+
     requestAnimationFrame(frame);
   }
 
   init(false);
-  window.addEventListener('resize', ()=>init(true), { passive: true });
+  window.addEventListener('resize', () => init(true), { passive: true });
   requestAnimationFrame((t0)=>{ last = t0; frame(t0); });
 })();
