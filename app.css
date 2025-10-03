@@ -215,3 +215,4 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after{animation:none}
   .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
+.marquee .mk-track { animation: none !important; }
