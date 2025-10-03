@@ -12,12 +12,14 @@ const isFinePointer = matchMedia('(pointer: fine)').matches;
 
 /* ===== Reveal on scroll ===== */
 const revealEls = document.querySelectorAll('.reveal, .card, .contact-card');
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
-  });
-},{threshold:0.15});
-revealEls.forEach(el=>io.observe(el));
+if (revealEls.length) {
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  },{threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+}
 
 /* ===== Section lazy ===== */
 (() => {
@@ -112,6 +114,7 @@ if (isFinePointer) {
 /* ===== Stats counter ===== */
 (() => {
   const counters = document.querySelectorAll('.stat-card[data-count] .num');
+  if(!counters.length) return;
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if(!e.isIntersecting) return;
@@ -127,6 +130,7 @@ if (isFinePointer) {
 /* ===== Tabs ===== */
 (() => {
   const tabs = document.querySelectorAll('.tab');
+  if(!tabs.length) return;
   const panels = { projects: document.getElementById('panel-projects'), certs: document.getElementById('panel-certs'), stack: document.getElementById('panel-stack') };
   const show = (key)=>{
     tabs.forEach(t=>{ const on = t.dataset.tab===key; t.classList.toggle('active',on); t.setAttribute('aria-selected', on?'true':'false'); if(on) t.focus(); });
@@ -141,6 +145,7 @@ if (isFinePointer) {
 /* ===== ScrollSpy ===== */
 (() => {
   const links = document.querySelectorAll('#navLinks a[href^="#"]');
+  if(!links.length) return;
   const sections = [...links].map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
   const spy = ()=>{ const y=window.scrollY+120; let active=links[0]; sections.forEach((sec,i)=>{ if(sec.offsetTop<=y) active=links[i]; }); links.forEach(a=>a.classList.toggle('active', a===active)); };
   spy(); window.addEventListener('scroll', rafThrottle(spy), {passive:true});
@@ -153,10 +158,10 @@ if (isFinePointer) {
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== Sync Marquee ===== */
+/* ===== Sync Marquee (สองแถวออก/เข้าแบบซิงก์กัน) ===== */
 (function(){
   const cssVar = (name) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
-  const SPEED = cssVar('--mk-speed') || 120;
+  const SPEED = cssVar('--mk-speed') || 120; // px/sec
 
   function fillTrack(track) {
     const row = track.closest('.mk-row');
@@ -166,7 +171,7 @@ if (isFinePointer) {
     // ล้าง clone เดิม
     track.querySelectorAll('.mk-set').forEach((s,i)=>{ if(i>0) s.remove(); });
 
-    // clone จนยาว ≥ 2x ความกว้าง row
+    // clone จนกว้างอย่างน้อย 2 เท่าของ row → วิ่งได้ต่อเนื่อง
     while (track.scrollWidth < row.clientWidth * 2) {
       track.appendChild(base.cloneNode(true));
     }
@@ -175,14 +180,14 @@ if (isFinePointer) {
   function setupTrack(track, direction, syncTs) {
     fillTrack(track);
     const halfWidth = track.scrollWidth / 2;
-    const duration  = Math.max(14, halfWidth / SPEED);
+    const duration  = Math.max(14, halfWidth / SPEED); // ไม่ให้เร็วเกินไป
 
     track.style.animationName = direction === 'left' ? 'mk-move-left' : 'mk-move-right';
     track.style.animationTimingFunction = 'linear';
     track.style.animationIterationCount = 'infinite';
     track.style.animationDuration = `${duration}s`;
 
-    // sync จุดเริ่มสองแถว
+    // ให้เริ่มพร้อมกันด้วย negative delay อ้างอิง timestamp เดียวกัน
     const offset = -((syncTs/1000) % duration);
     track.style.animationDelay = `${offset}s`;
   }
@@ -198,6 +203,7 @@ if (isFinePointer) {
     if (aTrack) setupTrack(aTrack, 'left', now);
     if (bTrack) setupTrack(bTrack, 'right', now);
 
+    // ปรับใหม่เมื่อ resize (คงการ sync)
     window.addEventListener('resize', ()=>{
       const sync = performance.now();
       if (aTrack) setupTrack(aTrack,'left',sync);
@@ -211,4 +217,3 @@ if (isFinePointer) {
     initSyncMarquee();
   }
 })();
-
