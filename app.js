@@ -251,17 +251,15 @@ if (isFinePointer) {
 
   window.addEventListener('resize', ()=>init(true), {passive:true});
 })();
-/* ===== Code window: word-by-word glow sweep (robust) ===== */
+/* ===== Code window: word-by-word glow sweep (color-aware) ===== */
 (function () {
-  // หาเป้าหมาย
   var host = document.querySelector('.code-window pre code');
-  if (!host || host.dataset.glowInit === '1') return; // กันรันซ้ำ
+  if (!host || host.dataset.glowInit === '1') return;
   host.dataset.glowInit = '1';
 
-  // Fallback ค่าคงที่ของ NodeFilter (กันบาง env ที่ไม่มี)
   var NF = window.NodeFilter || { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 };
 
-  // ใช้ TreeWalker เดินเฉพาะ text node → ไม่ชนตอนแทนที่
+  // เดินหาเฉพาะ text nodes ที่มีตัวอักษร
   var walker = document.createTreeWalker(host, NF.SHOW_TEXT, {
     acceptNode: function (n) {
       return n.nodeValue && n.nodeValue.trim() ? NF.FILTER_ACCEPT : NF.FILTER_REJECT;
@@ -271,27 +269,26 @@ if (isFinePointer) {
   var textNodes = [];
   while (walker.nextNode()) textNodes.push(walker.currentNode);
 
-  // ห่อคำเป็น <span class="glow-word"> โดยเก็บช่องว่างเดิมไว้
+  // ห่อคำเป็น span.glow-word โดยเก็บช่องว่างเดิม
   try {
     textNodes.forEach(function (tn) {
       if (!tn.parentNode) return;
-      var parts = tn.nodeValue.split(/(\s+)/); // รวมทั้งช่องว่าง/ขึ้นบรรทัด
+      var parts = tn.nodeValue.split(/(\s+)/);
       var frag = document.createDocumentFragment();
       for (var i = 0; i < parts.length; i++) {
         var p = parts[i];
         if (!p || /^\s+$/.test(p)) {
           frag.appendChild(document.createTextNode(p));
         } else {
-          var span = document.createElement('span');
-          span.className = 'glow-word';
-          span.textContent = p;
-          frag.appendChild(span);
+          var s = document.createElement('span');
+          s.className = 'glow-word';
+          s.textContent = p;
+          frag.appendChild(s);
         }
       }
       tn.parentNode.replaceChild(frag, tn);
     });
   } catch (e) {
-    // ถ้ามี error ใด ๆ ให้หยุดอย่างนิ่ม ๆ ไม่พังสคริปต์อื่น
     console.warn('[glow-sweep] wrap failed:', e);
     return;
   }
@@ -299,25 +296,46 @@ if (isFinePointer) {
   var words = Array.prototype.slice.call(host.querySelectorAll('.glow-word'));
   if (!words.length) return;
 
-  // พารามิเตอร์ปรับแต่ง
-  var TRAIL = 4;   // จำนวนคำที่ยังทิ้งแสงไว้ด้านหลัง
-  var STEP  = 80;  // ms ต่อคำ (ยิ่งน้อยยิ่งเร็ว)
+  // helper: แปลง rgb/rgba(...) เป็น rgba(r,g,b,a)
+  function rgbaWithAlpha(cssColor, a) {
+    // รองรับ rgb(…) / rgba(…) / hsl ในบางเคส (ปล่อยผ่านใช้ currentColor)
+    var m = cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (m) return 'rgba(' + m[1] + ',' + m[2] + ',' + m[3] + ',' + a + ')';
+    return cssColor; // fallback (จะไม่โปร่งใส)
+  }
 
-  var idx = 0;
-  var timer;
+  // พารามิเตอร์
+  var TRAIL = 4;    // ความยาวหางแสง
+  var STEP  = 80;   // ms ต่อคำ
+
+  var idx = 0, timer;
+
+  function setGlow(el, on) {
+    if (!el) return;
+    if (on) {
+      var cs = getComputedStyle(el);
+      var base = cs.color; // สีจริงของคำ (สืบทอดจาก .kw .fn .id)
+      el.style.color = '#fff'; // ทำให้ตัวอักษรสว่างขึ้นนิด
+      el.style.filter = 'saturate(1.15)';
+      el.style.textShadow =
+        '0 0 10px ' + rgbaWithAlpha(base, 0.85) + ', ' +
+        '0 0 18px ' + rgbaWithAlpha(base, 0.55);
+    } else {
+      el.style.textShadow = '';
+      el.style.filter = '';
+      el.style.color = ''; // คืนค่าให้สืบทอดตามเดิม
+    }
+  }
 
   function tick() {
-    if (idx < words.length) {
-      words[idx].classList.add('on');
-    }
+    if (idx < words.length) setGlow(words[idx], true);
     var drop = idx - TRAIL;
-    if (drop >= 0 && drop < words.length) {
-      words[drop].classList.remove('on');
-    }
+    if (drop >= 0 && drop < words.length) setGlow(words[drop], false);
+
     idx++;
     if (idx > words.length + TRAIL) {
-      // รีเซ็ตลูป
-      for (var k = 0; k < words.length; k++) words[k].classList.remove('on');
+      // reset แล้ววนใหม่
+      for (var k = 0; k < words.length; k++) setGlow(words[k], false);
       idx = 0;
     }
     timer = setTimeout(tick, STEP);
@@ -325,7 +343,6 @@ if (isFinePointer) {
 
   tick();
 
-  // เคลียร์เมื่อออกหน้า/รีโหลด
-  window.addEventListener('pagehide', function () { clearTimeout(timer); });
-  window.addEventListener('beforeunload', function () { clearTimeout(timer); });
+  window.addEventListener('pagehide', function(){ clearTimeout(timer); });
+  window.addEventListener('beforeunload', function(){ clearTimeout(timer); });
 })();
