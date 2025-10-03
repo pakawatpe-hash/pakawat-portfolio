@@ -72,47 +72,22 @@
         </div>
       </div>
 
-      <!-- Illustration -->
+     <!-- Illustration -->
 <div class="hero-art glass tilt glare reveal" aria-hidden="true">
   <div class="code-window">
     <div class="dots"><span></span><span></span><span></span></div>
-    <pre><code>
-<span class="kw">class</span> <span class="id">ApplyKMUTNB</span> {
-  <span class="kw">fun</span> <span class="fn">buildCV</span>() =
-    <span class="fn">Resume</span>(
-      name=<span class="kw">"Pakawat"</span>,
-      track=<span class="kw">"CprE"</span>,
-      skills=[<span class="kw">"Flutter"</span>, <span class="kw">"Python"</span>, <span class="kw">"Web"</span>, <span class="kw">"Roblox"</span>]
-    ).<span class="fn">exportPDF</span>(<span class="kw">"Pakawat-CV.pdf"</span>)
-
-  <span class="kw">fun</span> <span class="fn">submit</span>() {
-    <span class="kw">val</span> form = <span class="fn">GForm</span>(id=<span class="kw">"KMUTNB-CprE-2025"</span>)
-    form.<span class="fn">answer</span>(<span class="kw">"Name"</span>, <span class="kw">"Pakawat"</span>)
-    form.<span class="fn">answer</span>(<span class="kw">"Program"</span>, <span class="kw">"Computer Engineering"</span>)
-    form.<span class="fn">upload</span>(<span class="kw">"Portfolio"</span>, file=<span class="kw">"pakawat_portfolio.zip"</span>)
-    form.<span class="fn">submit</span>()
-
-    <span class="fn">Sheets</span>.<span class="fn">append</span>(<span class="kw">"Submissions"</span>,
-      [<span class="fn">now</span>(), <span class="kw">"Pakawat"</span>, <span class="kw">"CprE"</span>])
-
-    <span class="fn">Line</span>.<span class="fn">notify</span>(<span class="kw">"🔥 Submitted KMUTNB CprE application!"</span>)
-  }
+<pre><code><span class="kw">class</span> <span class="id">ApplyKMUTNB</span> {
+  <span class="kw">fun</span> submit() { <span class="fn">sendPortfolio</span>() }
 }
-
-<span class="kw">def</span> <span class="fn">run</span>():
-  app = <span class="id">ApplyKMUTNB</span>()
-  app.<span class="fn">buildCV</span>()
-  app.<span class="fn">submit</span>()
-    </code></pre>
+<span class="kw">def</span> notify():
+  <span class="fn">line_alert</span>(<span class="kw">"CprE Application Sent!"</span>)</code></pre>
   </div>
-
   <div class="gears">
     <div class="gear g1"></div>
     <div class="gear g2"></div>
   </div>
   <span class="glare-spot" aria-hidden="true"></span>
 </div>
-
   </section>
 
   <!-- ================= Skills Marquee ================= -->
