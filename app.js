@@ -158,13 +158,13 @@ if (isFinePointer) {
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== Marquee (no-clone, 2 rows, start/end together per cycle) ===== */
+/* ===== Marquee (2 แถวสวนทาง | ขอบ→ขอบ | จบพร้อมกัน | no-clone) ===== */
 (function () {
   const ROOT = document.documentElement;
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const cssVar = (name) => parseFloat(getComputedStyle(ROOT).getPropertyValue(name)) || 0;
-  const BASE_SPEED = Math.max(20, cssVar('--mk-speed') || 120); // px/sec (อ้างอิงความเร็วภาพรวม)
+  const BASE_SPEED = Math.max(20, cssVar('--mk-speed') || 120); // px/sec
   const ENABLED = !prefersReduced && BASE_SPEED > 0;
 
   const belt = document.getElementById('skillsBelt');
@@ -176,9 +176,10 @@ if (isFinePointer) {
   const bTrack = rowB?.querySelector('.mk-track');
   if (!aTrack || !bTrack) return;
 
+  // state ตำแหน่งจริง x = translateX(px)
   const tracks = [
-    { el: aTrack, dir: -1, rowW: 0, contentW: 0, offset: 0, start: 0, end: 0, dist: 0, speed: 0 },
-    { el: bTrack, dir: +1, rowW: 0, contentW: 0, offset: 0, start: 0, end: 0, dist: 0, speed: 0 }
+    { el: aTrack, dir: -1, rowW: 0, contentW: 0, x: 0, startX: 0, endX: 0, dist: 0, speed: 0 }, // ขวา→ซ้าย
+    { el: bTrack, dir: +1, rowW: 0, contentW: 0, x: 0, startX: 0, endX: 0, dist: 0, speed: 0 }  // ซ้าย→ขวา
   ];
 
   function metrics(trackEl){
@@ -186,64 +187,78 @@ if (isFinePointer) {
     return { rowW: row?.clientWidth || 0, contentW: trackEl.scrollWidth || 0 };
   }
 
-  // ตั้งขอบเริ่ม/จบ (ทิศคงที่)
   function setBounds(t){
-    if (t.dir === -1){ t.start = t.rowW; t.end = -t.contentW; }   // เริ่มขวา→ซ้าย
-    else { t.start = -t.rowW; t.end = t.contentW; }                // เริ่มซ้าย→ขวา
-    t.dist = Math.max(1, Math.abs(t.end - t.start));               // ระยะทาง = rowW + contentW
+    // เริ่มนอกจอ: RTL -> ขวา, LTR -> ซ้าย
+    if (t.dir === -1){ t.startX = t.rowW;    t.endX = -t.contentW; }  // ขวา→ซ้าย
+    else              { t.startX = -t.contentW; t.endX =  t.rowW; }   // ซ้าย→ขวา
+    t.dist = Math.max(1, Math.abs(t.endX - t.startX));                // = rowW + contentW
   }
 
-  // ทำให้ “ใช้เวลาเท่ากัน” ทั้งสองแถว
   function syncSpeeds(){
     const maxDist = Math.max(tracks[0].dist, tracks[1].dist);
-    const T = maxDist / BASE_SPEED;               // เวลาเป้าหมายของหนึ่งรอบ
-    tracks.forEach(t => { t.speed = t.dist / T; });// ความเร็วเฉพาะแถว (px/s)
+    const T = maxDist / BASE_SPEED;                  // เวลา 1 รอบ ให้เท่ากัน
+    tracks.forEach(t=>{
+      t.speed = t.dist / T;                          // px/sec ของแถวนี้
+      // ความเร็วทิศทางจริง (เพิ่ม/ลด x)
+      t.vx = (t.endX > t.startX ? +t.speed : -t.speed);
+    });
   }
 
   function init(keepProgress=false){
     tracks.forEach(t=>{
       const {rowW, contentW} = metrics(t.el);
-      const oldStart=t.start, oldEnd=t.end, oldRange=(oldEnd-oldStart)||1;
-      const oldP = keepProgress ? (t.offset - oldStart)/oldRange : 0;
+      // เก็บ progress เดิมก่อน recalc
+      const oldStart = t.startX, oldEnd = t.endX, oldRange = (oldEnd - oldStart) || 1;
+      const oldP = keepProgress ? (t.x - oldStart) / oldRange : 0;
 
-      t.rowW=rowW; t.contentW=Math.max(1,contentW);
+      t.rowW = rowW; t.contentW = Math.max(1, contentW);
       setBounds(t);
 
-      if(keepProgress){
-        const newRange=(t.end - t.start) || 1;
-        t.offset = t.start + oldP * newRange;     // map progress เดิมหลัง resize
-      }else{
-        t.offset = t.start;                       // เริ่มที่ขอบ
+      if (keepProgress){
+        const newRange = (t.endX - t.startX) || 1;
+        t.x = t.startX + oldP * newRange;
+      } else {
+        t.x = t.startX;
       }
 
-      t.el.style.willChange='transform';
-      t.el.style.animation='none';
-      t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
+      t.el.style.willChange = 'transform';
+      t.el.style.animation = 'none';
+      t.el.style.transform = `translateX(${t.x.toFixed(2)}px)`;
     });
 
-    syncSpeeds(); // คำนวณความเร็วหลังรู้ระยะจริงของทั้งคู่
+    syncSpeeds();
   }
 
   let last = performance.now();
   function frame(now){
-    const dt = Math.min(0.05, (now - last)/1000); // ≤50ms กันกระโดด
+    const dt = Math.min(0.05, (now - last)/1000); // ≤ 50ms
     last = now;
 
     if (ENABLED){
       tracks.forEach(t=>{
-        t.offset += t.dir * t.speed * dt;
+        t.x += t.vx * dt;
 
-        // ถึงปลายทางรอบนี้หรือยัง? (ออกพ้นทั้งก้อน)
-        const done = t.dir === -1 ? (t.offset <= t.end) : (t.offset >= t.end);
-        if (done) t.offset = t.start;             // รีเริ่มใหม่ที่ขอบเดิมทันที
+        const forward = t.endX > t.startX;
+        const done = forward ? (t.x >= t.endX) : (t.x <= t.endX);
+        if (done){
+          // รีเริ่มใหม่จากขอบเดิม (ทิศทางคงที่)
+          t.x = t.startX;
+        }
 
-        t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
+        t.el.style.transform = `translateX(${t.x.toFixed(2)}px)`;
       });
     }
+
     requestAnimationFrame(frame);
   }
 
-  init(false);
+  // ให้วัดขนาดหลัง DOM พร้อม และหลัง font โหลดแล้วจะยิ่งเป๊ะ
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { init(false); requestAnimationFrame((t0)=>{ last=t0; frame(t0); }); }, {once:true});
+  } else {
+    init(false);
+    requestAnimationFrame((t0)=>{ last=t0; frame(t0); });
+  }
+
   window.addEventListener('resize', ()=>init(true), {passive:true});
-  requestAnimationFrame((t0)=>{ last=t0; frame(t0); });
 })();
