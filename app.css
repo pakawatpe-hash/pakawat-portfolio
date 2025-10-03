@@ -365,4 +365,17 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   pointer-events:none;
 }
 @keyframes ringSpin{ to{ transform: rotate(360deg); } }
+/* === Glow sweep per-word inside code window === */
+:root{ --code-glow:#9ec0ff; } /* ปรับสีเรืองแสงได้ */
+
+.code-window pre code .glow-word{
+  transition: color .25s ease, text-shadow .25s ease, filter .25s ease;
+}
+.code-window pre code .glow-word.on{
+  color:#fff; /* สว่างขึ้นนิด */
+  text-shadow:
+    0 0 10px color-mix(in srgb, var(--code-glow) 90%, transparent),
+    0 0 18px color-mix(in srgb, var(--code-glow) 55%, transparent);
+  filter: saturate(1.15);
+}
 
