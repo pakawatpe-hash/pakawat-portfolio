@@ -382,4 +382,57 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .code-window pre code .glow-word{
   transition: color .25s ease, text-shadow .25s ease, filter .25s ease;
 }
+/* === Avatar shine sweep + subtle zoom on hover === */
+.about-photo .avatar-glow{
+  position: relative;         /* เผื่อ pseudo-element */
+  overflow: hidden;           /* ตัดแสงส่วนเกิน */
+  cursor: pointer;            /* บอกว่ามี interactive นิด ๆ */
+  transition: box-shadow .3s ease, transform .25s ease;
+}
+
+/* แถบแสงวิ้งพาดข้ามรูป */
+.about-photo .avatar-glow::after{
+  content:"";
+  position:absolute;
+  top:-20%; left:-60%;
+  width:40%; height:140%;
+  background: linear-gradient(120deg,
+              rgba(255,255,255,0) 0%,
+              rgba(255,255,255,.18) 45%,
+              rgba(255,255,255,0) 100%);
+  filter: blur(0.5px);
+  transform: skewX(-20deg) translateX(-120%);
+  opacity: 0;
+  pointer-events:none;
+  transition: transform .9s ease, opacity .25s ease;
+}
+
+/* hover = วิ้ง + ยกนิด ๆ + สว่างขึ้น */
+.about-photo .avatar-glow:hover{
+  box-shadow: 0 34px 70px rgba(0,0,0,.42);
+  transform: translateY(-2px);
+}
+.about-photo .avatar-glow:hover::after{
+  opacity: 1;
+  transform: skewX(-20deg) translateX(320%);
+}
+
+/* รูปขยายเนียน ๆ และสว่างขึ้นเล็กน้อย */
+.about-photo .avatar-glow .avatar-img{
+  transition: transform .35s ease, filter .35s ease;
+}
+.about-photo .avatar-glow:hover .avatar-img{
+  transform: scale(1.03);
+  filter: brightness(1.06) saturate(1.05);
+}
+
+/* (ทางเลือก) รองรับคีย์บอร์ด: ถ้าเพิ่ม tabindex="0" ให้ .avatar-glow */
+.about-photo .avatar-glow:focus-visible{
+  outline: 2px solid rgba(146,180,255,.9);
+  outline-offset: 4px;
+}
+.about-photo .avatar-glow:focus-visible::after{
+  opacity: 1;
+  transform: skewX(-20deg) translateX(320%);
+}
 
