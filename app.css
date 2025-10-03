@@ -4,43 +4,11 @@
   --primary:#6aa5ff; --primary-2:#9b8cff;
   --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
 
-/* ===== Marquee Sync ===== */
-.marquee.full-bleed {
-  position: relative;
-  overflow: hidden;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  background: rgba(255,255,255,.02);
+  /* ✅ ตัวแปร marquee */
+  --mk-gap: 48px;
+  --mk-speed: 120; /* px/sec (ใช้ใน JS คำนวณ duration) */
 }
-.mk-row { overflow: hidden; padding: 12px 0; }
-.mk-track {
-  display: flex;
-  gap: var(--mk-gap);
-  width: max-content;
-  will-change: transform;
-}
-.mk-set {
-  display: flex;
-  gap: var(--mk-gap);
-  align-items: center;
-}
-.mk-set span {
-  display: inline-flex;
-  align-items: center;
-  font-weight: 700;
-  color: #dbe6ff;
-}
-.mk-set span i { font-size: 20px; margin-right: 8px; }
 
-/* Animation keyframes */
-@keyframes mk-move-left {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-@keyframes mk-move-right {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(50%); }
-}
 /* BASE */
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -122,21 +90,21 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 /* FULL-BLEED helper */
 .full-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
 
-/* ==================== MARQUEE (mk-*) – ใหม่ ==================== */
-.mk{position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+/* ==================== MARQUEE ==================== */
+.marquee.full-bleed{
+  position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)
+}
 .mk-row{overflow:hidden;padding:12px 0}
 .mk-track{
   display:flex;align-items:center;gap:var(--mk-gap);
   width:max-content;
   will-change:transform;
 }
-/* เริ่ม/จบ “นอกจอ” ให้ลื่น */
-.mk-track::before,.mk-track::after{content:"";flex:0 0 50vw}
 .mk-set{display:flex;align-items:center;gap:var(--mk-gap)}
 .mk-set span{display:inline-flex;align-items:center;font-weight:700;color:#dbe6ff;white-space:nowrap}
 .mk-set span i{font-size:20px;margin-right:8px;opacity:.9}
 
-/* keyframes - JS จะเป็นตัวกำหนด duration/delay */
+/* keyframes (ระยะเวลา set ใน JS) */
 @keyframes mk-move-left  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 @keyframes mk-move-right { from{transform:translateX(0)} to{transform:translateX( 50%)} }
 
@@ -146,7 +114,7 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 .stack-chip i{font-size:22px;color:#dbe6ff}
 .stack-chip span{font-weight:700}
 
-/* ILLUSTRATION (เดิม) */
+/* ILLUSTRATION */
 .hero-art{padding:16px;position:relative;overflow:hidden}
 .code-window{border-radius:14px;border:1px solid var(--line);background:#0f152d;position:relative}
 .dots{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.05)}
