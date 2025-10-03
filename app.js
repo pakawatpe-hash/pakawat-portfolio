@@ -158,7 +158,7 @@ if (isFinePointer) {
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== Marquee (Pass-sweep: เริ่มนอกขอบ -> วิ่งข้ามจอ -> รีเซ็ต วน) ===== */
+/* ===== Marquee (2 แถวสวนทาง: เข้า-ข้าม-ออก แล้วกลับทิศวนซ้ำ) ===== */
 (function () {
   const ROOT = document.documentElement;
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -174,34 +174,103 @@ if (isFinePointer) {
   const belt = document.getElementById('skillsBelt');
   if (!belt) return;
 
-  const rows = [
-    { row: belt.querySelector('.mk-row.mk-a'), dir: +1 }, // ซ้าย -> ขวา
-    { row: belt.querySelector('.mk-row.mk-b'), dir: -1 }  // ขวา -> ซ้าย
-  ].filter(r => r.row);
+  const rowA = belt.querySelector('.mk-row.mk-a');
+  const rowB = belt.querySelector('.mk-row.mk-b');
 
-  const tracks = rows.map(({row, dir}) => {
-    const el = row.querySelector('.mk-track');
-    return { el, row, dir, rowW: 0, trackW: 0, dist: 0, progress: 0 };
-  });
+  const aTrack = rowA?.querySelector('.mk-track') || null;
+  const bTrack = rowB?.querySelector('.mk-track') || null;
+  if (!aTrack || !bTrack) return;
 
-  function measure(t) {
-    t.rowW   = t.row.clientWidth;
-    t.trackW = t.el.scrollWidth;
-    t.dist   = t.rowW + t.trackW; // ระยะจากนอกขอบฝั่งหนึ่ง -> ออกอีกฝั่ง
+  // เติมเนื้อหาให้ยาวพอ (อย่างน้อย 2 ชุดเพื่อไม่โล่ง)
+  function fillTrack(trackEl, minFactor = 2) {
+    const row = trackEl.closest('.mk-row');
+    if (!row) return;
+    const sets = [...trackEl.querySelectorAll('.mk-set')];
+    if (!sets.length) return;
+    const base = sets[0];
+    sets.slice(1).forEach(s => s.remove());
+    while (trackEl.scrollWidth < row.clientWidth * minFactor) {
+      trackEl.appendChild(base.cloneNode(true));
+    }
   }
 
-  function setInitialProgress(t) {
-    // เริ่มที่ 0 ทุกครั้ง: นอกขอบพอดี
-    t.progress = 0;
-    applyTransform(t);
+  function metrics(trackEl) {
+    const row = trackEl.closest('.mk-row');
+    return {
+      rowW: row?.clientWidth || 0,
+      contentW: trackEl.scrollWidth
+    };
   }
 
-  function applyTransform(t) {
-    // ซ้าย->ขวา: เริ่ม -trackW แล้วเพิ่มจนถึง rowW
-    // ขวา->ซ้าย: เริ่ม +rowW แล้วลดจนถึง -trackW
-    if (t.dir === +1) {
-      const x = -t.trackW + t.progress; // from -trackW -> +rowW
-      t.el.style.transform = `translateX(${x.toFixed(2)}px)`;
+  // สถานะแต่ละแทร็ก
+  const tracks = [
+    { el: aTrack, dir: -1, offset: 0, rowW: 0, contentW: 0 }, // เริ่มจากขวาไปซ้าย
+    { el: bTrack, dir: +1, offset: 0, rowW: 0, contentW: 0 }  // เริ่มจากซ้ายไปขวา
+  ];
+
+  // ตั้งค่าเริ่มเฟส: เข้า-ข้าม-ออก (เราเริ่มที่ "เข้า" โดย offset = start)
+  function setStartForDirection(t) {
+    // ถ้าทิศทางปัจจุบันเป็น -1 (ไปซ้าย) ให้เริ่มนอกจอขวา
+    // ระยะต้องวิ่งทั้งหมด = rowW + contentW
+    if (t.dir === -1) {
+      t.start = +t.rowW;         // เริ่มขอบขวา (นอกจอ)
+      t.end   = -t.contentW;     // ไปจนพ้นซ้าย
     } else {
-      const x = t.rowW - t.progress; // from +rowW -> -trackW
-      t.el.style.transform = `translateX(${x.toFixed(2)}px)
+      t.start = -t.rowW;         // เริ่มขอบซ้าย (นอกจอ)
+      t.end   = +t.contentW;     // ไปจนพ้นขวา
+    }
+    t.offset = t.start;
+  }
+
+  function init(keepPhase = false) {
+    tracks.forEach(t => {
+      fillTrack(t.el, 2);
+      const m = metrics(t.el);
+      t.rowW = m.rowW;
+      t.contentW = Math.max(m.contentW, 1);
+
+      if (!keepPhase) {
+        setStartForDirection(t);
+      } else {
+        // ถ้า resize ระหว่างวิ่ง ให้ map สัดส่วนระยะทางเดิม
+        const total = t.rowW + t.contentW;
+        const p = (t.offset - t.start) / (t.end - t.start || 1);
+        setStartForDirection(t);
+        t.offset = t.start + p * (t.end - t.start);
+      }
+
+      t.el.style.willChange = 'transform';
+      t.el.style.animation = 'none';
+      t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
+    });
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+
+    if (SPEED > 0) {
+      tracks.forEach(t => {
+        t.offset += t.dir * SPEED * dt;
+
+        // เงื่อนไข “วิ่งจนหมด”:
+        // ไปซ้าย: offset <= end(-contentW)
+        // ไปขวา : offset >= end(+contentW)
+        const reachedEnd = t.dir === -1 ? (t.offset <= t.end) : (t.offset >= t.end);
+        if (reachedEnd) {
+          // สลับทิศ แล้วเริ่มใหม่จากอีกขอบ (reverse & restart)
+          t.dir *= -1;
+          setStartForDirection(t);
+        }
+
+        t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
+      });
+    }
+    requestAnimationFrame(frame);
+  }
+
+  init(false);
+  window.addEventListener('resize', ()=>init(true), { passive: true });
+  requestAnimationFrame((t0)=>{ last = t0; frame(t0); });
+})();
