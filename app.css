@@ -448,123 +448,95 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 }
 .about-desc p{ margin:.4rem 0 1rem; }
 .about-desc strong{ color:#fff; font-weight:700; }
-/* ===================== EDUCATION (fix bleeding + scroll spark) ===================== */
-
-/* คลิปไม่ให้แกนทะลุไป section อื่น */
+/* ===================== EDUCATION TIMELINE ===================== */
 .edu-section{
   position:relative;
-  padding:120px 0 160px;
-  overflow:hidden;                 /* <<< กันทะลุ */
+  padding:120px 0;
+  overflow:hidden;
 }
 
-/* คอนเทนเนอร์แกน */
 .edu-timeline{
   position:relative;
   max-width:1100px;
-  margin:60px auto 0;
-  padding:0 24px 360px;            /* เว้นพื้นที่ด้านล่างให้เส้นดูยาว */
+  margin:80px auto 0;
+  padding:0 24px 240px;   /* เว้นนิดเดียวพอ */
 }
 
-/* ---------- Vertical axis (แสดงเฉพาะใน section นี้) ---------- */
+/* เส้นหลักตรงกลาง */
 .edu-timeline::before{
-  content:"";
-  position:absolute;
-  top:0; bottom:0;                 /* <<< สูงเท่ากับคอนเทนเนอร์เท่านั้น */
-  left:50%; transform:translateX(-50%);
-  width:3px;
-  border-radius:2px;
-  background:linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.10));
-  z-index:0;
-}
-
-/* Spark เรืองแสงวิ่งตามเลื่อน (ไม่มีวงกลมใหญ่) */
-.edu-timeline::after{
   content:"";
   position:absolute;
   top:0; bottom:0;
   left:50%; transform:translateX(-50%);
-  width:8px; pointer-events:none; z-index:0;
-  /* ใช้ตัวแปร --spark-y ที่ JS อัปเดตเป็น % บนแกน */
-  background:
-    radial-gradient(10px 14px at 50% var(--spark-y, 0%),
-      rgba(255,255,255,.95), rgba(120,160,255,.55) 55%, transparent 72%),
-    radial-gradient(20px 26px at 50% calc(var(--spark-y, 0%) + 5%),
-      rgba(255,255,255,.18), transparent 65%);
-  filter: blur(.2px);
-  mix-blend-mode:screen;
+  width:3px;
+  background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.05));
+  z-index:0;
 }
 
-/* ---------- Items ---------- */
-:root{ --edu-conn: clamp(120px, 14vw, 180px); }
+/* 🔥 ไฟวงกลมเรืองแสงวิ่งรัวๆ บนเส้น */
+.edu-timeline::after{
+  content:"";
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  width:26px; height:26px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(120,160,255,.7) 50%, transparent 70%);
+  box-shadow:0 0 18px rgba(120,160,255,.8), 0 0 30px rgba(120,160,255,.5);
+  animation: edu-glow-run 2.5s linear infinite; /* <<< ไฟวิ่งรัวๆ */
+}
 
+/* keyframes: ไฟวิ่งจากบนลงล่าง แล้ว loop */
+@keyframes edu-glow-run {
+  0%   { top:0%; }
+  100% { top:100%; }
+}
+
+/* ------------ Item ------------ */
 .edu-item{
   position:relative;
   width:50%;
-  margin:260px 0;                 /* ระยะห่างยาว ๆ */
-  z-index:1;                      /* อยู่บนแกน */
+  margin:120px 0;         /* <<< ลดช่องว่าง */
+  z-index:1;
 }
 
-/* ชิดแกนและจัดแนว */
-.edu-item.left  { left:0;    text-align:right; padding-right:calc(var(--edu-conn) + 22px); }
-.edu-item.right { left:50%;  text-align:left;  padding-left: calc(var(--edu-conn) + 22px); }
+.edu-item.left  { left:0;    text-align:right; padding-right:120px; }
+.edu-item.right { left:50%;  text-align:left;  padding-left:120px; }
 
-/* จุดเล็กบนแกน (ถ้าอยากเอาออกหมด ให้คอมเมนต์บล็อกนี้) */
-.edu-item::before{
-  content:"";
-  position:absolute; top:42px; width:12px; height:12px; border-radius:50%;
-  background: radial-gradient(circle at 40% 40%, #fff, #dbe7ff 60%, rgba(255,255,255,.10) 70%);
-  box-shadow: 0 8px 18px rgba(120,160,255,.30);
-}
-.edu-item.left::before  { right:-6px; }
-.edu-item.right::before { left:-6px; }
-
-/* เส้นเชื่อมจากแกน → กล่องข้อความ */
-.edu-item::after{
-  content:""; position:absolute; top:50px; height:3px; width:var(--edu-conn);
-  background:linear-gradient(90deg, rgba(255,255,255,.28), rgba(255,255,255,.08));
-}
-.edu-item.left::after  { right:0; }
-.edu-item.right::after { left:0; }
-
-/* ไฟวิ่งบนเส้นเชื่อม (เล็ก ๆ เร็ว ๆ) */
-.edu-item .edu-content::before{
-  content:""; position:absolute; top:50px; height:3px; width:var(--edu-conn);
-  pointer-events:none; filter: blur(.2px); mix-blend-mode:screen;
-  background:
-    radial-gradient(9px 9px at calc(var(--line-prog,0)*100%) 50%,
-      rgba(255,255,255,.95), rgba(120,160,255,.55) 45%, transparent 70%);
-}
-.edu-item.left  .edu-content::before{ right:0; }
-.edu-item.right .edu-content::before{ left:0; }
-
-/* --------- Texts --------- */
 .edu-chip{
-  display:inline-block; padding:7px 16px;
-  background:linear-gradient(135deg,#6a9cff,#a777ff); color:#fff;
-  border-radius:999px; font-weight:800; margin-bottom:10px;
+  display:inline-block;
+  padding:7px 16px;
+  background:linear-gradient(135deg,#6a9cff,#a777ff);
+  color:#fff;
+  border-radius:999px;
+  font-weight:800;
+  margin-bottom:10px;
 }
-.edu-title{ margin:12px 0 4px; font-weight:800; font-size:22px; color:#fff; }
-.edu-desc{  margin:0; color:#cfdaf3; opacity:.92; }
 
-/* เข้า viewport ค่อย fade-in (ใช้คลาส reveal เดิมของคุณ) */
-.edu-item.reveal{ opacity:0; transform:translateY(14px); }
-.edu-item.reveal.in{ opacity:1; transform:none; transition:opacity .7s, transform .7s; }
+.edu-title{
+  margin:12px 0 4px;
+  font-weight:800;
+  font-size:22px;
+  color:#fff;
+}
+
+.edu-desc{
+  margin:0;
+  color:#cfdaf3;
+  opacity:.92;
+}
+
+/* Fade-in reveal */
+.edu-item.reveal{ opacity:0; transform:translateY(20px); }
+.edu-item.reveal.in{ opacity:1; transform:none; transition:.6s ease; }
 
 /* ---------- Mobile ---------- */
 @media (max-width:900px){
-  :root{ --edu-conn: clamp(90px, 24vw, 140px); }
   .edu-item{
-    width:100%; left:0; text-align:left;
-    padding:0 0 0 calc(var(--edu-conn) + 46px);
-    margin:200px 0;
-  }
-  .edu-item::before{ left:26px; right:auto; top:40px; }
-  .edu-item::after,
-  .edu-item .edu-content::before{
-    left:34px; width:calc(var(--edu-conn) + 6px); top:48px;
+    width:100%;
+    left:0; text-align:left;
+    padding-left:80px;
+    margin:100px 0;
   }
   .edu-timeline::before,
   .edu-timeline::after{ left:26px; transform:none; }
 }
-
 
