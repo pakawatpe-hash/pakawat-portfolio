@@ -158,7 +158,7 @@ if (isFinePointer) {
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== Marquee (rAF, 2 rows, opposite directions, seamless) ===== */
+/* ===== Marquee (Pass-sweep: เริ่มนอกขอบ -> วิ่งข้ามจอ -> รีเซ็ต วน) ===== */
 (function () {
   const ROOT = document.documentElement;
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -174,99 +174,34 @@ if (isFinePointer) {
   const belt = document.getElementById('skillsBelt');
   if (!belt) return;
 
-  // Ensure two rows exist: .mk-a and .mk-b (if b missing → clone a)
-  let rowA = belt.querySelector('.mk-row.mk-a');
-  let rowB = belt.querySelector('.mk-row.mk-b');
+  const rows = [
+    { row: belt.querySelector('.mk-row.mk-a'), dir: +1 }, // ซ้าย -> ขวา
+    { row: belt.querySelector('.mk-row.mk-b'), dir: -1 }  // ขวา -> ซ้าย
+  ].filter(r => r.row);
 
-  if (!rowA) {
-    // ถ้าเผลอไม่มีอะไรเลย ก็ทำโครงสร้างขั้นต่ำให้
-    const wrap = document.createElement('div');
-    wrap.className = 'mk-row mk-a';
-    wrap.innerHTML = `<div class="mk-track">${belt.innerHTML}</div>`;
-    belt.innerHTML = '';
-    belt.appendChild(wrap);
-    rowA = wrap;
-  }
-  if (!rowB) {
-    rowB = rowA.cloneNode(true);
-    rowB.classList.remove('mk-a');
-    rowB.classList.add('mk-b');
-    belt.appendChild(rowB);
+  const tracks = rows.map(({row, dir}) => {
+    const el = row.querySelector('.mk-track');
+    return { el, row, dir, rowW: 0, trackW: 0, dist: 0, progress: 0 };
+  });
+
+  function measure(t) {
+    t.rowW   = t.row.clientWidth;
+    t.trackW = t.el.scrollWidth;
+    t.dist   = t.rowW + t.trackW; // ระยะจากนอกขอบฝั่งหนึ่ง -> ออกอีกฝั่ง
   }
 
-  const aTrack = rowA.querySelector('.mk-track');
-  const bTrack = rowB.querySelector('.mk-track');
-
-  // State for each track
-  const tracks = [
-    { el: aTrack, dir: -1, half: 0, offset: 0 }, // left
-    { el: bTrack, dir: +1, half: 0, offset: 0 }  // right
-  ];
-
-  function fillTrack(trackEl, minFactor = 3) {
-    const row = trackEl.closest('.mk-row');
-    if (!row) return;
-
-    const sets = [...trackEl.querySelectorAll('.mk-set')];
-    if (!sets.length) return;
-    const base = sets[0];
-
-    // remove previous clones
-    sets.slice(1).forEach(s => s.remove());
-
-    // clone until wide enough
-    while (trackEl.scrollWidth < row.clientWidth * minFactor) {
-      trackEl.appendChild(base.cloneNode(true));
-    }
-    // force even count → half-width exact
-    if (trackEl.querySelectorAll('.mk-set').length % 2 !== 0) {
-      trackEl.appendChild(base.cloneNode(true));
-    }
+  function setInitialProgress(t) {
+    // เริ่มที่ 0 ทุกครั้ง: นอกขอบพอดี
+    t.progress = 0;
+    applyTransform(t);
   }
 
-  function computeHalf(trackEl) {
-    return trackEl.scrollWidth / 2;
-  }
-
-  function init(keepProgress = false) {
-    tracks.forEach(t => {
-      const prevHalf = t.half || 0;
-      const prevProgress = prevHalf ? (t.offset % prevHalf) / prevHalf : 0;
-
-      fillTrack(t.el, 3);
-      t.half = computeHalf(t.el);
-
-      if (keepProgress && t.half > 0) {
-        t.offset = (prevProgress * t.half) || 0;
-      } else {
-        t.offset = t.offset % (t.half || 1);
-      }
-
-      t.el.style.willChange = 'transform';
-      t.el.style.animation = 'none'; // disable any CSS keyframes
-      t.el.style.transform = 'translateX(0)';
-    });
-  }
-
-  // rAF loop
-  let last = performance.now();
-  function frame(now) {
-    const dt = Math.min(0.05, (now - last) / 1000); // clamp ≤ 50ms
-    last = now;
-
-    if (SPEED > 0) {
-      tracks.forEach(t => {
-        t.offset += t.dir * SPEED * dt;
-        // wrap within [-half, half)
-        while (t.offset <= -t.half) t.offset += t.half;
-        while (t.offset >=  t.half) t.offset -= t.half;
-        t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
-      });
-    }
-    requestAnimationFrame(frame);
-  }
-
-  init(false);
-  window.addEventListener('resize', () => init(true), { passive: true });
-  requestAnimationFrame((t0)=>{ last = t0; frame(t0); });
-})();
+  function applyTransform(t) {
+    // ซ้าย->ขวา: เริ่ม -trackW แล้วเพิ่มจนถึง rowW
+    // ขวา->ซ้าย: เริ่ม +rowW แล้วลดจนถึง -trackW
+    if (t.dir === +1) {
+      const x = -t.trackW + t.progress; // from -trackW -> +rowW
+      t.el.style.transform = `translateX(${x.toFixed(2)}px)`;
+    } else {
+      const x = t.rowW - t.progress; // from +rowW -> -trackW
+      t.el.style.transform = `translateX(${x.toFixed(2)}px)
