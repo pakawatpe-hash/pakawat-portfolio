@@ -322,10 +322,10 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .stack-chip::before, .stack-chip::after{ display:none; }
 }
 
-/* ===================== Hero code: glow + loader ===================== */
+/* ================= Hero code: keyword glow + single loader ring ================ */
+
 /* 1) Keyword soft glow (class/def/fun) */
 .code-window pre code .kw{
-  /* คงสีเดิมไว้ เพิ่ม glow เบาๆ */
   text-shadow: 0 0 0 rgba(255,150,150,0);
   animation: kwPulse 4s ease-in-out infinite;
 }
@@ -334,46 +334,35 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   40%          { text-shadow: 0 0 10px rgba(255,150,150,.85); }
 }
 
-/* 2) Loader ring ขวาล่างแบบเนียน */
-.code-window{ position: relative; }           /* สำหรับ pseudo elements */
+/* 2) Loader ring (fix ซ้อน) — ใช้แค่ ::after ตัวเดียว */
+.code-window{ position: relative; }
 
-/* glow วงในเบา ๆ */
-.code-window::before{
-  content:"";
-  position:absolute;
-  right:28px; bottom:28px;
-  width:68px; height:68px; border-radius:50%;
-  background: radial-gradient(closest-side,
-              rgba(255,255,255,.16) 0,
-              rgba(255,255,255,.06) 64%,
-              transparent 66%);
-  filter: blur(1px);
-  pointer-events:none;
-  opacity:.9;
-}
+/* รีเซ็ตของเก่าที่เคยเพิ่ม (กันซ้อน) */
+.code-window::before{ content:none !important; }
 
-/* อาร์คหมุนรอบด้วย conic-gradient + mask (แทน border-top แบบเดิม) */
+/* วงแหวนโหลด + glow */
 .code-window::after{
   content:"";
   position:absolute;
   right:28px; bottom:28px;
   width:68px; height:68px; border-radius:50%;
-  background:
-    conic-gradient(
+  /* อาร์คหมุน: conic + เจาะกลางให้กลวง */
+  background: conic-gradient(
       from 0deg,
-      rgba(255,255,255,0) 0 76%,
-      rgba(255,255,255,.95) 86% 94%,
+      rgba(255,255,255,0) 0 78%,
+      rgba(255,255,255,.98) 86% 94%,
       rgba(255,255,255,0) 100%
     );
-  /* เจาะกลางให้กลวง เหลือเฉพาะแหวน */
   -webkit-mask: radial-gradient(farthest-side, transparent 54%, #000 55%);
           mask: radial-gradient(farthest-side, transparent 54%, #000 55%);
-  animation: ringSpin 2.8s linear infinite;   /* ⇦ ปรับความเร็วได้ */
-  filter: drop-shadow(0 0 10px rgba(255,255,255,.25));
+
+  /* glow ทั้งใน/นอก (ไม่ต้องใช้ ::before) */
+  box-shadow:
+    inset 0 0 12px rgba(255,255,255,.18),  /* inner glow */
+    0 0 10px rgba(255,255,255,.22);        /* outer glow */
+
+  animation: ringSpin 2.6s linear infinite;
   pointer-events:none;
 }
 @keyframes ringSpin{ to{ transform: rotate(360deg); } }
 
-/* ถ้าเคยมีเวอร์ชันที่ใช้ border-top loader อยู่ ให้ปิดทับแบบนี้ได้
-.code-window::after{ all: unset; }
-*/
