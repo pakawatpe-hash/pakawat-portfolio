@@ -435,4 +435,24 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   opacity: 1;
   transform: skewX(-20deg) translateX(320%);
 }
+/* ===== About text readability ===== */
+.about-desc{
+  line-height: 1.9;
+  color: #dfe7ff;
+  opacity: .95;
+  max-width: 68ch;                 /* ความกว้างบรรทัดสบายตา */
+  text-wrap: pretty;               /* เบราว์เซอร์ใหม่ ๆ */
+  overflow-wrap: anywhere;         /* ตัดคำได้แม้ไม่มีช่องว่าง */
+  word-break: break-word;          /* กันคำยาวล้น เช่น ชื่อมหาวิทยาลัย */
+  line-break: loose;               /* ช่วยตัดบรรทัดภาษาเอเชีย */
+}
+
+.about-desc p{
+  margin: .4rem 0 1rem;            /* ระยะห่างแต่ละย่อหน้า */
+}
+
+.about-desc strong{
+  color:#ffffff;
+  font-weight: 700;
+}
 
