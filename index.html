@@ -14,11 +14,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <!-- ✅ Font Awesome (ใช้สำหรับไอคอนใน Marquee) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=22" />
+  <link rel="stylesheet" href="app.css?v=23" />
 </head>
 <body>
   <!-- Cursor Glow + Dot -->
@@ -92,9 +91,27 @@
     </div>
   </section>
 
-  <!-- ================= Skills Marquee ================= -->
+  <!-- ================= Skills Marquee (2 แถว สวนทาง แบบ pass-sweep) ================= -->
   <section id="skillsBelt" class="marquee full-bleed">
+    <!-- แถวบน: วิ่งจากซ้าย ➜ ขวา -->
     <div class="mk-row mk-a">
+      <div class="mk-track">
+        <div class="mk-set">
+          <span><i class="fab fa-js-square"></i> JavaScript</span>
+          <span><i class="fab fa-github"></i> GitHub</span>
+          <span><i class="fas fa-robot"></i> AI</span>
+          <span><i class="fas fa-code"></i> C</span>
+          <span><i class="fab fa-python"></i> Python</span>
+          <span><i class="fab fa-flutter"></i> Flutter</span>
+          <span><i class="fas fa-gamepad"></i> Roblox</span>
+          <span><i class="fab fa-html5"></i> HTML</span>
+          <span><i class="fab fa-css3-alt"></i> CSS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- แถวล่าง: วิ่งจากขวา ➜ ซ้าย -->
+    <div class="mk-row mk-b">
       <div class="mk-track">
         <div class="mk-set">
           <span><i class="fab fa-js-square"></i> JavaScript</span>
@@ -256,6 +273,6 @@
   <footer class="foot"><div class="container">© 2025 Pakawat — Portfolio</div></footer>
 
   <!-- JS -->
-  <script src="app.js?v=22" defer></script>
+  <script src="app.js?v=23" defer></script>
 </body>
 </html>
