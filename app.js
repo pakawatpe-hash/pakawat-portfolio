@@ -153,40 +153,36 @@ if (isFinePointer) {
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ====== NEW: Sync Marquee ให้สองแถวย้ายพร้อมกันเสมอ ====== */
+/* ===== Sync Marquee ===== */
 (function(){
-  // อ่านค่าความเร็วจาก :root --mk-speed (px/sec) ถ้าไม่ตั้งไว้จะใช้ 120
   const cssVar = (name) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
   const SPEED = cssVar('--mk-speed') || 120;
 
-  // ทำให้ความกว้าง track ≥ 2 เท่าความกว้างแถว เพื่อให้ loop ลื่นและไม่มีช่องว่าง
-  function fillToAtLeast2(track) {
+  function fillTrack(track) {
     const row = track.closest('.mk-row');
     const base = track.querySelector('.mk-set');
     if (!row || !base) return;
 
-    // ลบ clone เก่า (สำหรับตอน resize)
+    // ล้าง clone เดิม
     track.querySelectorAll('.mk-set').forEach((s,i)=>{ if(i>0) s.remove(); });
 
-    // โคลนจนยาวพอ
+    // clone จนยาว ≥ 2x ความกว้าง row
     while (track.scrollWidth < row.clientWidth * 2) {
       track.appendChild(base.cloneNode(true));
     }
   }
 
-  // ตั้งค่า animation ของแถวหนึ่ง (direction: left/right)
   function setupTrack(track, direction, syncTs) {
-    fillToAtLeast2(track);
+    fillTrack(track);
     const halfWidth = track.scrollWidth / 2;
-    const duration  = Math.max(14, halfWidth / SPEED); // ป้องกันเร็วไป
+    const duration  = Math.max(14, halfWidth / SPEED);
 
-    track.style.animationName           = direction === 'left' ? 'mk-move-left' : 'mk-move-right';
+    track.style.animationName = direction === 'left' ? 'mk-move-left' : 'mk-move-right';
     track.style.animationTimingFunction = 'linear';
     track.style.animationIterationCount = 'infinite';
-    track.style.animationDuration       = `${duration}s`;
-    track.style.animationPlayState      = 'running';
+    track.style.animationDuration = `${duration}s`;
 
-    // ให้สองแถวเริ่ม “พร้อมกัน” ด้วย negative delay เท่ากัน (อิงเวลาปัจจุบัน)
+    // sync จุดเริ่มสองแถว
     const offset = -((syncTs/1000) % duration);
     track.style.animationDelay = `${offset}s`;
   }
@@ -199,23 +195,14 @@ if (isFinePointer) {
     const aTrack = belt.querySelector('.mk-a .mk-track');
     const bTrack = belt.querySelector('.mk-b .mk-track');
 
-    if (aTrack) setupTrack(aTrack, 'left',  now);
+    if (aTrack) setupTrack(aTrack, 'left', now);
     if (bTrack) setupTrack(bTrack, 'right', now);
 
-    // รีเซ็ตสัดส่วนเมื่อ resize โดยยังคง sync จุดเริ่ม
-    let rid = null;
-    const onResize = () => {
-      if (rid) cancelAnimationFrame(rid);
-      rid = requestAnimationFrame(()=>{
-        const sync = performance.now();
-        if (aTrack) setupTrack(aTrack,'left',  sync);
-        if (bTrack) setupTrack(bTrack,'right', sync);
-      });
-    };
-    window.addEventListener('resize', onResize, {passive:true});
-
-    // เผื่อฟอนต์โหลดช้า ทำให้ความกว้างเปลี่ยน — sync อีกรอบหลังโหลด
-    window.addEventListener('load', onResize, {once:true});
+    window.addEventListener('resize', ()=>{
+      const sync = performance.now();
+      if (aTrack) setupTrack(aTrack,'left',sync);
+      if (bTrack) setupTrack(bTrack,'right',sync);
+    }, {passive:true});
   }
 
   if (document.readyState === 'loading') {
@@ -224,3 +211,4 @@ if (isFinePointer) {
     initSyncMarquee();
   }
 })();
+
