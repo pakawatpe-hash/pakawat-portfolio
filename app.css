@@ -321,38 +321,59 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .stack-chip:hover, .stack-chip:focus-visible{ transform:none; box-shadow:none; }
   .stack-chip::before, .stack-chip::after{ display:none; }
 }
-/* ===== Glow highlight keywords ===== */
-pre code .kw {
-  color: #ffadad;
-  text-shadow: 0 0 0px rgba(255,150,150,0.0);
-  animation: keywordPulse 4s ease-in-out infinite;
+
+/* ===================== Hero code: glow + loader ===================== */
+/* 1) Keyword soft glow (class/def/fun) */
+.code-window pre code .kw{
+  /* คงสีเดิมไว้ เพิ่ม glow เบาๆ */
+  text-shadow: 0 0 0 rgba(255,150,150,0);
+  animation: kwPulse 4s ease-in-out infinite;
+}
+@keyframes kwPulse{
+  0%, 70%, 100% { text-shadow: 0 0 0 rgba(255,150,150,0); }
+  40%          { text-shadow: 0 0 10px rgba(255,150,150,.85); }
 }
 
-@keyframes keywordPulse {
-  0%, 90%, 100% {
-    text-shadow: 0 0 0px rgba(255,150,150,0.0);
-  }
-  40%, 60% {
-    text-shadow: 0 0 8px rgba(255,120,120,0.9);
-  }
+/* 2) Loader ring ขวาล่างแบบเนียน */
+.code-window{ position: relative; }           /* สำหรับ pseudo elements */
+
+/* glow วงในเบา ๆ */
+.code-window::before{
+  content:"";
+  position:absolute;
+  right:28px; bottom:28px;
+  width:68px; height:68px; border-radius:50%;
+  background: radial-gradient(closest-side,
+              rgba(255,255,255,.16) 0,
+              rgba(255,255,255,.06) 64%,
+              transparent 66%);
+  filter: blur(1px);
+  pointer-events:none;
+  opacity:.9;
 }
 
-/* ===== Right circle loader glow ===== */
-.code-window::after {
-  content: "";
-  position: absolute;
-  right: 28px;       /* ปรับตำแหน่งวงกลมตาม layout */
-  bottom: 28px;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.15);
-  border-top-color: rgba(255,255,255,0.9);
-  animation: spinGlow 3.5s linear infinite;
-  box-shadow: 0 0 12px rgba(255,255,255,0.35);
+/* อาร์คหมุนรอบด้วย conic-gradient + mask (แทน border-top แบบเดิม) */
+.code-window::after{
+  content:"";
+  position:absolute;
+  right:28px; bottom:28px;
+  width:68px; height:68px; border-radius:50%;
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(255,255,255,0) 0 76%,
+      rgba(255,255,255,.95) 86% 94%,
+      rgba(255,255,255,0) 100%
+    );
+  /* เจาะกลางให้กลวง เหลือเฉพาะแหวน */
+  -webkit-mask: radial-gradient(farthest-side, transparent 54%, #000 55%);
+          mask: radial-gradient(farthest-side, transparent 54%, #000 55%);
+  animation: ringSpin 2.8s linear infinite;   /* ⇦ ปรับความเร็วได้ */
+  filter: drop-shadow(0 0 10px rgba(255,255,255,.25));
+  pointer-events:none;
 }
+@keyframes ringSpin{ to{ transform: rotate(360deg); } }
 
-@keyframes spinGlow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
+/* ถ้าเคยมีเวอร์ชันที่ใช้ border-top loader อยู่ ให้ปิดทับแบบนี้ได้
+.code-window::after{ all: unset; }
+*/
