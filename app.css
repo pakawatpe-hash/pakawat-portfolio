@@ -540,3 +540,27 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .edu-timeline::after{ left:26px; transform:none; }
 }
 
+/* ===== Glow Text Scan Effect ===== */
+.edu-row h3,
+.edu-row p,
+.edu-chip {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.2) 0%,
+    #fff 40%,
+    #9cf 60%,
+    rgba(255,255,255,0.2) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShine 3s linear infinite;
+}
+
+/* Keyframes: แสงวิ่งซ้าย -> ขวา -> วน */
+@keyframes textShine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
