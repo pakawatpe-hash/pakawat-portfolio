@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pakawat — Portfolio</title>
 
+  <!-- SEO -->
   <meta name="description" content="Pakawat Portfolio — Frontend/Mobile Dev • Flutter • Python • Roblox • Web. Projects, Certificates & Contact.">
   <meta name="theme-color" content="#070b1a">
 
@@ -15,7 +16,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=40" />
+  <link rel="stylesheet" href="app.css?v=21" />
 </head>
 <body>
   <!-- Cursor Glow + Dot -->
@@ -30,7 +31,7 @@
   <div class="bg-blob b2" aria-hidden="true"></div>
   <div class="bg-blob b3" aria-hidden="true"></div>
 
-  <!-- INTRO -->
+  <!-- INTRO / SPLASH -->
   <div id="intro" class="intro" aria-label="Intro">
     <div class="intro-inner">
       <div class="icons" aria-hidden="true">
@@ -45,7 +46,6 @@
     </div>
   </div>
 
-  <!-- NAV -->
   <header class="nav glass">
     <div class="container nav-inner">
       <a class="brand" href="#home">Pakawat</a>
@@ -90,44 +90,41 @@
     </div>
   </section>
 
-  <!-- SKILLS MARQUEE (ใหม่, ไม่ชนของเก่า) -->
-  <section class="mk">
-  <div class="mk-row mk-a">
-    <div class="mk-track">
-      <div class="mk-set">
-        <span><i class="fab fa-html5"></i> HTML</span>
-        <span><i class="fab fa-css3-alt"></i> CSS</span>
-        <span><i class="fab fa-js"></i> JavaScript</span>
-        <span><i class="fab fa-github"></i> GitHub</span>
-        <span><i class="fas fa-robot"></i> AI</span>
-        <span><i class="fas fa-c"></i> C</span>
-        <span><i class="fab fa-python"></i> Python</span>
-        <span><i class="fab fa-flutter"></i> Flutter</span>
-        <span><i class="fas fa-gamepad"></i> Roblox</span>
+  <!-- ===== NEW: SKILLS BELT (Marquee) – ซิงค์สองแถวออกพร้อมกันเสมอ ===== -->
+  <section class="mk full-bleed" id="skillsBelt" aria-hidden="false">
+    <!-- Row A (ซ้าย→ขวา) -->
+    <div class="mk-row mk-a">
+      <div class="mk-track">
+        <div class="mk-set">
+          <span><i class='bx bxl-javascript'></i> JavaScript</span>
+          <span><i class='bx bxl-github'></i> GitHub</span>
+          <span><i class='bx bx-bot'></i> AI</span>
+          <span><i class='bx bx-c-plus-plus'></i> C</span>
+          <span><i class='bx bxl-python'></i> Python</span>
+          <span><i class='bx bxl-flutter'></i> Flutter</span>
+          <span><i class='bx bx-joystick'></i> Roblox</span>
+          <span><i class='bx bxl-html5'></i> HTML</span>
+          <span><i class='bx bxl-css3'></i> CSS</span>
+        </div>
       </div>
-      <!-- duplicate 1 ชุดไว้ต่อเนื่อง -->
-      <div class="mk-set">…ชุดเดียวกันซ้ำอีกครั้ง…</div>
     </div>
-  </div>
-
-  <div class="mk-row mk-b">
-    <div class="mk-track">
-      <div class="mk-set">
-        <span><i class="fab fa-html5"></i> HTML</span>
-        <span><i class="fab fa-css3-alt"></i> CSS</span>
-        <span><i class="fab fa-js"></i> JavaScript</span>
-        <span><i class="fab fa-github"></i> GitHub</span>
-        <span><i class="fas fa-robot"></i> AI</span>
-        <span><i class="fas fa-c"></i> C</span>
-        <span><i class="fab fa-python"></i> Python</span>
-        <span><i class="fab fa-flutter"></i> Flutter</span>
-        <span><i class="fas fa-gamepad"></i> Roblox</span>
+    <!-- Row B (ขวา→ซ้าย) -->
+    <div class="mk-row mk-b">
+      <div class="mk-track">
+        <div class="mk-set">
+          <span><i class='bx bxl-javascript'></i> JavaScript</span>
+          <span><i class='bx bxl-github'></i> GitHub</span>
+          <span><i class='bx bx-bot'></i> AI</span>
+          <span><i class='bx bx-c-plus-plus'></i> C</span>
+          <span><i class='bx bxl-python'></i> Python</span>
+          <span><i class='bx bxl-flutter'></i> Flutter</span>
+          <span><i class='bx bx-joystick'></i> Roblox</span>
+          <span><i class='bx bxl-html5'></i> HTML</span>
+          <span><i class='bx bxl-css3'></i> CSS</span>
+        </div>
       </div>
-      <div class="mk-set">…ชุดเดียวกันซ้ำอีกครั้ง…</div>
     </div>
-  </div>
-</section>
-
+  </section>
 
   <!-- ABOUT -->
   <section id="about" class="section about-section lazy" aria-label="About">
@@ -169,7 +166,7 @@
           <div class="num">0</div>
           <div class="label">Certificates</div>
         </div>
-        <div class="stat-card glass reveal" data-count="9">
+        <div class="stat-card glass reveal" data-count="7">
           <div class="icon"><i class='bx bx-briefcase'></i></div>
           <div class="num">0</div>
           <div class="label">Tech Stack</div>
@@ -191,7 +188,6 @@
       </div>
 
       <div class="tab-panels">
-        <!-- Projects -->
         <div class="panel show" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects">
           <div class="cards">
             <article class="card glass reveal tilt glare">
@@ -229,7 +225,6 @@
           </div>
         </div>
 
-        <!-- Certificates -->
         <div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
           <div class="cards">
             <article class="card glass reveal">
@@ -244,18 +239,17 @@
           </div>
         </div>
 
-        <!-- Tech Stack (Grid Chip ใหม่ ชื่อ class ไม่ชนของเก่า) -->
         <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
           <div class="stack-grid">
-            <article class="stack-chip glass reveal"><i class='bx bxl-flutter'></i><span>Flutter</span></article>
-            <article class="stack-chip glass reveal"><i class='bx bxl-python'></i><span>Python</span></article>
-            <article class="stack-chip glass reveal"><i class='bx bxl-java'></i><span>Java</span></article>
-            <article class="stack-chip glass reveal"><i class='bx bxl-html5'></i><span>HTML</span></article>
-            <article class="stack-chip glass reveal"><i class='bx bxl-css3'></i><span>CSS</span></article>
-            <article class="stack-chip glass reveal"><i class='bx bxl-javascript'></i><span>JavaScript</span></article>
-            <article class="stack-chip glass reveal"><i class='bx bxl-github'></i><span>GitHub</span></article>
-            <article class="stack-chip glass reveal"><i class='bx bx-chip'></i><span>C</span></article>
-            <article class="stack-chip glass reveal"><i class='bx bx-brain'></i><span>AI</span></article>
+            <div class="stack-chip glass"><i class='bx bxl-flutter'></i><span>Flutter</span></div>
+            <div class="stack-chip glass"><i class='bx bxl-python'></i><span>Python</span></div>
+            <div class="stack-chip glass"><i class='bx bxl-java'></i><span>Java</span></div>
+            <div class="stack-chip glass"><i class='bx bxl-html5'></i><span>HTML</span></div>
+            <div class="stack-chip glass"><i class='bx bxl-css3'></i><span>CSS</span></div>
+            <div class="stack-chip glass"><i class='bx bxl-javascript'></i><span>JavaScript</span></div>
+            <div class="stack-chip glass"><i class='bx bxl-github'></i><span>GitHub</span></div>
+            <div class="stack-chip glass"><i class='bx bx-c-plus-plus'></i><span>C</span></div>
+            <div class="stack-chip glass"><i class='bx bx-bot'></i><span>AI</span></div>
           </div>
         </div>
       </div>
@@ -277,6 +271,6 @@
   <footer class="foot"><div class="container">© 2025 Pakawat — Portfolio</div></footer>
 
   <!-- JS -->
-  <script src="app.js?v=40" defer></script>
+  <script src="app.js?v=21" defer></script>
 </body>
 </html>
