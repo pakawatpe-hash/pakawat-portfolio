@@ -251,97 +251,134 @@ if (isFinePointer) {
 
   window.addEventListener('resize', ()=>init(true), {passive:true});
 })();
-/* ===== Code window: word-by-word glow sweep (color-aware) ===== */
+/* ===== Code window: word-by-word glow sweep (defensive, color-aware) ===== */
 (function () {
-  var host = document.querySelector('.code-window pre code');
-  if (!host || host.dataset.glowInit === '1') return;
-  host.dataset.glowInit = '1';
+  // รันหลัง DOM พร้อม (กันกรณีไม่มี defer)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
 
-  var NF = window.NodeFilter || { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 };
+  function init() {
+    try {
+      const host = document.querySelector('.code-window pre code');
+      if (!host) return;
 
-  // เดินหาเฉพาะ text nodes ที่มีตัวอักษร
-  var walker = document.createTreeWalker(host, NF.SHOW_TEXT, {
-    acceptNode: function (n) {
-      return n.nodeValue && n.nodeValue.trim() ? NF.FILTER_ACCEPT : NF.FILTER_REJECT;
-    }
-  });
+      // กัน init ซ้ำ (เช่น hot-reload หรือมีการเรียกซ้ำ)
+      if (host.dataset.glowInit === '1') return;
+      host.dataset.glowInit = '1';
 
-  var textNodes = [];
-  while (walker.nextNode()) textNodes.push(walker.currentNode);
+      // ถ้าเบราว์เซอร์ไม่รองรับ TreeWalker ก็ยอมแพ้แบบนิ่ม ๆ
+      if (!document.createTreeWalker) return;
 
-  // ห่อคำเป็น span.glow-word โดยเก็บช่องว่างเดิม
-  try {
-    textNodes.forEach(function (tn) {
-      if (!tn.parentNode) return;
-      var parts = tn.nodeValue.split(/(\s+)/);
-      var frag = document.createDocumentFragment();
-      for (var i = 0; i < parts.length; i++) {
-        var p = parts[i];
-        if (!p || /^\s+$/.test(p)) {
-          frag.appendChild(document.createTextNode(p));
+      // เดินหาเฉพาะ text nodes ที่มีตัวอักษร (ไม่รวมช่องว่างล้วน)
+      const NF = window.NodeFilter || { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 };
+      const walker = document.createTreeWalker(
+        host,
+        NF.SHOW_TEXT,
+        {
+          acceptNode: function (n) {
+            // ถ้าขึ้นอยู่ใต้ .glow-word อยู่แล้ว ไม่แตะ (กันห่อซ้ำ)
+            if (n.parentElement && n.parentElement.classList.contains('glow-word')) {
+              return NF.FILTER_REJECT;
+            }
+            return n.nodeValue && n.nodeValue.trim()
+              ? NF.FILTER_ACCEPT
+              : NF.FILTER_REJECT;
+          }
+        },
+        false
+      );
+
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+      // ห่อคำเป็น <span class="glow-word"> โดยเก็บช่องว่างเดิม
+      for (let t of textNodes) {
+        if (!t.parentNode) continue;
+        const parts = t.nodeValue.split(/(\s+)/); // เก็บ \n, \t, space
+        const frag = document.createDocumentFragment();
+        for (let p of parts) {
+          if (!p || /^\s+$/.test(p)) {
+            frag.appendChild(document.createTextNode(p));
+          } else {
+            const s = document.createElement('span');
+            s.className = 'glow-word';
+            s.textContent = p;
+            frag.appendChild(s);
+          }
+        }
+        t.parentNode.replaceChild(frag, t);
+      }
+
+      const words = Array.from(host.querySelectorAll('.glow-word'));
+      if (!words.length) return;
+
+      // helper: แปลงสี currentColor → rgba with alpha
+      function rgbaWithAlpha(cssColor, a) {
+        // รองรับ rgb/rgba; ถ้าอย่างอื่น (เช่น hex) ให้ browser จัดการ
+        const m = cssColor && cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+        if (m) return `rgba(${m[1]},${m[2]},${m[3]},${a})`;
+        // ลองให้เบราว์เซอร์แปลง
+        const tmp = document.createElement('span');
+        tmp.style.color = cssColor || '';
+        document.body.appendChild(tmp);
+        const rgb = getComputedStyle(tmp).color;
+        document.body.removeChild(tmp);
+        const m2 = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+        return m2 ? `rgba(${m2[1]},${m2[2]},${m2[3]},${a})` : 'rgba(255,255,255,' + a + ')';
+      }
+
+      // พารามิเตอร์ปรับแต่ง
+      const TRAIL = 4;   // จำนวนคำที่ทิ้งแสง
+      const STEP  = 80;  // ms ต่อคำ
+
+      let idx = 0;
+      let timer;
+
+      function setGlow(el, on) {
+        if (!el) return;
+        if (on) {
+          const base = getComputedStyle(el).color;
+          el.style.color = '#fff'; // สว่างขึ้นเล็กน้อย
+          el.style.filter = 'saturate(1.1)';
+          el.style.textShadow =
+            `0 0 10px ${rgbaWithAlpha(base, 0.85)}, ` +
+            `0 0 18px ${rgbaWithAlpha(base, 0.55)}`;
         } else {
-          var s = document.createElement('span');
-          s.className = 'glow-word';
-          s.textContent = p;
-          frag.appendChild(s);
+          el.style.textShadow = '';
+          el.style.filter = '';
+          el.style.color = '';
         }
       }
-      tn.parentNode.replaceChild(frag, tn);
-    });
-  } catch (e) {
-    console.warn('[glow-sweep] wrap failed:', e);
-    return;
-  }
 
-  var words = Array.prototype.slice.call(host.querySelectorAll('.glow-word'));
-  if (!words.length) return;
+      function tick() {
+        if (idx < words.length) setGlow(words[idx], true);
+        const drop = idx - TRAIL;
+        if (drop >= 0 && drop < words.length) setGlow(words[drop], false);
 
-  // helper: แปลง rgb/rgba(...) เป็น rgba(r,g,b,a)
-  function rgbaWithAlpha(cssColor, a) {
-    // รองรับ rgb(…) / rgba(…) / hsl ในบางเคส (ปล่อยผ่านใช้ currentColor)
-    var m = cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-    if (m) return 'rgba(' + m[1] + ',' + m[2] + ',' + m[3] + ',' + a + ')';
-    return cssColor; // fallback (จะไม่โปร่งใส)
-  }
+        idx++;
+        if (idx > words.length + TRAIL) {
+          // รีเซ็ตแล้ววนใหม่
+          for (let w of words) setGlow(w, false);
+          idx = 0;
+        }
+        timer = setTimeout(tick, STEP);
+      }
 
-  // พารามิเตอร์
-  var TRAIL = 4;    // ความยาวหางแสง
-  var STEP  = 80;   // ms ต่อคำ
+      tick();
 
-  var idx = 0, timer;
-
-  function setGlow(el, on) {
-    if (!el) return;
-    if (on) {
-      var cs = getComputedStyle(el);
-      var base = cs.color; // สีจริงของคำ (สืบทอดจาก .kw .fn .id)
-      el.style.color = '#fff'; // ทำให้ตัวอักษรสว่างขึ้นนิด
-      el.style.filter = 'saturate(1.15)';
-      el.style.textShadow =
-        '0 0 10px ' + rgbaWithAlpha(base, 0.85) + ', ' +
-        '0 0 18px ' + rgbaWithAlpha(base, 0.55);
-    } else {
-      el.style.textShadow = '';
-      el.style.filter = '';
-      el.style.color = ''; // คืนค่าให้สืบทอดตามเดิม
+      // cleanup
+      const cleanup = () => clearTimeout(timer);
+      window.addEventListener('pagehide', cleanup, { once: true });
+      window.addEventListener('beforeunload', cleanup, { once: true });
+    } catch (err) {
+      console.warn('[glow-sweep] init failed:', err);
     }
   }
+})();
 
-  function tick() {
-    if (idx < words.length) setGlow(words[idx], true);
-    var drop = idx - TRAIL;
-    if (drop >= 0 && drop < words.length) setGlow(words[drop], false);
-
-    idx++;
-    if (idx > words.length + TRAIL) {
-      // reset แล้ววนใหม่
-      for (var k = 0; k < words.length; k++) setGlow(words[k], false);
-      idx = 0;
-    }
-    timer = setTimeout(tick, STEP);
-  }
-
-  tick();
 
   window.addEventListener('pagehide', function(){ clearTimeout(timer); });
   window.addEventListener('beforeunload', function(){ clearTimeout(timer); });
