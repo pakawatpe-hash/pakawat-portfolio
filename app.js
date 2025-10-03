@@ -164,7 +164,7 @@ if (isFinePointer) {
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const cssVar = (name) => parseFloat(getComputedStyle(ROOT).getPropertyValue(name)) || 0;
-  const BASE_SPEED = Math.max(20, cssVar('--mk-speed') || 120); // px/sec (อ้างอิงความเร็วรวม)
+  const BASE_SPEED = Math.max(20, cssVar('--mk-speed') || 120); // px/sec (อ้างอิงความเร็วภาพรวม)
   const ENABLED = !prefersReduced && BASE_SPEED > 0;
 
   const belt = document.getElementById('skillsBelt');
@@ -181,19 +181,23 @@ if (isFinePointer) {
     { el: bTrack, dir: +1, rowW: 0, contentW: 0, offset: 0, start: 0, end: 0, dist: 0, speed: 0 }
   ];
 
-  function metrics(trackEl){ const row = trackEl.closest('.mk-row'); return { rowW: row?.clientWidth || 0, contentW: trackEl.scrollWidth || 0 }; }
-
-  function setBounds(t){
-    if (t.dir === -1){ t.start = t.rowW; t.end = -t.contentW; }
-    else { t.start = -t.rowW; t.end = t.contentW; }
-    t.dist = Math.max(1, Math.abs(t.end - t.start)); // = rowW + contentW
+  function metrics(trackEl){
+    const row = trackEl.closest('.mk-row');
+    return { rowW: row?.clientWidth || 0, contentW: trackEl.scrollWidth || 0 };
   }
 
-  // คำนวณให้ "ทั้งสองแถวใช้เวลาเท่ากัน"
+  // ตั้งขอบเริ่ม/จบ (ทิศคงที่)
+  function setBounds(t){
+    if (t.dir === -1){ t.start = t.rowW; t.end = -t.contentW; }   // เริ่มขวา→ซ้าย
+    else { t.start = -t.rowW; t.end = t.contentW; }                // เริ่มซ้าย→ขวา
+    t.dist = Math.max(1, Math.abs(t.end - t.start));               // ระยะทาง = rowW + contentW
+  }
+
+  // ทำให้ “ใช้เวลาเท่ากัน” ทั้งสองแถว
   function syncSpeeds(){
     const maxDist = Math.max(tracks[0].dist, tracks[1].dist);
-    const T = maxDist / BASE_SPEED;                 // เวลาเป้าหมายของ 1 รอบ (วินาที)
-    tracks.forEach(t => { t.speed = t.dist / T; }); // ความเร็วเฉพาะแถว (px/s)
+    const T = maxDist / BASE_SPEED;               // เวลาเป้าหมายของหนึ่งรอบ
+    tracks.forEach(t => { t.speed = t.dist / T; });// ความเร็วเฉพาะแถว (px/s)
   }
 
   function init(keepProgress=false){
@@ -207,9 +211,9 @@ if (isFinePointer) {
 
       if(keepProgress){
         const newRange=(t.end - t.start) || 1;
-        t.offset = t.start + oldP * newRange;
+        t.offset = t.start + oldP * newRange;     // map progress เดิมหลัง resize
       }else{
-        t.offset = t.start;
+        t.offset = t.start;                       // เริ่มที่ขอบ
       }
 
       t.el.style.willChange='transform';
@@ -217,25 +221,21 @@ if (isFinePointer) {
       t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
     });
 
-    // คำนวณความเร็วแบบ sync หลังรู้ระยะจริงของทั้งสองแถว
-    syncSpeeds();
+    syncSpeeds(); // คำนวณความเร็วหลังรู้ระยะจริงของทั้งคู่
   }
 
   let last = performance.now();
   function frame(now){
-    const dt = Math.min(0.05, (now - last)/1000); // ≤50ms
+    const dt = Math.min(0.05, (now - last)/1000); // ≤50ms กันกระโดด
     last = now;
 
     if (ENABLED){
       tracks.forEach(t=>{
         t.offset += t.dir * t.speed * dt;
 
-        // ถึงปลายทางรอบนี้หรือยัง?
+        // ถึงปลายทางรอบนี้หรือยัง? (ออกพ้นทั้งก้อน)
         const done = t.dir === -1 ? (t.offset <= t.end) : (t.offset >= t.end);
-        if (done){
-          // เริ่มรอบใหม่จากขอบเดิม (ทิศคงที่)
-          t.offset = t.start;
-        }
+        if (done) t.offset = t.start;             // รีเริ่มใหม่ที่ขอบเดิมทันที
 
         t.el.style.transform = `translateX(${(-t.offset).toFixed(2)}px)`;
       });
