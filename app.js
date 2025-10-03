@@ -176,10 +176,9 @@ if (isFinePointer) {
   const bTrack = rowB?.querySelector('.mk-track');
   if (!aTrack || !bTrack) return;
 
-  // state ตำแหน่งจริง x = translateX(px)
   const tracks = [
-    { el: aTrack, dir: -1, rowW: 0, contentW: 0, x: 0, startX: 0, endX: 0, dist: 0, speed: 0 }, // ขวา→ซ้าย
-    { el: bTrack, dir: +1, rowW: 0, contentW: 0, x: 0, startX: 0, endX: 0, dist: 0, speed: 0 }  // ซ้าย→ขวา
+    { el: aTrack, dir: -1, rowW: 0, contentW: 0, x: 0, startX: 0, endX: 0, dist: 0, speed: 0 },
+    { el: bTrack, dir: +1, rowW: 0, contentW: 0, x: 0, startX: 0, endX: 0, dist: 0, speed: 0 }
   ];
 
   function metrics(trackEl){
@@ -188,18 +187,16 @@ if (isFinePointer) {
   }
 
   function setBounds(t){
-    // เริ่มนอกจอ: RTL -> ขวา, LTR -> ซ้าย
-    if (t.dir === -1){ t.startX = t.rowW;    t.endX = -t.contentW; }  // ขวา→ซ้าย
-    else              { t.startX = -t.contentW; t.endX =  t.rowW; }   // ซ้าย→ขวา
-    t.dist = Math.max(1, Math.abs(t.endX - t.startX));                // = rowW + contentW
+    if (t.dir === -1){ t.startX = t.rowW;    t.endX = -t.contentW; }
+    else              { t.startX = -t.contentW; t.endX =  t.rowW; }
+    t.dist = Math.max(1, Math.abs(t.endX - t.startX));
   }
 
   function syncSpeeds(){
     const maxDist = Math.max(tracks[0].dist, tracks[1].dist);
-    const T = maxDist / BASE_SPEED;                  // เวลา 1 รอบ ให้เท่ากัน
+    const T = maxDist / BASE_SPEED;
     tracks.forEach(t=>{
-      t.speed = t.dist / T;                          // px/sec ของแถวนี้
-      // ความเร็วทิศทางจริง (เพิ่ม/ลด x)
+      t.speed = t.dist / T;
       t.vx = (t.endX > t.startX ? +t.speed : -t.speed);
     });
   }
@@ -207,7 +204,6 @@ if (isFinePointer) {
   function init(keepProgress=false){
     tracks.forEach(t=>{
       const {rowW, contentW} = metrics(t.el);
-      // เก็บ progress เดิมก่อน recalc
       const oldStart = t.startX, oldEnd = t.endX, oldRange = (oldEnd - oldStart) || 1;
       const oldP = keepProgress ? (t.x - oldStart) / oldRange : 0;
 
@@ -231,28 +227,21 @@ if (isFinePointer) {
 
   let last = performance.now();
   function frame(now){
-    const dt = Math.min(0.05, (now - last)/1000); // ≤ 50ms
+    const dt = Math.min(0.05, (now - last)/1000);
     last = now;
 
     if (ENABLED){
       tracks.forEach(t=>{
         t.x += t.vx * dt;
-
         const forward = t.endX > t.startX;
         const done = forward ? (t.x >= t.endX) : (t.x <= t.endX);
-        if (done){
-          // รีเริ่มใหม่จากขอบเดิม (ทิศทางคงที่)
-          t.x = t.startX;
-        }
-
+        if (done){ t.x = t.startX; }
         t.el.style.transform = `translateX(${t.x.toFixed(2)}px)`;
       });
     }
-
     requestAnimationFrame(frame);
   }
 
-  // ให้วัดขนาดหลัง DOM พร้อม และหลัง font โหลดแล้วจะยิ่งเป๊ะ
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => { init(false); requestAnimationFrame((t0)=>{ last=t0; frame(t0); }); }, {once:true});
   } else {
