@@ -240,4 +240,5 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+  display: block;
 }
