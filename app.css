@@ -321,3 +321,38 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .stack-chip:hover, .stack-chip:focus-visible{ transform:none; box-shadow:none; }
   .stack-chip::before, .stack-chip::after{ display:none; }
 }
+/* ===== Glow highlight keywords ===== */
+pre code .kw {
+  color: #ffadad;
+  text-shadow: 0 0 0px rgba(255,150,150,0.0);
+  animation: keywordPulse 4s ease-in-out infinite;
+}
+
+@keyframes keywordPulse {
+  0%, 90%, 100% {
+    text-shadow: 0 0 0px rgba(255,150,150,0.0);
+  }
+  40%, 60% {
+    text-shadow: 0 0 8px rgba(255,120,120,0.9);
+  }
+}
+
+/* ===== Right circle loader glow ===== */
+.code-window::after {
+  content: "";
+  position: absolute;
+  right: 28px;       /* ปรับตำแหน่งวงกลมตาม layout */
+  bottom: 28px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.15);
+  border-top-color: rgba(255,255,255,0.9);
+  animation: spinGlow 3.5s linear infinite;
+  box-shadow: 0 0 12px rgba(255,255,255,0.35);
+}
+
+@keyframes spinGlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
