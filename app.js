@@ -352,3 +352,46 @@ if (isFinePointer) {
   window.addEventListener('pagehide', () => clearTimeout(timer), { once: true });
   window.addEventListener('beforeunload', () => clearTimeout(timer), { once: true });
 })();
+/* ===== Education axis & connector glow linked with scroll ===== */
+(() => {
+  const tl = document.querySelector('.edu-timeline');
+  if (!tl) return;
+
+  // อัปเดตตัวแปร --edu-prog (0..1) = ตำแหน่งการไหลของแสงบนแกน
+  const updateAxis = () => {
+    const r = tl.getBoundingClientRect();
+    const vh = window.innerHeight;
+    // เอา center viewport เป็น baseline
+    const center = r.top + r.height / 2;
+    const viewMid = vh / 2;
+    // ความคืบหน้า 0..1 เมื่อกลางแกนอยู่ใน viewport
+    let p = (viewMid - r.top) / r.height; // 0 ที่หัว .. 1 ที่ท้าย
+    p = Math.max(0, Math.min(1, p));
+    tl.style.setProperty('--edu-prog', p.toFixed(4));
+  };
+
+  // ให้แต่ละ item มี --line-prog (0..1) เพื่อไล่ไฟบนเส้นเชื่อม
+  const items = [...document.querySelectorAll('.edu-item')];
+  const updateLines = () => {
+    const vh = window.innerHeight;
+    const mid = vh / 2;
+    items.forEach(el => {
+      const r = el.getBoundingClientRect();
+      // map: เมื่อจุดกลาง item เข้าใกล้กลางจอ -> prog ~ 1
+      const itemMid = r.top + 60;  // ช่วงบนใกล้ชิปปี
+      let prog = 1 - Math.abs(itemMid - mid) / (vh * 0.6);
+      prog = Math.max(0, Math.min(1, prog));
+      el.style.setProperty('--line-prog', prog.toFixed(3));
+    });
+  };
+
+  const onScroll = () => {
+    updateAxis();
+    updateLines();
+  };
+
+  // เรียกครั้งแรกและผูก event
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  onScroll();
+})();
