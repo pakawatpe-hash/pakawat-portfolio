@@ -1,3 +1,4 @@
+/* ====== ไฟล์เดิมของคุณทั้งหมด (ยาว) คงไว้ครบ ====== */
 /* THEME */
 :root{
   --bg:#070b1a; --bg2:#0b1737; --ink:#e8eef6; --muted:#a6b3c7;
@@ -6,7 +7,7 @@
 
   /* ✅ ตัวแปร marquee */
   --mk-gap: 48px;
-  --mk-speed: 120; /* px/sec (ใช้ใน JS คำนวณความเร็ว) */
+  --mk-speed: 120; /* px/sec (ใช้ใน JS คำนวณ duration) */
 }
 
 /* BASE */
@@ -99,13 +100,13 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
   display:flex;align-items:center;gap:var(--mk-gap);
   width:max-content;
   will-change:transform;
-  transform:translateX(0);
-  /* ปิด keyframes เก่าเผื่อมี */
-  animation:none !important;
 }
 .mk-set{display:flex;align-items:center;gap:var(--mk-gap)}
 .mk-set span{display:inline-flex;align-items:center;font-weight:700;color:#dbe6ff;white-space:nowrap}
 .mk-set span i{font-size:20px;margin-right:8px;opacity:.9}
+
+/* keyframes (ของเดิมไม่ใช้แล้ว แต่กันทับด้วยบรรทัดนี้) */
+.marquee .mk-track { animation: none !important; }
 
 /* ==================== STACK GRID ==================== */
 .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:10px}
@@ -215,4 +216,3 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .bg-blob,.gear,.headline.gradient,.hero::before,.hero::after{animation:none}
   .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
-.marquee .mk-track { animation: none !important; }
