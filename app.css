@@ -448,94 +448,128 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 }
 .about-desc p{ margin:.4rem 0 1rem; }
 .about-desc strong{ color:#fff; font-weight:700; }
-/* ===== Education Timeline ===== */
-.edu-timeline {
+/* ================= EDUCATION (TikTok style) ================ */
+:root{
+  --edu-gap: 220px;                     /* ระยะห่างรายการ (ใหญ่กำลังดี) */
+  --edu-conn: clamp(160px, 22vw, 320px);/* ความยาวเส้นเชื่อมจากแกน */
+}
+
+#education.section{ padding-bottom: 40px; } /* ลดช่องว่างก่อนเจอ Portfolio */
+#education .section-sub{ margin-bottom: 18px; }
+
+.edu-timeline{
   position: relative;
-  margin: 80px auto;
-  padding: 40px 0;
-  width: 80%;
-  max-width: 800px;
+  margin: 24px auto 0;
+  padding: 18px 0 10px;
+  min-height: 1400px;                   /* ให้ยาวจริง */
 }
 
-.edu-timeline::before {
-  content:"";
-  position:absolute;
-  top:0; left:50%;
-  transform:translateX(-50%);
-  width:4px;
-  height:100%;
-  background: rgba(255,255,255,0.15);
-  border-radius:2px;
+.edu-axis{
+  position:absolute; left:50%; top:0; bottom:0; width:3px;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top;
+  background: linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,.12));
+  filter: drop-shadow(0 6px 24px rgba(120,160,255,.25));
 }
+/* วาดแกนตอน section เข้าจอ */
+.section.lazy.entered .edu-axis{ transform: translateX(-50%) scaleY(1); transition: transform 1200ms ease; }
 
-/* Glow runner effect */
-.edu-timeline::after {
-  content:"";
-  position:absolute;
-  left:50%; top:0;
-  transform:translateX(-50%);
-  width:6px; height:100%;
-  background: linear-gradient(180deg,
-    transparent 0%,
-    rgba(255,255,255,0.9) 15%,
-    rgba(120,160,255,0.4) 25%,
-    transparent 40%);
-  background-size:100% 300%;
+/* glow runner วิ่งลง */
+.edu-axis::after{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, transparent 0%,
+    rgba(255,255,255,.95) 16%, rgba(120,160,255,.45) 26%, transparent 40%);
+  background-size: 100% 300%;
   animation: axisGlow 6s linear infinite;
+  pointer-events:none;
 }
-@keyframes axisGlow {
-  0%   { background-position: 0 -200%; }
-  100% { background-position: 0 200%; }
-}
-
-/* Row items */
-.edu-row {
-  position: relative;
-  margin: 120px 0; /* ระยะห่างยาว ๆ */
-  text-align: center;
+@keyframes axisGlow{
+  0%{   background-position: 0 -200%; }
+  100%{ background-position: 0  200%; }
 }
 
-.edu-chip {
-  display:inline-block;
-  padding:6px 14px;
-  border-radius:20px;
-  background: linear-gradient(90deg,#6a85ff,#8fbcff);
-  color:#fff;
-  font-weight:700;
-  font-size:1.1rem;
-  margin-bottom:10px;
+.edu-item{
+  position:relative; width:50%;
+  margin: var(--edu-gap) 0;             /* ระยะห่างแต่ละ event */
+  color:#eaf0ff;
+}
+.edu-item.left  { padding-right: calc(var(--edu-conn) + 28px); text-align:right; }
+.edu-item.right { margin-left:50%; padding-left: calc(var(--edu-conn) + 28px); text-align:left; }
+
+/* จุดกลาง (pulse) */
+.edu-dot{
+  position:absolute; top: 0; left:50%;
+  width:16px; height:16px; border-radius:50%;
+  transform: translate(-50%, -2px);
+  background: radial-gradient(circle at 35% 35%, #fff, #cfe0ff 45%, rgba(255,255,255,.08) 65%);
+  border: 2px solid rgba(255,255,255,.35);
+  box-shadow: 0 10px 24px rgba(120,160,255,.35);
+  animation: eduPulse 2.6s ease-in-out infinite;
+}
+@keyframes eduPulse{
+  0%,100%{ transform: translate(-50%, -2px) scale(1);   box-shadow: 0 8px 22px rgba(120,160,255,.35); }
+  50%    { transform: translate(-50%, -2px) scale(1.08); box-shadow: 0 14px 34px rgba(120,160,255,.55); }
 }
 
-/* Pop-in animation */
-.edu-chip span {
-  display:inline-block;
-  opacity:0;
-  transform: scale(0.6) translateY(6px);
+/* เส้นเชื่อมแกน -> ข้อความ (วาดเมื่อรายการโผล่) */
+.edu-connector{
+  position:absolute; top:6px; height:2px; width: var(--edu-conn);
+  background: linear-gradient(90deg, rgba(255,255,255,.35), rgba(255,255,255,.08));
+  filter: drop-shadow(0 6px 18px rgba(120,160,255,.22));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.edu-item.left  .edu-connector{ right: 50%; left:auto; transform-origin: right; }
+.edu-item.right .edu-connector{ left:  50%; right:auto; transform-origin: left;  }
+
+/* แสดงเส้นเชื่อมเมื่อรายการเข้าสู่จอ (ใช้ระบบ reveal เดิม) */
+.edu-item.reveal.in .edu-connector{ transform: scaleX(1); transition: transform 900ms ease 120ms; }
+
+/* กล่องข้อความ (ไม่มีกระดาษ/กรอบ) */
+.edu-block{ display:inline-block; max-width: 520px; }
+.edu-title{ margin: 10px 0 4px; font-weight:800; font-size: 22px; color:#fff; text-shadow: 0 6px 22px rgba(0,0,0,.25); }
+.edu-desc{  margin: 0; color:#cfdaf3; }
+
+/* ชิพปี */
+.edu-chip{
+  display:inline-block; padding:6px 14px; border-radius:999px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-2));
+  color:#0b1022; font-weight:800; letter-spacing:.2px; font-size: 1.05rem;
+}
+
+/* ปี pop-in ทีละตัว */
+.edu-chip span{
+  display:inline-block; opacity:0;
+  transform: scale(.6) translateY(6px);
   animation: chipPop .6s ease forwards;
 }
-@keyframes chipPop {
-  to {
-    opacity:1;
-    transform: scale(1) translateY(0);
-  }
-}
-.edu-chip span:nth-child(1){ animation-delay: 0.05s; }
-.edu-chip span:nth-child(2){ animation-delay: 0.1s; }
-.edu-chip span:nth-child(3){ animation-delay: 0.15s; }
-.edu-chip span:nth-child(4){ animation-delay: 0.2s; }
-.edu-chip span:nth-child(5){ animation-delay: 0.25s; }
-.edu-chip span:nth-child(6){ animation-delay: 0.3s; }
-.edu-chip span:nth-child(7){ animation-delay: 0.35s; }
-.edu-chip span:nth-child(8){ animation-delay: 0.4s; }
-.edu-chip span:nth-child(9){ animation-delay: 0.45s; }
-.edu-chip span:nth-child(10){ animation-delay: 0.5s; }
+@keyframes chipPop{ to{ opacity:1; transform: scale(1) translateY(0); } }
+.edu-chip span:nth-child(1){ animation-delay:.05s }
+.edu-chip span:nth-child(2){ animation-delay:.10s }
+.edu-chip span:nth-child(3){ animation-delay:.15s }
+.edu-chip span:nth-child(4){ animation-delay:.20s }
+.edu-chip span:nth-child(5){ animation-delay:.25s }
+.edu-chip span:nth-child(6){ animation-delay:.30s }
+.edu-chip span:nth-child(7){ animation-delay:.35s }
+.edu-chip span:nth-child(8){ animation-delay:.40s }
+.edu-chip span:nth-child(9){ animation-delay:.45s }
+.edu-chip span:nth-child(10){ animation-delay:.50s }
+.edu-chip span:nth-child(11){ animation-delay:.55s }
+.edu-chip span:nth-child(12){ animation-delay:.60s }
+.edu-chip span:nth-child(13){ animation-delay:.65s }
+.edu-chip span:nth-child(14){ animation-delay:.70s }
 
-.edu-title {
-  font-size:1.2rem;
-  font-weight:600;
-  margin:8px 0;
-}
-.edu-desc {
-  font-size:0.95rem;
-  color:rgba(255,255,255,0.7);
+/* เข้าเฟดนุ่ม ๆ (ใช้ reveal ของคุณ) */
+.edu-item.reveal{ opacity:0; transform: translateY(14px); }
+.edu-item.reveal.in{ opacity:1; transform:none; transition: opacity .7s ease, transform .7s ease; }
+
+/* ===== Responsive: แกนชิดซ้าย + แนวนอนยาวเท่าเดิม ===== */
+@media (max-width: 900px){
+  .edu-item{ width:100%; margin: 160px 0; text-align:left; }
+  .edu-item.left,
+  .edu-item.right{ padding: 0 16px 0 calc(var(--edu-conn) + 42px); margin-left:0; }
+  .edu-axis{ left:26px; transform: translateX(0) scaleY(0); }
+  .edu-axis::after{ left:0; }
+  .edu-dot{ left:26px; transform: translate(-50%, -2px); }
+  .edu-connector{ left:26px; right:auto; transform-origin: left; }
 }
