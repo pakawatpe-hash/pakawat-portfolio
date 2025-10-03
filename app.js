@@ -251,135 +251,104 @@ if (isFinePointer) {
 
   window.addEventListener('resize', ()=>init(true), {passive:true});
 })();
-/* ===== Code window: word-by-word glow sweep (defensive, color-aware) ===== */
+/* ===== Code window: word-by-word glow sweep ===== */
 (function () {
-  // รันหลัง DOM พร้อม (กันกรณีไม่มี defer)
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
-  } else {
-    init();
+  const host = document.querySelector('.code-window pre code');
+  if (!host) return;
+
+  if (host.dataset.glowInit === '1') return;
+  host.dataset.glowInit = '1';
+
+  if (!document.createTreeWalker) return;
+
+  const NF = window.NodeFilter || { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 };
+  const walker = document.createTreeWalker(
+    host,
+    NF.SHOW_TEXT,
+    {
+      acceptNode: function (n) {
+        if (n.parentElement && n.parentElement.classList.contains('glow-word')) {
+          return NF.FILTER_REJECT;
+        }
+        return n.nodeValue && n.nodeValue.trim()
+          ? NF.FILTER_ACCEPT
+          : NF.FILTER_REJECT;
+      }
+    },
+    false
+  );
+
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+  for (let t of textNodes) {
+    if (!t.parentNode) continue;
+    const parts = t.nodeValue.split(/(\s+)/);
+    const frag = document.createDocumentFragment();
+    for (let p of parts) {
+      if (!p || /^\s+$/.test(p)) {
+        frag.appendChild(document.createTextNode(p));
+      } else {
+        const s = document.createElement('span');
+        s.className = 'glow-word';
+        s.textContent = p;
+        frag.appendChild(s);
+      }
+    }
+    t.parentNode.replaceChild(frag, t);
   }
 
-  function init() {
-    try {
-      const host = document.querySelector('.code-window pre code');
-      if (!host) return;
+  const words = Array.from(host.querySelectorAll('.glow-word'));
+  if (!words.length) return;
 
-      // กัน init ซ้ำ (เช่น hot-reload หรือมีการเรียกซ้ำ)
-      if (host.dataset.glowInit === '1') return;
-      host.dataset.glowInit = '1';
+  function rgbaWithAlpha(cssColor, a) {
+    const m = cssColor && cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (m) return `rgba(${m[1]},${m[2]},${m[3]},${a})`;
+    const tmp = document.createElement('span');
+    tmp.style.color = cssColor || '';
+    document.body.appendChild(tmp);
+    const rgb = getComputedStyle(tmp).color;
+    document.body.removeChild(tmp);
+    const m2 = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    return m2 ? `rgba(${m2[1]},${m2[2]},${m2[3]},${a})` : 'rgba(255,255,255,' + a + ')';
+  }
 
-      // ถ้าเบราว์เซอร์ไม่รองรับ TreeWalker ก็ยอมแพ้แบบนิ่ม ๆ
-      if (!document.createTreeWalker) return;
+  const TRAIL = 4;
+  const STEP = 80;
+  let idx = 0;
+  let timer;
 
-      // เดินหาเฉพาะ text nodes ที่มีตัวอักษร (ไม่รวมช่องว่างล้วน)
-      const NF = window.NodeFilter || { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 };
-      const walker = document.createTreeWalker(
-        host,
-        NF.SHOW_TEXT,
-        {
-          acceptNode: function (n) {
-            // ถ้าขึ้นอยู่ใต้ .glow-word อยู่แล้ว ไม่แตะ (กันห่อซ้ำ)
-            if (n.parentElement && n.parentElement.classList.contains('glow-word')) {
-              return NF.FILTER_REJECT;
-            }
-            return n.nodeValue && n.nodeValue.trim()
-              ? NF.FILTER_ACCEPT
-              : NF.FILTER_REJECT;
-          }
-        },
-        false
-      );
-
-      const textNodes = [];
-      while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-      // ห่อคำเป็น <span class="glow-word"> โดยเก็บช่องว่างเดิม
-      for (let t of textNodes) {
-        if (!t.parentNode) continue;
-        const parts = t.nodeValue.split(/(\s+)/); // เก็บ \n, \t, space
-        const frag = document.createDocumentFragment();
-        for (let p of parts) {
-          if (!p || /^\s+$/.test(p)) {
-            frag.appendChild(document.createTextNode(p));
-          } else {
-            const s = document.createElement('span');
-            s.className = 'glow-word';
-            s.textContent = p;
-            frag.appendChild(s);
-          }
-        }
-        t.parentNode.replaceChild(frag, t);
-      }
-
-      const words = Array.from(host.querySelectorAll('.glow-word'));
-      if (!words.length) return;
-
-      // helper: แปลงสี currentColor → rgba with alpha
-      function rgbaWithAlpha(cssColor, a) {
-        // รองรับ rgb/rgba; ถ้าอย่างอื่น (เช่น hex) ให้ browser จัดการ
-        const m = cssColor && cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-        if (m) return `rgba(${m[1]},${m[2]},${m[3]},${a})`;
-        // ลองให้เบราว์เซอร์แปลง
-        const tmp = document.createElement('span');
-        tmp.style.color = cssColor || '';
-        document.body.appendChild(tmp);
-        const rgb = getComputedStyle(tmp).color;
-        document.body.removeChild(tmp);
-        const m2 = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-        return m2 ? `rgba(${m2[1]},${m2[2]},${m2[3]},${a})` : 'rgba(255,255,255,' + a + ')';
-      }
-
-      // พารามิเตอร์ปรับแต่ง
-      const TRAIL = 4;   // จำนวนคำที่ทิ้งแสง
-      const STEP  = 80;  // ms ต่อคำ
-
-      let idx = 0;
-      let timer;
-
-      function setGlow(el, on) {
-        if (!el) return;
-        if (on) {
-          const base = getComputedStyle(el).color;
-          el.style.color = '#fff'; // สว่างขึ้นเล็กน้อย
-          el.style.filter = 'saturate(1.1)';
-          el.style.textShadow =
-            `0 0 10px ${rgbaWithAlpha(base, 0.85)}, ` +
-            `0 0 18px ${rgbaWithAlpha(base, 0.55)}`;
-        } else {
-          el.style.textShadow = '';
-          el.style.filter = '';
-          el.style.color = '';
-        }
-      }
-
-      function tick() {
-        if (idx < words.length) setGlow(words[idx], true);
-        const drop = idx - TRAIL;
-        if (drop >= 0 && drop < words.length) setGlow(words[drop], false);
-
-        idx++;
-        if (idx > words.length + TRAIL) {
-          // รีเซ็ตแล้ววนใหม่
-          for (let w of words) setGlow(w, false);
-          idx = 0;
-        }
-        timer = setTimeout(tick, STEP);
-      }
-
-      tick();
-
-      // cleanup
-      const cleanup = () => clearTimeout(timer);
-      window.addEventListener('pagehide', cleanup, { once: true });
-      window.addEventListener('beforeunload', cleanup, { once: true });
-    } catch (err) {
-      console.warn('[glow-sweep] init failed:', err);
+  function setGlow(el, on) {
+    if (!el) return;
+    if (on) {
+      const base = getComputedStyle(el).color;
+      el.style.color = '#fff';
+      el.style.filter = 'saturate(1.1)';
+      el.style.textShadow =
+        `0 0 10px ${rgbaWithAlpha(base, 0.85)}, ` +
+        `0 0 18px ${rgbaWithAlpha(base, 0.55)}`;
+    } else {
+      el.style.textShadow = '';
+      el.style.filter = '';
+      el.style.color = '';
     }
   }
-})();
 
+  function tick() {
+    if (idx < words.length) setGlow(words[idx], true);
+    const drop = idx - TRAIL;
+    if (drop >= 0 && drop < words.length) setGlow(words[drop], false);
 
-  window.addEventListener('pagehide', function(){ clearTimeout(timer); });
-  window.addEventListener('beforeunload', function(){ clearTimeout(timer); });
+    idx++;
+    if (idx > words.length + TRAIL) {
+      for (let w of words) setGlow(w, false);
+      idx = 0;
+    }
+    timer = setTimeout(tick, STEP);
+  }
+
+  tick();
+
+  window.addEventListener('pagehide', () => clearTimeout(timer), { once: true });
+  window.addEventListener('beforeunload', () => clearTimeout(timer), { once: true });
 })();
