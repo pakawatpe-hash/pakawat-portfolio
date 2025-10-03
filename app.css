@@ -6,7 +6,7 @@
 
   /* ✅ ตัวแปร marquee */
   --mk-gap: 48px;
-  --mk-speed: 120; /* px/sec (ใช้ใน JS คำนวณ duration) */
+  --mk-speed: 120; /* px/sec (ใช้ใน JS คำนวณความเร็ว) */
 }
 
 /* BASE */
@@ -99,14 +99,13 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
   display:flex;align-items:center;gap:var(--mk-gap);
   width:max-content;
   will-change:transform;
+  transform:translateX(0);
+  /* ปิด keyframes เก่าเผื่อมี */
+  animation:none !important;
 }
 .mk-set{display:flex;align-items:center;gap:var(--mk-gap)}
 .mk-set span{display:inline-flex;align-items:center;font-weight:700;color:#dbe6ff;white-space:nowrap}
 .mk-set span i{font-size:20px;margin-right:8px;opacity:.9}
-
-/* keyframes (ระยะเวลา set ใน JS) */
-@keyframes mk-move-left  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-@keyframes mk-move-right { from{transform:translateX(0)} to{transform:translateX( 50%)} }
 
 /* ==================== STACK GRID ==================== */
 .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:10px}
