@@ -448,102 +448,65 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 }
 .about-desc p{ margin:.4rem 0 1rem; }
 .about-desc strong{ color:#fff; font-weight:700; }
-/* ============== CLEAN EDUCATION TIMELINE (no cards) ============== */
-.edu-timeline{
-  position:relative;
-  padding: 36px 0 18px;
+/* ===== Education Timeline ===== */
+.edu-timeline {
+  position: relative;
+  margin: 80px auto;
+  padding: 40px 0;
+  width: 80%;
+  max-width: 800px;
 }
 
-/* แกนกลาง (ค่อย ๆ วาดตอน section เข้า viewport) */
-.edu-axis{
-  position:absolute; left:50%; top:0; bottom:0; width:3px;
-  background: linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,.12));
-  transform-origin: top;
-  transform: scaleY(0);
-  filter: drop-shadow(0 6px 24px rgba(120,160,255,.25));
-}
-.section.lazy.entered .edu-axis{ transform: scaleY(1); transition: transform 1200ms ease; }
-
-.edu-item{
-  position:relative;
-  width:50%;
-  padding: 18px 24px;
-  color:#eaf0ff;
-}
-.edu-item.left{ padding-right: 56px; text-align:right; }
-.edu-item.right{ margin-left:50%; padding-left: 56px; text-align:left; }
-
-/* จุดกลาง (pulse เบา ๆ) */
-.edu-dot{
-  position:absolute; top:28px; left:50%;
-  width:16px; height:16px; border-radius:50%;
-  transform: translate(-50%,-50%);
-  background: radial-gradient(circle at 35% 35%, #fff, #cfe0ff 45%, rgba(255,255,255,.08) 65%);
-  border: 2px solid rgba(255,255,255,.35);
-  box-shadow: 0 10px 24px rgba(120,160,255,.35);
-  animation: eduPulse 2.6s ease-in-out infinite;
-}
-@keyframes eduPulse{
-  0%,100%{ transform: translate(-50%,-50%) scale(1); box-shadow: 0 8px 22px rgba(120,160,255,.35); }
-  50%    { transform: translate(-50%,-50%) scale(1.08); box-shadow: 0 14px 34px rgba(120,160,255,.55); }
-}
-
-/* เส้นเชื่อมจากแกน → เนื้อหา (วาดทีหลัง) */
-.edu-line{
-  position:absolute; top:28px; height:2px; width: calc(50% - 64px);
-  background: linear-gradient(90deg, rgba(255,255,255,.35), rgba(255,255,255,.08));
-  transform-origin: left;
-  transform: scaleX(0);
-  filter: drop-shadow(0 6px 18px rgba(120,160,255,.22));
-}
-.edu-item.left  .edu-line{ right:50%; left:auto; transform-origin: right; }
-.edu-item.right .edu-line{ left:50%;  right:auto; transform-origin: left;  }
-
-/* วาดเส้นเชื่อมเมื่อรายการโผล่ */
-.edu-item.reveal.in .edu-line{ transform: scaleX(1); transition: transform 900ms ease 120ms; }
-
-/* แถวปี + ชื่อสถานศึกษา */
-.edu-row{ display:inline-flex; align-items:center; gap:12px; }
-.edu-chip{
-  display:inline-flex; align-items:center; height:30px; padding:0 14px; border-radius:999px;
-  font-weight:800; color:#0b1022; letter-spacing:.2px;
-  background: linear-gradient(90deg, var(--primary), var(--primary-2));
-}
-.edu-title{ margin:0; font-weight:800; font-size:20px; color:#ffffff; text-shadow: 0 6px 22px rgba(0,0,0,.25); }
-.edu-desc{ margin:.35rem 0 0; color:#cfdaf3; }
-
-/* เข้าฉากแบบนุ่ม ๆ (ใช้ระบบ reveal เดิม) */
-.edu-item.reveal{ opacity:0; transform: translateY(12px); }
-.edu-item.reveal.in{ opacity:1; transform:none; transition: opacity .7s ease, transform .7s ease; }
-
-/* ===== Responsive: axis ชิดซ้ายบนมือถือ ===== */
-@media (max-width: 900px){
-  .edu-axis{ left:26px; transform-origin: top; }
-  .edu-item{ width:100%; margin:0; padding: 16px 16px 16px 66px; text-align:left; }
-  .edu-item.left, .edu-item.right{ padding-left: 66px; padding-right: 16px; }
-  .edu-dot{ left:26px; }
-  .edu-line{ left:26px; width: calc(100% - 96px); transform-origin: left; }
-}
-/* ===== Glow runner effect on axis ===== */
-.edu-axis::after {
+.edu-timeline::before {
   content:"";
-  position:absolute; left:0; top:0;
-  width:100%; height:100%;
+  position:absolute;
+  top:0; left:50%;
+  transform:translateX(-50%);
+  width:4px;
+  height:100%;
+  background: rgba(255,255,255,0.15);
+  border-radius:2px;
+}
+
+/* Glow runner effect */
+.edu-timeline::after {
+  content:"";
+  position:absolute;
+  left:50%; top:0;
+  transform:translateX(-50%);
+  width:6px; height:100%;
   background: linear-gradient(180deg,
     transparent 0%,
     rgba(255,255,255,0.9) 15%,
     rgba(120,160,255,0.4) 25%,
     transparent 40%);
-  background-size: 100% 300%;
+  background-size:100% 300%;
   animation: axisGlow 6s linear infinite;
-  pointer-events:none;
 }
 @keyframes axisGlow {
   0%   { background-position: 0 -200%; }
   100% { background-position: 0 200%; }
 }
 
-/* ===== Year Chip Pop-in ===== */
+/* Row items */
+.edu-row {
+  position: relative;
+  margin: 120px 0; /* ระยะห่างยาว ๆ */
+  text-align: center;
+}
+
+.edu-chip {
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:20px;
+  background: linear-gradient(90deg,#6a85ff,#8fbcff);
+  color:#fff;
+  font-weight:700;
+  font-size:1.1rem;
+  margin-bottom:10px;
+}
+
+/* Pop-in animation */
 .edu-chip span {
   display:inline-block;
   opacity:0;
@@ -556,8 +519,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
     transform: scale(1) translateY(0);
   }
 }
-
-/* ทำให้แต่ละตัวอักษรปีดีเลย์ pop-in */
 .edu-chip span:nth-child(1){ animation-delay: 0.05s; }
 .edu-chip span:nth-child(2){ animation-delay: 0.1s; }
 .edu-chip span:nth-child(3){ animation-delay: 0.15s; }
@@ -566,3 +527,15 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .edu-chip span:nth-child(6){ animation-delay: 0.3s; }
 .edu-chip span:nth-child(7){ animation-delay: 0.35s; }
 .edu-chip span:nth-child(8){ animation-delay: 0.4s; }
+.edu-chip span:nth-child(9){ animation-delay: 0.45s; }
+.edu-chip span:nth-child(10){ animation-delay: 0.5s; }
+
+.edu-title {
+  font-size:1.2rem;
+  font-weight:600;
+  margin:8px 0;
+}
+.edu-desc {
+  font-size:0.95rem;
+  color:rgba(255,255,255,0.7);
+}
