@@ -4,10 +4,9 @@
   --primary:#6aa5ff; --primary-2:#9b8cff;
   --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
 
-  /* Marquee */
+  /* marquee speed config */
   --mk-gap:48px;
-  --mk-dur:28s;         /* ปรับเร็ว/ช้าได้ */
-  --mk-start-delay:.85s;/* เริ่มพร้อมกันหลังโหลดเล็กน้อย */
+  --mk-speed:120; /* px/sec */
 }
 
 /* BASE */
@@ -91,46 +90,27 @@ a:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--pr
 /* FULL-BLEED helper */
 .full-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
 
-/* ==================== MARQUEE ใหม่ (mk-*) ==================== */
+/* ==================== MARQUEE (mk-*) – ใหม่ ==================== */
 .mk{position:relative;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
 .mk-row{overflow:hidden;padding:12px 0}
 .mk-track{
   display:flex;align-items:center;gap:var(--mk-gap);
   width:max-content;
-  /* สำคัญ: เริ่มพร้อมกันทั้งสองแถว */
-  animation:mk-left var(--mk-dur) linear infinite both;
-  animation-delay: var(--mk-start-delay);
   will-change:transform;
 }
-/* เริ่ม/จบ “นอกจอ” เสมอ เพื่อให้เข้ามาจากขอบ */
-.mk-track::before,.mk-track::after{content:"";flex:0 0 100vw}
-
+/* เริ่ม/จบ “นอกจอ” ให้ลื่น */
+.mk-track::before,.mk-track::after{content:"";flex:0 0 50vw}
 .mk-set{display:flex;align-items:center;gap:var(--mk-gap)}
-.mk-set span{display:inline-flex;align-items:center;font-weight:700;color:#dbe6ff}
+.mk-set span{display:inline-flex;align-items:center;font-weight:700;color:#dbe6ff;white-space:nowrap}
 .mk-set span i{font-size:20px;margin-right:8px;opacity:.9}
 
-/* แถว B วิ่งกลับด้าน แต่หน่วงเวลาเท่ากัน */
-.mk-b .mk-track{
-  animation-direction:reverse;
-  animation-delay: var(--mk-start-delay);
-}
+/* keyframes - JS จะเป็นตัวกำหนด duration/delay */
+@keyframes mk-move-left  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes mk-move-right { from{transform:translateX(0)} to{transform:translateX( 50%)} }
 
-@keyframes mk-left{
-  0%{transform:translateX(0)}
-  100%{transform:translateX(-50%)} /* เพราะ mk-set มี 2 ชุดติดกัน */
-}
-
-/* ==================== STACK GRID ใหม่ ==================== */
-.stack-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:14px;
-  margin-top:10px;
-}
-.stack-chip{
-  display:flex;align-items:center;gap:10px;
-  padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);
-}
+/* ==================== STACK GRID ==================== */
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:10px}
+.stack-chip{display:flex;align-items:center;gap:10px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card)}
 .stack-chip i{font-size:22px;color:#dbe6ff}
 .stack-chip span{font-weight:700}
 
@@ -150,7 +130,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .glare{position:relative;overflow:hidden}
 .glare-spot{position:absolute;inset:auto;width:140px;height:140px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.28),rgba(255,255,255,.06),transparent 70%);filter:blur(10px);pointer-events:none;transform:translate(-50%,-50%);opacity:0;transition:opacity .2s ease}
 
-/* SECTION / TABS / CARDS / CONTACT / FOOTER / REVEAL (เดิม) */
+/* SECTION / TABS / CARDS / CONTACT / FOOTER / REVEAL */
 .section{padding:72px 0}
 .mini-cta{display:flex;gap:10px;margin-top:10px}
 .section-title{font-weight:800;letter-spacing:.3px;margin:0 0 6px}
@@ -199,7 +179,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .tilt{will-change:transform;transition:transform .12s linear}
 .parallax{will-change:transform}
 
-/* INTRO (เดิม) */
+/* INTRO */
 .intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:
   radial-gradient(900px 420px at 30% -10%, rgba(106,165,255,.18), transparent 60%),
   radial-gradient(880px 420px at 100% -10%, rgba(155,140,255,.18), transparent 60%),
@@ -217,7 +197,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 @keyframes intro-pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeInUp{to{opacity:1;transform:translateY(0)}}
 
-/* RESPONSIVE (เดิม) */
+/* RESPONSIVE */
 @media (max-width:900px){
   .hero-grid,.about-layout{grid-template-columns:1fr}
   .avatar-glow{width:200px;height:200px}
