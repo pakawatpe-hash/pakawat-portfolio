@@ -584,4 +584,54 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .edu-row:nth-child(3) p {
   animation-delay: 2s;
 }
+/* ========= EDU: Text glow scan (run per-row with delay) ========= */
+#education .edu-row .edu-title,
+#education .edu-row p {
+  position: relative;
+  display: inline-block;
+
+  /* ทำให้ตัวอักษรโปร่งใส แล้วใช้กราเดียนต์เป็นตัว “ทาสี” */
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+
+  /* แถบแสงวิ่งผ่านตัวอักษร */
+  background-image: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.05) 0%,
+    rgba(255,255,255,0.12) 25%,
+    #ffffff 48%,
+    #b8ccff 60%,
+    rgba(255,255,255,0.12) 75%,
+    rgba(255,255,255,0.05) 100%
+  );
+  background-size: 260% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  animation: eduTextShine 2.8s linear infinite;
+  opacity: .98;
+  will-change: background-position;
+}
+
+/* keyframes แสงวิ่งซ้าย -> ขวา */
+@keyframes eduTextShine {
+  0%   { background-position: -160% 0; }
+  100% { background-position: 160% 0; }
+}
+
+/* ===== ไล่ดีเลย์ทีละแถว (วิ่งไม่พร้อมกัน) ===== */
+/* แถวบนสุด - เร็วสุด */
+#education .edu-row:nth-of-type(1) .edu-title,
+#education .edu-row:nth-of-type(1) p { animation-delay: .15s; }
+
+/* แถวถัดมา */
+#education .edu-row:nth-of-type(2) .edu-title,
+#education .edu-row:nth-of-type(2) p { animation-delay: 1.0s; }
+
+/* แถวล่างสุด */
+#education .edu-row:nth-of-type(3) .edu-title,
+#education .edu-row:nth-of-type(3) p { animation-delay: 1.85s; }
+
+/* (ถ้ามีแถวเพิ่ม ให้ก็อปบล็อกนี้ไปต่อได้เลย เปลี่ยนตัวเลข nth-of-type และ delay) */
 
