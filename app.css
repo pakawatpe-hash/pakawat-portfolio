@@ -448,100 +448,49 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 }
 .about-desc p{ margin:.4rem 0 1rem; }
 .about-desc strong{ color:#fff; font-weight:700; }
-:root {
-  --edu-gap: 220px;
-  --edu-conn: clamp(160px, 22vw, 320px);
+/* ========== EDUCATION — Tighten & Re-align to axis (OVERRIDE) ========== */
+
+/* 1) ลดระยะจากแกน → ให้ชิดเส้นกลางขึ้น */
+:root{
+  /* ปรับได้ช่วง 110–200 ก็พอดีจอส่วนใหญ่ */
+  --edu-conn: clamp(110px, 14vw, 180px);
 }
 
-#education.section { padding-bottom: 40px; }
-#education .section-sub { margin-bottom: 18px; }
+/* 2) Padding ของฝั่งซ้าย/ขวาให้พอดีกับระยะเส้นเชื่อมใหม่ */
+.edu-item.left  { padding-right: calc(var(--edu-conn) + 18px) !important; }
+.edu-item.right { padding-left:  calc(var(--edu-conn) + 18px) !important; }
 
-.edu-timeline {
-  position: relative;
-  margin: 24px auto 0;
-  padding: 18px 0 10px;
-  min-height: 1400px;
-}
-
-.edu-axis {
-  position: absolute; left: 50%; top: 0; bottom: 0; width: 3px;
-  transform: translateX(-50%) scaleY(0);
-  transform-origin: top;
-  background: linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,.12));
-}
-.section.lazy.entered .edu-axis {
-  transform: translateX(-50%) scaleY(1);
-  transition: transform 1200ms ease;
+/* 3) จับ “จุดกลาง” กับ “เส้นเชื่อม” ให้อยู่ระดับเดียวกับชิปปี */
+.edu-chip{
+  padding: 7px 16px !important;
+  line-height: 1 !important;
+  border-radius: 999px !important;
 }
 
-.edu-axis::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 0%,
-    rgba(255,255,255,.95) 16%, rgba(120,160,255,.45) 26%, transparent 40%);
-  background-size: 100% 300%;
-  animation: axisGlow 6s linear infinite;
-}
-@keyframes axisGlow {
-  0% { background-position: 0 -200%; }
-  100% { background-position: 0 200%; }
+/* ตัวเลขยัง pop-in ได้เหมือนเดิม แต่เราขยับ baseline ให้ fix */
+.edu-dot{
+  top: 36px !important;                /* กึ่งกลางชิปปีโดยประมาณ */
+  width: 14px !important;
+  height: 14px !important;
+  box-shadow: 0 10px 20px rgba(120,160,255,.35) !important;
 }
 
-.edu-item {
-  position: relative; width: 50%;
-  margin: var(--edu-gap) 0;
-  color: #eaf0ff;
-}
-.edu-item.left { padding-right: calc(var(--edu-conn) + 28px); text-align: right; }
-.edu-item.right { margin-left: 50%; padding-left: calc(var(--edu-conn) + 28px); text-align: left; }
-
-.edu-dot {
-  position: absolute; top: 0; left: 50%;
-  width: 16px; height: 16px; border-radius: 50%;
-  transform: translate(-50%, -2px);
-  background: radial-gradient(circle at 35% 35%, #fff, #cfe0ff 45%, rgba(255,255,255,.08) 65%);
-}
-@keyframes eduPulse {
-  0%,100% { transform: translate(-50%, -2px) scale(1); }
-  50% { transform: translate(-50%, -2px) scale(1.08); }
+.edu-connector{
+  top: 44px !important;                /* กลางชิปปี + หนากว่าหน่อย */
+  height: 3px !important;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,.45), rgba(255,255,255,.10)) !important;
+  filter: drop-shadow(0 6px 18px rgba(120,160,255,.22)) !important;
 }
 
-.edu-connector {
-  position: absolute; top: 6px; height: 2px; width: var(--edu-conn);
-  background: linear-gradient(90deg, rgba(255,255,255,.35), rgba(255,255,255,.08));
-  transform: scaleX(0);
-}
-.edu-item.left .edu-connector { right: 50%; transform-origin: right; }
-.edu-item.right .edu-connector { left: 50%; transform-origin: left; }
-.edu-item.reveal.in .edu-connector {
-  transform: scaleX(1);
-  transition: transform 900ms ease 120ms;
-}
+/* 4) อ่านง่ายขึ้นหลังชิปปีติดแกนมากขึ้น */
+.edu-title{ margin-top: 14px !important; }
+.edu-desc { margin-top: 4px  !important; }
 
-.edu-block { display: inline-block; max-width: 520px; }
-.edu-title { margin: 10px 0 4px; font-weight: 800; font-size: 22px; color: #fff; }
-.edu-desc { margin: 0; color: #cfdaf3; }
-
-.edu-chip {
-  display: inline-block; padding: 6px 14px; border-radius: 999px;
-  background: linear-gradient(90deg, var(--primary), var(--primary-2));
-  color: #0b1022; font-weight: 800;
-}
-.edu-chip span {
-  display: inline-block; opacity: 0;
-  transform: scale(.6) translateY(6px);
-  animation: chipPop .6s ease forwards;
-}
-@keyframes chipPop { to { opacity: 1; transform: scale(1) translateY(0); } }
-
-.edu-item.reveal { opacity: 0; transform: translateY(14px); }
-.edu-item.reveal.in { opacity: 1; transform: none; transition: .7s; }
-
-@media (max-width: 900px) {
-  .edu-item { width: 100%; margin: 160px 0; text-align: left; }
-  .edu-item.left,
-  .edu-item.right { padding: 0 16px 0 calc(var(--edu-conn) + 42px); margin-left: 0; }
-  .edu-axis { left: 26px; transform: translateX(0) scaleY(0); }
-  .edu-dot { left: 26px; }
-  .edu-connector { left: 26px; transform-origin: left; }
+/* 5) มือถือ: ให้ยังดูใกล้แกน (ที่ย้ายชิดซ้าย) และเส้นเชื่อมสั้นลงอีกนิด */
+@media (max-width: 900px){
+  :root{ --edu-conn: clamp(96px, 22vw, 150px); }
+  .edu-item{ margin: 140px 0 !important; }
+  .edu-dot{ left: 26px !important; top: 34px !important; }
+  .edu-connector{ left: 26px !important; top: 42px !important; }
 }
