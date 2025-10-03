@@ -378,4 +378,8 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
     0 0 18px color-mix(in srgb, var(--code-glow) 55%, transparent);
   filter: saturate(1.15);
 }
+/* Glow sweep base */
+.code-window pre code .glow-word{
+  transition: color .25s ease, text-shadow .25s ease, filter .25s ease;
+}
 
