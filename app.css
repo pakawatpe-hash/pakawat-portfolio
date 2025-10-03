@@ -4,7 +4,7 @@
   --primary:#6aa5ff; --primary-2:#9b8cff;
   --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
 
-/* ===== MARQUEE FIX (Sequential, No Overlap, No Mid-cut) ===== */
+/* ===== Marquee Sync ===== */
 .marquee.full-bleed {
   position: relative;
   overflow: hidden;
@@ -12,37 +12,35 @@
   border-bottom: 1px solid var(--line);
   background: rgba(255,255,255,.02);
 }
-.marquee .row {
-  position: relative;
-  overflow: hidden;
-  padding: 12px 0;
-}
-.marquee .row + .row {
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-.marquee .track { display: none } /* ซ่อน track เดิม ใช้ unit แทน */
-.marquee .unit {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+.mk-row { overflow: hidden; padding: 12px 0; }
+.mk-track {
   display: flex;
-  align-items: center;
-  gap: 40px;
-  white-space: nowrap;
+  gap: var(--mk-gap);
+  width: max-content;
   will-change: transform;
 }
-.marquee .unit > span {
+.mk-set {
+  display: flex;
+  gap: var(--mk-gap);
+  align-items: center;
+}
+.mk-set span {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  opacity: .92;
+  font-weight: 700;
+  color: #dbe6ff;
 }
-.marquee .unit i {
-  color: #cfe4ff;
-  font-size: 20px;
-}
+.mk-set span i { font-size: 20px; margin-right: 8px; }
 
+/* Animation keyframes */
+@keyframes mk-move-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes mk-move-right {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(50%); }
+}
 /* BASE */
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
