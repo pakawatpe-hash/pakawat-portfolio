@@ -450,47 +450,115 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .about-desc strong{ color:#fff; font-weight:700; }
 /* ========== EDUCATION — Tighten & Re-align to axis (OVERRIDE) ========== */
 
-/* 1) ลดระยะจากแกน → ให้ชิดเส้นกลางขึ้น */
-:root{
-  /* ปรับได้ช่วง 110–200 ก็พอดีจอส่วนใหญ่ */
-  --edu-conn: clamp(110px, 14vw, 180px);
+/* ========== EDUCATION TIMELINE ========== */
+.edu-section{
+  position: relative;
+  padding: 100px 0;
+}
+.edu-timeline{
+  position: relative;
+  max-width: 1000px;
+  margin: 80px auto;
+  padding: 0 20px;
 }
 
-/* 2) Padding ของฝั่งซ้าย/ขวาให้พอดีกับระยะเส้นเชื่อมใหม่ */
-.edu-item.left  { padding-right: calc(var(--edu-conn) + 18px) !important; }
-.edu-item.right { padding-left:  calc(var(--edu-conn) + 18px) !important; }
+/* เส้นกลาง */
+.edu-timeline::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0));
+}
 
-/* 3) จับ “จุดกลาง” กับ “เส้นเชื่อม” ให้อยู่ระดับเดียวกับชิปปี */
+/* item */
+.edu-item{
+  position: relative;
+  width: 50%;
+  padding: 40px 40px;
+}
+.edu-item.left { left: 0; text-align: right; }
+.edu-item.right{ left: 50%; text-align: left; }
+
+.edu-content{
+  display: inline-block;
+  max-width: 400px;
+  background: transparent;
+  padding: 10px 20px;
+  position: relative;
+}
+
+/* จุดกลม */
+.edu-item::before{
+  content: "";
+  position: absolute;
+  top: 50px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(120,160,255,.6);
+}
+.edu-item.left::before  { right: -8px; }
+.edu-item.right::before { left: -8px; }
+
+/* เส้นเชื่อมจากแกนไป content */
+.edu-item::after{
+  content: "";
+  position: absolute;
+  top: 58px;
+  width: var(--edu-conn, 80px);
+  height: 2px;
+  background: rgba(255,255,255,0.3);
+}
+.edu-item.left::after  { right: 0; }
+.edu-item.right::after { left: 0; }
+
+/* chip ปี */
 .edu-chip{
-  padding: 7px 16px !important;
-  line-height: 1 !important;
-  border-radius: 999px !important;
+  display: inline-block;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg,#6a9cff,#a777ff);
+  border-radius: 999px;
+  color:#fff;
+  margin-bottom: 12px;
+}
+.edu-chip span{
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: popIn 0.5s forwards;
+}
+.edu-chip span:nth-child(1){ animation-delay:0.05s; }
+.edu-chip span:nth-child(2){ animation-delay:0.1s; }
+.edu-chip span:nth-child(3){ animation-delay:0.15s; }
+.edu-chip span:nth-child(4){ animation-delay:0.2s; }
+.edu-chip span:nth-child(5){ animation-delay:0.25s; }
+.edu-chip span:nth-child(6){ animation-delay:0.3s; }
+.edu-chip span:nth-child(7){ animation-delay:0.35s; }
+.edu-chip span:nth-child(8){ animation-delay:0.4s; }
+.edu-chip span:nth-child(9){ animation-delay:0.45s; }
+.edu-chip span:nth-child(10){ animation-delay:0.5s; }
+
+@keyframes popIn{
+  to{ opacity:1; transform: translateY(0); }
 }
 
-/* ตัวเลขยัง pop-in ได้เหมือนเดิม แต่เราขยับ baseline ให้ fix */
-.edu-dot{
-  top: 36px !important;                /* กึ่งกลางชิปปีโดยประมาณ */
-  width: 14px !important;
-  height: 14px !important;
-  box-shadow: 0 10px 20px rgba(120,160,255,.35) !important;
-}
+/* title & desc */
+.edu-title{ font-size:20px; font-weight:700; margin: 4px 0; }
+.edu-desc { font-size:15px; opacity:0.85; }
 
-.edu-connector{
-  top: 44px !important;                /* กลางชิปปี + หนากว่าหน่อย */
-  height: 3px !important;
-  background: linear-gradient(90deg,
-    rgba(255,255,255,.45), rgba(255,255,255,.10)) !important;
-  filter: drop-shadow(0 6px 18px rgba(120,160,255,.22)) !important;
-}
-
-/* 4) อ่านง่ายขึ้นหลังชิปปีติดแกนมากขึ้น */
-.edu-title{ margin-top: 14px !important; }
-.edu-desc { margin-top: 4px  !important; }
-
-/* 5) มือถือ: ให้ยังดูใกล้แกน (ที่ย้ายชิดซ้าย) และเส้นเชื่อมสั้นลงอีกนิด */
-@media (max-width: 900px){
-  :root{ --edu-conn: clamp(96px, 22vw, 150px); }
-  .edu-item{ margin: 140px 0 !important; }
-  .edu-dot{ left: 26px !important; top: 34px !important; }
-  .edu-connector{ left: 26px !important; top: 42px !important; }
+/* responsive */
+@media (max-width:900px){
+  .edu-item, .edu-item.left, .edu-item.right{
+    width:100%;
+    text-align:left;
+    padding-left:60px;
+  }
+  .edu-item::before{ left:18px; }
+  .edu-item::after{ left:34px; width:30px; }
 }
