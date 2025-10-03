@@ -227,11 +227,37 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .reveal,.card,.contact-card,.section.lazy.entered,.glare-spot{transition:none}
 }
 
-/* ✅ Avatar image */
-.avatar-img{
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  object-fit:cover;
-  display:block;
+.about-photo .avatar-glow {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;              /* ตัดส่วนเกิน */
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 60px rgba(0,0,0,.35);
 }
+
+/* วงแหวนเรืองแสง */
+.about-photo .avatar-glow::before {
+  content:"";
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+  background:conic-gradient(from 0deg,#6aa5ff,#9b8cff,#6aa5ff);
+  filter:blur(22px);
+  opacity:.35;
+  z-index:-1;
+  animation:spin 12s linear infinite;
+}
+
+/* ✅ รูปเต็มวงกลมจริง ๆ */
+.avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
