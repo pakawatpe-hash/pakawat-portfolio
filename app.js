@@ -392,15 +392,15 @@ if (isFinePointer) {
 (function(){
   const data = [
   { title: "Cybersecurity พื้นฐาน (2 ชม.)", file: "assets/certs/cert-01.jpg", category: "programming" },
-  { title: "นักทดสอบระบบ (ชั้น 3)", file: "assets/certs/cert-02.jpg", category: "programming" },
-  { title: "นักทดสอบระบบ (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
-  { title: "วิศวกรรมข้อมูล (ระดับ 5)", file: "assets/certs/cert-04.jpg", category: "ai" },
-  { title: "นักพัฒนา IoT (ระดับ 5)", file: "assets/certs/cert-05.jpg", category: "programming" },
-  { title: "ออกแบบเกม 3D (ระดับ 5)", file: "assets/certs/cert-06.jpg", category: "other" },
-  { title: "นักพัฒนา Cloud (ระดับ 5)", file: "assets/certs/cert-07.jpg", category: "programming" },
-  { title: "ระบบสมองกลฝังตัว (ระดับ 4)", file: "assets/certs/cert-08.jpg", category: "hardware" },
-  { title: "การวิเคราะห์ข้อมูลเบื้องต้น", file: "assets/certs/cert-09.jpg", category: "data" },
-  { title: "บริการ IT และระบบคอมพ์ (ระดับ 3)", file: "assets/certs/cert-10.jpg", category: "hardware" },
+  { title: "นักพัฒนา Hardware (ชั้น 3)", file: "assets/certs/cert-02.jpg", category: "programming" },
+  { title: "นักพัฒนา Software เเละ Applications (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
+  { title: "ผู้ให้บริการ Hardware (ระดับ 4)", file: "assets/certs/cert-04.jpg", category: "ai" },
+  { title: "นักพัฒนา Hardware (ระดับ 4)", file: "assets/certs/cert-05.jpg", category: "programming" },
+  { title: "นักพัฒนา Cloud (ระดับ 5)", file: "assets/certs/cert-06.jpg", category: "other" },
+  { title: "นักออกเเบบศิลปะเกม 3D (ระดับ 5)", file: "assets/certs/cert-07.jpg", category: "programming" },
+  { title: "นักพัฒนา Software เครือข่าย (ระดับ 4)", file: "assets/certs/cert-08.jpg", category: "hardware" },
+  { title: "วิศวะกรรมข้อมูล (ระดับ 5)", file: "assets/certs/cert-09.jpg", category: "data" },
+  { title: "นักทดสอบระบบ (ระดับ 5)", file: "assets/certs/cert-10.jpg", category: "hardware" },
 ];
 
 
