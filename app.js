@@ -393,7 +393,7 @@ if (isFinePointer) {
   const data = [
   { title: "Cybersecurity พื้นฐาน (2 ชม.)", file: "assets/certs/cert-01.jpg", category: "programming" },
   { title: "นักพัฒนา Hardware (ชั้น 3)", file: "assets/certs/cert-02.jpg", category: "programming" },
-  { title: "นักพัฒนา Software เเละ Applications (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
+  { title: "นักพัฒนา Applications (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
   { title: "ผู้ให้บริการ Hardware (ระดับ 4)", file: "assets/certs/cert-04.jpg", category: "ai" },
   { title: "นักพัฒนา Hardware (ระดับ 4)", file: "assets/certs/cert-05.jpg", category: "programming" },
   { title: "นักพัฒนา Cloud (ระดับ 5)", file: "assets/certs/cert-06.jpg", category: "other" },
