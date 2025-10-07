@@ -29,9 +29,9 @@
   function makeParticle() {
     const base = Math.min(w, h);
     const r = rand(base * 0.025, base * 0.085);
-    const speed = rand(0.02, 0.12);
+    const speed = rand(0.006, 0.025);
     const angle = rand(0, Math.PI * 2);
-    const drift = rand(0.0002, 0.0008);
+    const drift = rand(0.00005, 0.00025);
     const hue = rand(205, 265);
     const sat = rand(70, 95);
     const alp = rand(0.12, 0.25);
