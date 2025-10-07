@@ -391,17 +391,18 @@ if (isFinePointer) {
 /* ===== Certificates (JPG) inside #work tab — cleaned (no hover preview) ===== */
 (function(){
   const data = [
-    { title: "อาชีพนักทดสอบระบบ ชั้น 3",  file: "assets/certs/cert-01.jpg", category: "programming" },
-    { title: "อาชีพนักทดสอบระบบ ระดับ 5",  file: "assets/certs/cert-02.jpg", category: "programming" },
-    { title: "อาชีพผู้ปฏิบัติงานด้านวิศวกรรมข้อมูล ระดับ 5", file: "assets/certs/cert-03.jpg", category: "ai" },
-    { title: "อาชีพนักพัฒนาซอฟต์แวร์เพื่ออินเทอร์เน็ตของสรรพสิ่ง ชั้น 5", file: "assets/certs/cert-04.jpg", category: "programming" },
-    { title: "อาชีพนักออกแบบศิลปะเกม (โมเดล 3 มิติ) ระดับ 5", file: "assets/certs/cert-05.jpg", category: "other" },
-    { title: "อาชีพนักพัฒนาซอฟต์แวร์ด้านเทคโนโลยีคลาวด์ ชั้น 5", file: "assets/certs/cert-06.jpg", category: "programming" },
-    { title: "อาชีพนักพัฒนาระบบสมองกลฝังตัว ระดับ 4", file: "assets/certs/cert-07.jpg", category: "hardware" },
-    { title: "อาชีพผู้ให้บริการด้านคอมพิวเตอร์และระบบคอมพิวเตอร์ ชั้น 4", file: "assets/certs/cert-08.jpg", category: "hardware" },
-    { title: "Basic Cybersecurity (2 ชั่วโมง)", file: "assets/certs/cert-09.jpg", category: "other" },
-    { title: "อาชีพผู้ให้บริการด้านคอมพิวเตอร์และระบบคอมพิวเตอร์ ชั้น 3", file: "assets/certs/cert-10.jpg", category: "hardware" },
-  ];
+  { title: "Cybersecurity พื้นฐาน (2 ชม.)", file: "assets/certs/cert-01.jpg", category: "programming" },
+  { title: "นักทดสอบระบบ (ชั้น 3)", file: "assets/certs/cert-02.jpg", category: "programming" },
+  { title: "นักทดสอบระบบ (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
+  { title: "วิศวกรรมข้อมูล (ระดับ 5)", file: "assets/certs/cert-04.jpg", category: "ai" },
+  { title: "นักพัฒนา IoT (ระดับ 5)", file: "assets/certs/cert-05.jpg", category: "programming" },
+  { title: "ออกแบบเกม 3D (ระดับ 5)", file: "assets/certs/cert-06.jpg", category: "other" },
+  { title: "นักพัฒนา Cloud (ระดับ 5)", file: "assets/certs/cert-07.jpg", category: "programming" },
+  { title: "ระบบสมองกลฝังตัว (ระดับ 4)", file: "assets/certs/cert-08.jpg", category: "hardware" },
+  { title: "การวิเคราะห์ข้อมูลเบื้องต้น", file: "assets/certs/cert-09.jpg", category: "data" },
+  { title: "บริการ IT และระบบคอมพ์ (ระดับ 3)", file: "assets/certs/cert-10.jpg", category: "hardware" },
+];
+
 
   const panel = document.getElementById('panel-certs');
   if(!panel) return;
