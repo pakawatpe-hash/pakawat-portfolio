@@ -391,20 +391,20 @@ if (isFinePointer) {
 /* ===== Certificates (JPG) inside #work tab ===== */
 (function(){
   const data = [
-    { title: "Algorithm & Data Structures", file: "assets/certs/cert-01.jpg", category: "programming" },
-    { title: "Python Automation Workshop",  file: "assets/certs/cert-02.jpg", category: "programming" },
-    { title: "Flutter App Dev Bootcamp",    file: "assets/certs/cert-03.jpg", category: "mobile" },
-    { title: "Mobile UI Best Practices",    file: "assets/certs/cert-04.jpg", category: "mobile" },
-    { title: "Intro to Machine Learning",   file: "assets/certs/cert-05.jpg", category: "ai" },
-    { title: "Data Analysis with Pandas",   file: "assets/certs/cert-06.jpg", category: "ai" },
-    { title: "SQL for Developers",          file: "assets/certs/cert-07.jpg", category: "programming" },
-    { title: "Cybersecurity Basics",        file: "assets/certs/cert-08.jpg", category: "other" },
-    { title: "Git & GitHub",                file: "assets/certs/cert-09.jpg", category: "programming" },
-    { title: "Problem Solving Certificate", file: "assets/certs/cert-10.jpg", category: "other" },
+    { title: "อาชีพนักทดสอบระบบ ชั้น 3", file: "assets/certs/cert01.jpg", category: "programming" },
+    { title: "อาชีพนักทดสอบระบบ ระดับ 5", file: "assets/certs/cert02.jpg", category: "programming" },
+    { title: "อาชีพผู้ปฏิบัติงานด้านวิศวกรรมข้อมูล ระดับ 5", file: "assets/certs/cert03.jpg", category: "ai" },
+    { title: "อาชีพนักพัฒนาซอฟต์แวร์เพื่ออินเทอร์เน็ตของสรรพสิ่ง ชั้น 5", file: "assets/certs/cert04.jpg", category: "programming" },
+    { title: "อาชีพนักออกแบบศิลปะเกม (โมเดล 3 มิติ) ระดับ 5", file: "assets/certs/cert05.jpg", category: "other" },
+    { title: "อาชีพนักพัฒนาซอฟต์แวร์ด้านเทคโนโลยีคลาวด์ ชั้น 5", file: "assets/certs/cert06.jpg", category: "programming" },
+    { title: "อาชีพนักพัฒนาระบบสมองกลฝังตัว ระดับ 4", file: "assets/certs/cert07.jpg", category: "hardware" },
+    { title: "อาชีพผู้ให้บริการด้านคอมพิวเตอร์และระบบคอมพิวเตอร์ ชั้น 4", file: "assets/certs/cert08.jpg", category: "hardware" },
+    { title: "Basic Cybersecurity (2 ชั่วโมง)", file: "assets/certs/cert09.jpg", category: "ai" },
+    { title: "อาชีพผู้ให้บริการด้านคอมพิวเตอร์และระบบคอมพิวเตอร์ ชั้น 3", file: "assets/certs/cert10.jpg", category: "hardware" },
   ];
 
   const panel = document.getElementById('panel-certs');
-  if(!panel) return;
+  if (!panel) return;
 
   const grid = panel.querySelector('#certGrid');
   const filterBtns = panel.querySelectorAll('.cert-filters .chip');
@@ -414,16 +414,19 @@ if (isFinePointer) {
     const frag = document.createDocumentFragment();
     list.forEach(cert=>{
       const card = document.createElement('article');
-      card.className = 'cert-card glass';
+      card.className = 'cert-card glass tilt glare';
       card.innerHTML = `
         <img src="${cert.file}" alt="${cert.title}" class="cert-thumb" loading="lazy">
         <div class="cert-meta">
           <div class="cert-title">${cert.title}</div>
           <div class="cert-actions">
             <button class="btn tiny" data-view>ดู</button>
-            <a class="btn tiny ghost" href="${cert.file}" download="${cert.title.replace(/\s+/g,'_')}.jpg">ดาวน์โหลด</a>
+            <a class="btn tiny ghost" href="${cert.file}" download="${cert.title.replace(/\s+/g,'_')}.jpg">
+              ดาวน์โหลด
+            </a>
           </div>
         </div>
+        <span class="glare-spot"></span>
       `;
       card.querySelector('[data-view]').addEventListener('click', ()=> openLightbox(cert));
       frag.appendChild(card);
@@ -432,8 +435,8 @@ if (isFinePointer) {
   }
 
   function applyFilter(cat){
-    if(cat==='all') return render(data);
-    render(data.filter(d=>d.category===cat));
+    if (cat === 'all') return render(data);
+    render(data.filter(d => d.category === cat));
   }
 
   filterBtns.forEach(btn=>{
@@ -444,7 +447,7 @@ if (isFinePointer) {
     }, {passive:true});
   });
 
-  // Lightbox
+  // ===== Lightbox =====
   const lb = document.getElementById('certLightbox');
   const lbImg = document.getElementById('clbImg');
   const lbDl  = document.getElementById('clbDownload');
@@ -464,16 +467,16 @@ if (isFinePointer) {
   lb.addEventListener('click', (e)=>{ if(e.target.hasAttribute('data-close')) closeLightbox(); }, {passive:true});
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && lb.classList.contains('open')) closeLightbox(); });
 
-  // โหลดครั้งแรก (แท็บถูกเปิดโดยผู้ใช้กด)
+  // โหลดครั้งแรก
   render(data);
 
-  // ถ้าต้องการให้เรนเดอร์เมื่อสลับมาที่แท็บนี้ (กันกรณี DOM ยังไม่พร้อม)
+  // Render ใหม่เมื่อกดแท็บ Certificates
   const tabBtn = document.getElementById('tab-certs');
-  if(tabBtn){
-    tabBtn.addEventListener('click', ()=> render(
-      panel.querySelector('.cert-filters .chip.active')?.dataset.filter === 'all'
-        ? data
-        : data.filter(d=>d.category === panel.querySelector('.cert-filters .chip.active').dataset.filter)
-    ), {passive:true});
+  if (tabBtn) {
+    tabBtn.addEventListener('click', ()=>{
+      const activeCat = panel.querySelector('.cert-filters .chip.active')?.dataset.filter || 'all';
+      applyFilter(activeCat);
+    }, {passive:true});
   }
 })();
+
