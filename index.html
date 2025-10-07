@@ -280,19 +280,21 @@
           </div>
         </div>
 
-        <div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
-          <div class="cards">
-            <article class="card glass reveal">
-              <div class="cert"><div class="cert-head"><span class="seal"></span><h3>Algorithm & DS</h3></div><p>Online Course / 2024</p></div>
-            </article>
-            <article class="card glass reveal">
-              <div class="cert"><div class="cert-head"><span class="seal"></span><h3>Flutter App Dev</h3></div><p>Bootcamp / 2024</p></div>
-            </article>
-            <article class="card glass reveal">
-              <div class="cert"><div class="cert-head"><span class="seal"></span><h3>Python Automation</h3></div><p>Workshop / 2023</p></div>
-            </article>
-          </div>
-        </div>
+        <!-- Certificates panel (JPG) -->
+<div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
+  <!-- ตัวกรอง (ถ้าไม่ใช้ลบปุ่มทิ้งได้) -->
+  <div class="cert-filters">
+    <button class="chip active" data-filter="all">ทั้งหมด</button>
+    <button class="chip" data-filter="programming">Programming</button>
+    <button class="chip" data-filter="mobile">Mobile/Flutter</button>
+    <button class="chip" data-filter="ai">AI/Data</button>
+    <button class="chip" data-filter="other">อื่น ๆ</button>
+  </div>
+
+  <!-- กริดเกียรติบัตร -->
+  <div id="certGrid" class="cert-grid" aria-live="polite"></div>
+</div>
+
 
         <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
           <div class="stack-grid">
