@@ -987,3 +987,53 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   --sx: 130%;
   opacity:1; transform: translateX(0);
 }
+/* ===== Twinkle glow for icons (stack tiles etc.) ===== */
+.stack-chip i{
+  position: relative;
+  color:#dfe7ff;
+  /* วิบวับเบา ๆ ตลอด */
+  animation: twinkleGlow 3.2s ease-in-out infinite;
+  /* ลด aliasing เวลาเรืองแสง */
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0 0 0 transparent;
+  filter: drop-shadow(0 0 0 rgba(150,180,255,0));
+}
+
+/* สลับดีเลย์ให้ไม่กระพริบพร้อมกันทั้งแถว */
+.stack-chip:nth-child(3n+1) i{ animation-delay: .15s; }
+.stack-chip:nth-child(3n+2) i{ animation-delay: .55s; }
+.stack-chip:nth-child(3n+3) i{ animation-delay: .95s; }
+
+/* hover = สว่างและคมขึ้นนิด ๆ */
+.stack-chip:hover i,
+.stack-chip:focus-visible i{
+  animation-duration: 2s;
+  filter: drop-shadow(0 4px 12px rgba(146,180,255,.45));
+}
+
+/* keyframes วิบวับแบบสุภาพ ไม่เวียนหัว */
+@keyframes twinkleGlow{
+  0%, 22%, 60%, 100%{
+    text-shadow:
+      0 0 0 rgba(146,180,255,0),
+      0 0 0 rgba(155,140,255,0);
+    filter: drop-shadow(0 0 0 rgba(146,180,255,0));
+  }
+  12%{
+    text-shadow:
+      0 0 6px rgba(146,180,255,.55),
+      0 0 12px rgba(155,140,255,.35);
+    filter: drop-shadow(0 0 6px rgba(146,180,255,.35));
+  }
+  42%{
+    text-shadow:
+      0 0 8px rgba(155,140,255,.6),
+      0 0 16px rgba(106,165,255,.45);
+    filter: drop-shadow(0 0 8px rgba(106,165,255,.35));
+  }
+}
+
+/* ผู้ใช้ที่ตั้งลด motion */
+@media (prefers-reduced-motion: reduce){
+  .stack-chip i{ animation: none; filter:none; text-shadow:none; }
+}
