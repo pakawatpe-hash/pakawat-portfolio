@@ -1117,3 +1117,72 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   .stack-chip::before{ animation: none; }
   .stack-chip::after{ display:none; }
 }
+/* ใช้กับทั้งกรอบ Tech Stack (.stack-chip) และกรอบ 3 อันบน Hero (.intro .tile) */
+.stack-chip, .intro .tile{
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  isolation: isolate;
+  /* กันเส้นขอบเดิมทับแสง */
+  border: 1px solid transparent !important;
+}
+
+/* วงแหวน RGB 7 สี หมุนรอบกรอบ */
+.stack-chip::before, .intro .tile::before{
+  content:"";
+  position:absolute;
+  inset:-3px;
+  border-radius: inherit;
+  padding:3px;
+  background: conic-gradient(#ff004c,#ff7b00,#ffee00,#00ff6a,#00eaff,#2a5cff,#a000ff,#ff004c);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: rgbRingSpin 5s linear infinite;
+  opacity:.9;
+  z-index:0;
+  pointer-events:none;
+  filter: drop-shadow(0 0 10px rgba(160,180,255,.35));
+}
+@keyframes rgbRingSpin{ to{ transform: rotate(360deg); } }
+
+/* เนื้อในอยู่เหนือวงแหวน */
+.stack-chip > *, .intro .tile > *{ position:relative; z-index:1; }
+
+/* วิ้งสแกนเมื่อโฮเวอร์ */
+.stack-chip::after, .intro .tile::after{
+  content:"";
+  position:absolute; inset:0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.18) 50%, transparent 60%);
+  transform: translateX(-130%) skewX(-25deg);
+  opacity:0;
+  transition: transform .9s ease, opacity .35s ease;
+  z-index:1;
+}
+.stack-chip:hover::after, .intro .tile:hover::after{
+  transform: translateX(130%) skewX(-25deg);
+  opacity:1;
+}
+
+/* Hover = สว่างขึ้น/เร็วขึ้นนิด */
+.stack-chip:hover::before, .intro .tile:hover::before{
+  filter: drop-shadow(0 0 14px rgba(160,180,255,.7));
+  animation-duration: 3s;
+  opacity:1;
+}
+
+/* ให้เริ่มหมุนคนละเฟส */
+.stack-chip:nth-child(3n+1)::before,
+.intro .tile:nth-child(3n+1)::before{ animation-delay:0s; }
+.stack-chip:nth-child(3n+2)::before,
+.intro .tile:nth-child(3n+2)::before{ animation-delay:1s; }
+.stack-chip:nth-child(3n+3)::before,
+.intro .tile:nth-child(3n+3)::before{ animation-delay:2s; }
+
+@media (prefers-reduced-motion:reduce){
+  .stack-chip::before,.intro .tile::before{ animation:none; }
+  .stack-chip::after,.intro .tile::after{ display:none; }
+}
