@@ -388,3 +388,92 @@ if (isFinePointer) {
   window.addEventListener('resize', onScroll, { passive:true });
   onScroll();
 })();
+/* ===== Certificates (JPG) inside #work tab ===== */
+(function(){
+  const data = [
+    { title: "Algorithm & Data Structures", file: "assets/certs/cert-01.jpg", category: "programming" },
+    { title: "Python Automation Workshop",  file: "assets/certs/cert-02.jpg", category: "programming" },
+    { title: "Flutter App Dev Bootcamp",    file: "assets/certs/cert-03.jpg", category: "mobile" },
+    { title: "Mobile UI Best Practices",    file: "assets/certs/cert-04.jpg", category: "mobile" },
+    { title: "Intro to Machine Learning",   file: "assets/certs/cert-05.jpg", category: "ai" },
+    { title: "Data Analysis with Pandas",   file: "assets/certs/cert-06.jpg", category: "ai" },
+    { title: "SQL for Developers",          file: "assets/certs/cert-07.jpg", category: "programming" },
+    { title: "Cybersecurity Basics",        file: "assets/certs/cert-08.jpg", category: "other" },
+    { title: "Git & GitHub",                file: "assets/certs/cert-09.jpg", category: "programming" },
+    { title: "Problem Solving Certificate", file: "assets/certs/cert-10.jpg", category: "other" },
+  ];
+
+  const panel = document.getElementById('panel-certs');
+  if(!panel) return;
+
+  const grid = panel.querySelector('#certGrid');
+  const filterBtns = panel.querySelectorAll('.cert-filters .chip');
+
+  function render(list){
+    grid.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    list.forEach(cert=>{
+      const card = document.createElement('article');
+      card.className = 'cert-card glass';
+      card.innerHTML = `
+        <img src="${cert.file}" alt="${cert.title}" class="cert-thumb" loading="lazy">
+        <div class="cert-meta">
+          <div class="cert-title">${cert.title}</div>
+          <div class="cert-actions">
+            <button class="btn tiny" data-view>ดู</button>
+            <a class="btn tiny ghost" href="${cert.file}" download="${cert.title.replace(/\s+/g,'_')}.jpg">ดาวน์โหลด</a>
+          </div>
+        </div>
+      `;
+      card.querySelector('[data-view]').addEventListener('click', ()=> openLightbox(cert));
+      frag.appendChild(card);
+    });
+    grid.appendChild(frag);
+  }
+
+  function applyFilter(cat){
+    if(cat==='all') return render(data);
+    render(data.filter(d=>d.category===cat));
+  }
+
+  filterBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      filterBtns.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(btn.dataset.filter);
+    }, {passive:true});
+  });
+
+  // Lightbox
+  const lb = document.getElementById('certLightbox');
+  const lbImg = document.getElementById('clbImg');
+  const lbDl  = document.getElementById('clbDownload');
+  function openLightbox(cert){
+    lbImg.src = cert.file;
+    lbImg.alt = cert.title;
+    lbDl.href  = cert.file;
+    lbDl.download = cert.title.replace(/\s+/g,'_') + '.jpg';
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden','false');
+  }
+  function closeLightbox(){
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden','true');
+    lbImg.src = '';
+  }
+  lb.addEventListener('click', (e)=>{ if(e.target.hasAttribute('data-close')) closeLightbox(); }, {passive:true});
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && lb.classList.contains('open')) closeLightbox(); });
+
+  // โหลดครั้งแรก (แท็บถูกเปิดโดยผู้ใช้กด)
+  render(data);
+
+  // ถ้าต้องการให้เรนเดอร์เมื่อสลับมาที่แท็บนี้ (กันกรณี DOM ยังไม่พร้อม)
+  const tabBtn = document.getElementById('tab-certs');
+  if(tabBtn){
+    tabBtn.addEventListener('click', ()=> render(
+      panel.querySelector('.cert-filters .chip.active')?.dataset.filter === 'all'
+        ? data
+        : data.filter(d=>d.category === panel.querySelector('.cert-filters .chip.active').dataset.filter)
+    ), {passive:true});
+  }
+})();
