@@ -936,3 +936,54 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .cert-card:hover::before {
   left: 130%;
 }
+/* === Soft neon for buttons === */
+.btn {
+  position: relative;
+  isolation: isolate;
+}
+
+/* glow เบา ๆ ตลอด */
+.btn.primary,
+.btn.ghost {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.06) inset,
+    0 10px 24px rgba(0,0,0,.25);
+}
+
+/* hover = neon ชัดขึ้น + ขอบในนุ่ม */
+.btn.primary:hover,
+.btn.primary:focus-visible {
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--primary) 55%, transparent),
+    0 0 34px color-mix(in srgb, var(--primary-2) 45%, transparent),
+    0 14px 32px rgba(0,0,0,.35);
+  transform: translateY(-2px);
+}
+
+.btn.ghost:hover,
+.btn.ghost:focus-visible {
+  box-shadow:
+    0 0 16px rgba(146, 180, 255, .22),
+    0 12px 28px rgba(0,0,0,.35);
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.22);
+}
+
+/* แถบประกายวิ่งผ่านปุ่ม */
+.btn::after{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  background:
+    radial-gradient(80px 40px at var(--sx, -30%) 50%,
+      rgba(255,255,255,.18), transparent 60%);
+  mix-blend-mode:screen;
+  opacity:0; transform: translateX(-20%);
+  transition: opacity .35s ease, transform .35s ease;
+  pointer-events:none;
+}
+.btn:hover::after,
+.btn:focus-visible::after{
+  --sx: 130%;
+  opacity:1; transform: translateX(0);
+}
