@@ -8,10 +8,10 @@
   <meta name="description" content="รวมเกียรติบัตร (PDF) ของ Pakawat จำนวน 10 ใบ">
   <meta name="theme-color" content="#070b1a">
 
-  <!-- ใช้สไตล์หลักเดิม (ไม่แก้) -->
-  <link rel="stylesheet" href="app.css?v=25">
+  <!-- ใช้สไตล์หลักเดิมของโปรเจกต์ได้ (ถ้ามี) -->
+  <link rel="stylesheet" href="app.css">
   <!-- สไตล์เฉพาะหน้านี้ -->
-  <link rel="stylesheet" href="certs.css?v=1">
+  <link rel="stylesheet" href="certs.css">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 <body>
@@ -35,7 +35,6 @@
         <h1 class="section-title">Certificates</h1>
         <p class="section-sub">รวมเกียรติบัตร (PDF) ทั้งหมด 10 ใบ • กดเพื่อเปิดดู/ซูม/ดาวน์โหลด</p>
 
-        <!-- ตัวกรอง -->
         <div class="cert-filters" role="tablist" aria-label="Filters">
           <button class="chip active" data-filter="all" aria-selected="true">ทั้งหมด</button>
           <button class="chip" data-filter="programming">Programming</button>
@@ -44,20 +43,17 @@
           <button class="chip" data-filter="other">อื่น ๆ</button>
         </div>
 
-        <!-- กริด PDF -->
         <div id="certGrid" class="cert-grid" aria-live="polite"></div>
+        <div id="errorBox" class="error-box" hidden></div>
       </div>
     </section>
   </main>
 
-  <!-- LIGHTBOX PDF VIEWER -->
+  <!-- LIGHTBOX -->
   <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="certificate viewer">
     <div class="lb-inner glass">
       <header class="lb-top">
-        <div class="lb-title">
-          <i class='bx bx-certification'></i>
-          <span id="lbTitle">Certificate</span>
-        </div>
+        <div class="lb-title"><i class='bx bx-certification'></i> <span id="lbTitle">Certificate</span></div>
         <button class="lb-close" id="lbClose" aria-label="ปิด (Esc)"><i class='bx bx-x'></i></button>
       </header>
 
@@ -80,14 +76,14 @@
     <div class="lb-backdrop" id="lbBackdrop"></div>
   </div>
 
-  <!-- PDF.js (CDN) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha512-0G2yJmBz0b0gCj2pvnQ0i2dI0gHgoEoNwO3V6lP2mclb3C4c+3N3xJYB0J8o7+uGfQeK6kVfQ7oY0c7d9H0K2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- PDF.js: ใช้ jsDelivr เวอร์ชันคงที่ -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
   <script>
-    // ชี้ worker ของ PDF.js
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    // ตั้ง worker ให้ตรงกับ CDN (สำคัญมาก ไม่งั้นจะ error)
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
   </script>
 
-  <!-- สคริปต์เฉพาะหน้านี้ -->
-  <script src="certs.js?v=1" defer></script>
+  <!-- สคริปต์ของหน้า -->
+  <script src="certs.js" defer></script>
 </body>
 </html>
