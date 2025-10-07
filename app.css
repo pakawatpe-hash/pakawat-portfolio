@@ -1037,108 +1037,83 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 @media (prefers-reduced-motion: reduce){
   .stack-chip i{ animation: none; filter:none; text-shadow:none; }
 }
-/* =========================================================
-   RGB 7-color Neon Ring — for .stack-chip & .intro .tile
-   ========================================================= */
+/* ===== RGB 7-color ring (ทุกใบเห็นแน่นอน) ===== */
+/* ใช้กับ .stack-chip และปุ่มไอคอนบน Hero (.intro .tile) */
 .stack-chip,
 .intro .tile{
   position: relative;
   border-radius: 16px;
-  overflow: hidden;
-  isolation: isolate;                    /* กันเลเยอร์ชนกัน */
-  border: 1px solid transparent !important; /* กันเส้นขอบทับแสง */
-  background: var(--card);               /* คงธีมเดิม */
+  isolation: isolate;           /* กัน z-index ซ้อน */
+  border: 1px solid transparent;/* กันเส้นขอบทับแสง */
+  overflow: hidden;             /* ตัดให้เนียนตามมุมโค้ง */
 }
 
-/* วงแหวน RGB 7 สี (มีดีเลย์เปิดเพื่อกันสีโผล่ก่อน) */
+/* วงแหวน RGB อยู่ "ด้านในกรอบ" ไม่หลุดขอบ */
 .stack-chip::before,
 .intro .tile::before{
   content:"";
   position:absolute;
-  inset:-3px;                            /* โผล่พ้นขอบนิดหน่อยให้เห็นชัด */
-  border-radius:inherit;
-  padding:3px;                           /* ความหนาแหวน */
-  background:conic-gradient(#ff004c,#ff7b00,#ffee00,#00ff6a,#00eaff,#2a5cff,#a000ff,#ff004c);
-  /* เจาะกลางให้เหลือแต่ขอบ */
+  inset:0;                      /* ครอบเต็มกรอบพอดี */
+  border-radius: inherit;
+  padding:3px;                  /* ความหนาวงแหวน (ปรับได้ 2-4px) */
+  background: conic-gradient(
+    #ff004c, #ff7b00, #ffee00, #00ff6a, #00eaff, #2a5cff, #a000ff, #ff004c
+  );
+
+  /* เจาะรูตรงกลางให้เหลือแต่ "ขอบ" */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
 
-  /* เริ่มซ่อนก่อน แล้วค่อย “เปิด” ตาม delay เพื่อไม่ให้สีล้ำไปที่การ์ดถัดไป */
-  opacity:0;
-  animation-name: rgbRingSpin, ringAppear;
-  animation-duration: 5s, .001s;         /* หมุนต่อเนื่อง + ทริกเกอร์เปิด */
-  animation-timing-function: linear, steps(1,end);
-  animation-iteration-count: infinite, 1;
-  animation-delay: var(--ring-phase, 0s), var(--ring-delay, 0s);
-
-  z-index:0;
-  pointer-events:none;
-  filter: drop-shadow(0 0 10px rgba(160,180,255,.35));
+  animation: rgbSpin 4.5s linear infinite;
+  opacity: 1;
+  z-index: 0;                   /* อยู่ใต้เนื้อการ์ด/ไอคอน */
+  pointer-events: none;
+  filter: drop-shadow(0 0 14px rgba(160,180,255,.45));
 }
 
-/* หมุนรอบตัว */
-@keyframes rgbRingSpin{ to{ transform: rotate(360deg); } }
-/* เปิดให้มองเห็น (จาก opacity:0 -> 1) */
-@keyframes ringAppear { to { opacity:1; } }
-
-/* เนื้อใน/ไอคอนอยู่บนวงแหวน */
+/* เนื้อในอยู่เหนือวงแหวน */
 .stack-chip > *,
-.intro .tile > *{ position:relative; z-index:1; }
+.intro .tile > *{
+  position: relative;
+  z-index: 1;
+}
 
-/* แถบแสงสแกนเมื่อ hover */
+/* วิ้งสแกนผ่านตอน hover (เบา ๆ) */
 .stack-chip::after,
 .intro .tile::after{
   content:"";
   position:absolute; inset:0;
-  border-radius:inherit;
-  background: linear-gradient(120deg,
-              transparent 40%,
-              rgba(255,255,255,.18) 50%,
-              transparent 60%);
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 40%,
+                              rgba(255,255,255,.18) 50%,
+                              transparent 60%);
   transform: translateX(-130%) skewX(-25deg);
-  opacity:0;
+  opacity: 0;
   transition: transform .9s ease, opacity .35s ease;
-  z-index:1;
+  z-index: 1;
 }
+
 .stack-chip:hover::after,
-.stack-chip:focus-visible::after,
-.intro .tile:hover::after,
-.intro .tile:focus-visible::after{
+.intro .tile:hover::after{
   transform: translateX(130%) skewX(-25deg);
-  opacity:1;
+  opacity: 1;
 }
 
-/* Hover = วงแหวนสว่าง/หมุนไวขึ้นเล็กน้อย */
-.stack-chip:hover::before,
-.stack-chip:focus-visible::before,
-.intro .tile:hover::before,
-.intro .tile:focus-visible::before{
-  filter: drop-shadow(0 0 14px rgba(160,180,255,.7));
-  /* เร่งเฉพาะแอนิเมชันหมุน ไม่กระทบ ringAppear */
-  animation-duration: 3s, .001s;
-}
-
-/* เริ่มคนละเฟส + ดีเลย์เปิดเป็นทอด ๆ (กันสีโผล่ก่อนคิว) */
+/* ให้แต่ละใบหมุนคนละเฟส (ดูมีชีวิต) */
 .stack-chip:nth-child(3n+1)::before,
-.intro .tile:nth-child(3n+1)::before{
-  --ring-phase: 0s;   --ring-delay: 0s;
-}
+.intro .tile:nth-child(3n+1)::before{ animation-delay:   0s; }
 .stack-chip:nth-child(3n+2)::before,
-.intro .tile:nth-child(3n+2)::before{
-  --ring-phase: 1s;   --ring-delay: .6s;
-}
+.intro .tile:nth-child(3n+2)::before{ animation-delay: .75s; }
 .stack-chip:nth-child(3n+3)::before,
-.intro .tile:nth-child(3n+3)::before{
-  --ring-phase: 2s;   --ring-delay: 1.2s;
-}
+.intro .tile:nth-child(3n+3)::before{ animation-delay: 1.5s; }
 
-/* ผู้ใช้ที่ลด motion */
+@keyframes rgbSpin{ to{ transform: rotate(360deg); } }
+
+/* ลด motion = ปิดหมุน/วิ้ง */
 @media (prefers-reduced-motion: reduce){
-  .stack-chip::before,
-  .intro .tile::before{ animation: none; opacity: 1; }
-  .stack-chip::after,
-  .intro .tile::after{ display: none; }
+  .stack-chip::before, .intro .tile::before{ animation: none; }
+  .stack-chip::after,  .intro .tile::after{ display:none; }
 }
