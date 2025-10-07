@@ -1,6 +1,4 @@
-/* ====== ตั้งค่ารายการ PDF ของคุณ (10 ใบ) ======
-   category: programming | mobile | ai | other
-================================================= */
+/* ============ รายการ PDF (10 ใบ) ============ */
 const CERTS = [
   { title: "Algorithm & Data Structures", file: "assets/certs/cert-01.pdf", category: "programming" },
   { title: "Python Automation Workshop",  file: "assets/certs/cert-02.pdf", category: "programming" },
@@ -14,11 +12,12 @@ const CERTS = [
   { title: "Problem Solving Certificate", file: "assets/certs/cert-10.pdf", category: "other" },
 ];
 
-/* ====== เริ่มต้น DOM ====== */
+/* ===== DOM ===== */
 const grid = document.getElementById("certGrid");
 const filters = document.querySelectorAll(".cert-filters .chip");
+const errorBox = document.getElementById("errorBox");
 
-// Lightbox controls
+// Lightbox
 const lightbox = document.getElementById("lightbox");
 const lbBackdrop = document.getElementById("lbBackdrop");
 const lbClose = document.getElementById("lbClose");
@@ -35,35 +34,41 @@ const zoomOutBtn = document.getElementById("zoomOut");
 
 let curDoc = null, curPdf = null, curPage = 1, scale = 1.1, renderTask = null;
 
-/* ====== ยูทิล ====== */
-const byCat = (cat) => cat === "all" ? CERTS : CERTS.filter(c => c.category === cat);
+/* ===== Safety: ตรวจว่า PDF.js พร้อม ===== */
+if (typeof pdfjsLib === "undefined") {
+  showError("โหลดไลบรารี PDF.js ไม่สำเร็จ กรุณาเช็คการเชื่อมต่ออินเทอร์เน็ตหรือลิงก์สคริปต์ใน certificates.html");
+}
 
+/* ===== Util ===== */
+function showError(msg){
+  if (!errorBox) return;
+  errorBox.textContent = msg;
+  errorBox.hidden = false;
+}
+const byCat = (cat) => (cat === "all" ? CERTS : CERTS.filter(c => c.category === cat));
 function setActiveFilter(btn){
   filters.forEach(b => { b.classList.toggle("active", b === btn); b.setAttribute("aria-selected", b===btn ? "true":"false"); });
 }
-
 function clearGrid(){ grid.innerHTML = ""; }
 
+/* ===== Card/Thumb ===== */
 function makeCard(cert){
   const card = document.createElement("article");
   card.className = "cert-card";
 
-  // thumb
   const th = document.createElement("div");
   th.className = "cert-thumb";
   const canvas = document.createElement("canvas");
-  canvas.width = 600; canvas.height = 450; // จะถูกปรับตามสเกลจริง
   th.appendChild(canvas);
 
-  // meta
   const meta = document.createElement("div");
   meta.className = "cert-meta";
   const title = document.createElement("div");
   title.className = "cert-title";
   title.textContent = cert.title;
+
   const actions = document.createElement("div");
   actions.className = "cert-actions";
-
   const viewBtn = document.createElement("button");
   viewBtn.className = "btn tiny";
   viewBtn.innerHTML = `<i class='bx bx-show'></i> ดู`;
@@ -83,28 +88,24 @@ function makeCard(cert){
   card.appendChild(th);
   card.appendChild(meta);
 
-  // เรนเดอร์หน้าแรกเป็น thumbnail
-  renderPdfFirstPage(cert.file, canvas)
-    .catch(() => {
-      // fallback icon
-      th.innerHTML = `<i class="bx bxs-file-pdf pdf-fallback" aria-hidden="true"></i>`;
-    });
+  renderPdfFirstPage(cert.file, canvas).catch(() => {
+    th.innerHTML = `<i class="bx bxs-file-pdf pdf-fallback" aria-hidden="true"></i>`;
+  });
 
   return card;
 }
 
-/* ====== Render thumbnail ด้วย PDF.js ====== */
 async function renderPdfFirstPage(url, canvas){
   const loading = await pdfjsLib.getDocument(url).promise;
   const page = await loading.getPage(1);
-  const viewport = page.getViewport({ scale: 0.35 }); // เล็กพอเป็น thumb
+  const viewport = page.getViewport({ scale: 0.35 });
   const ctx = canvas.getContext("2d");
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
+  canvas.width = Math.floor(viewport.width);
+  canvas.height = Math.floor(viewport.height);
   await page.render({ canvasContext: ctx, viewport }).promise;
 }
 
-/* ====== สร้างกริดตามตัวกรอง ====== */
+/* ===== Populate ===== */
 function populate(category="all"){
   clearGrid();
   const list = byCat(category);
@@ -117,27 +118,28 @@ function populate(category="all"){
   grid.appendChild(frag);
 }
 
-/* ====== Lightbox ====== */
+/* ===== Lightbox ===== */
 async function openLightbox(cert){
-  // ปิดงาน render เดิมถ้ามี
-  if(renderTask) { try { await renderTask.cancel(); } catch(e){} renderTask = null; }
-  curDoc = cert;
-  curPage = 1;
-  scale = 1.1;
-  lbTitle.textContent = cert.title;
-  openRaw.href = cert.file;
-  downloadPdf.href = cert.file;
+  try{
+    if(renderTask) { try { await renderTask.cancel(); } catch(e){} renderTask = null; }
+    curDoc = cert;
+    curPage = 1;
+    scale = 1.1;
+    lbTitle.textContent = cert.title;
+    openRaw.href = cert.file;
+    downloadPdf.href = cert.file;
 
-  // โหลดเอกสาร
-  curPdf = await pdfjsLib.getDocument(cert.file).promise;
-  pageCountEl.textContent = curPdf.numPages;
+    curPdf = await pdfjsLib.getDocument(cert.file).promise;
+    pageCountEl.textContent = curPdf.numPages;
+    await renderPage();
 
-  await renderPage();
-
-  lightbox.classList.add("open");
-  lightbox.setAttribute("aria-hidden", "false");
-  // โฟกัสปุ่มปิด เพื่อรองรับคีย์บอร์ด
-  lbClose.focus();
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+    lbClose.focus();
+  }catch(err){
+    console.error(err);
+    showError("เปิดไฟล์ PDF ไม่ได้: " + (err?.message || err));
+  }
 }
 
 function closeLightbox(){
@@ -159,7 +161,7 @@ async function renderPage(){
   await renderTask.promise;
 }
 
-/* ====== Events ====== */
+/* ===== Events ===== */
 filters.forEach(btn=>{
   btn.addEventListener("click", ()=>{
     setActiveFilter(btn);
@@ -167,30 +169,9 @@ filters.forEach(btn=>{
   }, { passive:true });
 });
 
-lbBackdrop.addEventListener("click", closeLightbox, { passive:true });
-lbClose.addEventListener("click", closeLightbox, { passive:true });
+document.getElementById("lbBackdrop").addEventListener("click", closeLightbox, { passive:true });
+document.getElementById("lbClose").addEventListener("click", closeLightbox, { passive:true });
 
-prevPageBtn.addEventListener("click", async ()=>{
-  if(!curPdf) return;
-  if(curPage > 1){ curPage--; await renderPage(); }
-}, { passive:true });
-
-nextPageBtn.addEventListener("click", async ()=>{
-  if(!curPdf) return;
-  if(curPage < curPdf.numPages){ curPage++; await renderPage(); }
-}, { passive:true });
-
-zoomInBtn.addEventListener("click", async ()=>{
-  scale = Math.min(3, scale + 0.15);
-  await renderPage();
-}, { passive:true });
-
-zoomOutBtn.addEventListener("click", async ()=>{
-  scale = Math.max(0.5, scale - 0.15);
-  await renderPage();
-}, { passive:true });
-
-// คีย์บอร์ด
 document.addEventListener("keydown", async (e)=>{
   if(lightbox.classList.contains("open")){
     if(e.key === "Escape") closeLightbox();
@@ -201,5 +182,21 @@ document.addEventListener("keydown", async (e)=>{
   }
 });
 
-// เริ่มต้น
+document.getElementById("prevPage").addEventListener("click", async ()=>{
+  if(curPdf && curPage > 1){ curPage--; await renderPage(); }
+}, { passive:true });
+
+document.getElementById("nextPage").addEventListener("click", async ()=>{
+  if(curPdf && curPage < curPdf.numPages){ curPage++; await renderPage(); }
+}, { passive:true });
+
+document.getElementById("zoomIn").addEventListener("click", async ()=>{
+  scale = Math.min(3, scale + 0.15); await renderPage();
+}, { passive:true });
+
+document.getElementById("zoomOut").addEventListener("click", async ()=>{
+  scale = Math.max(0.5, scale - 0.15); await renderPage();
+}, { passive:true });
+
+/* Start */
 populate("all");
