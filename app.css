@@ -663,13 +663,22 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   transform:translateY(-3px);
   box-shadow:0 10px 28px rgba(0,0,0,.35);
 }
+/* Certificates: โชว์ช่วงหัวของภาพ */
 .cert-thumb{
   width:100%;
-  aspect-ratio:4/3;
+  aspect-ratio:4/3;      /* คงอัตราส่วนกริดเดิม */
   object-fit:cover;
+  object-position: top center;   /* <<< โฟกัสด้านบน */
   display:block;
   border-bottom:1px solid var(--line);
+  transition: transform .35s ease;
 }
+
+/* เอาไว้ให้มี motion นิด ๆ ตอน hover (ไม่ดันเลย์เอาต์) */
+.cert-card:hover .cert-thumb{
+  transform: scale(1.015);
+}
+
 .cert-meta{
   display:flex;
   justify-content:space-between;
