@@ -862,3 +862,29 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 @media (pointer:coarse){
   .cert-hover{ display:none !important; }
 }
+/* ===== Certificates: Hover Animation ===== */
+.cert-card {
+  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1),
+              box-shadow 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  transform-origin: center center;
+}
+
+.cert-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* แสงเคลื่อนไหวเบา ๆ ตอน hover */
+.cert-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: skewX(-25deg);
+  transition: 0.75s;
+  pointer-events: none;
+}
+.cert-card:hover::before {
+  left: 130%;
+}
