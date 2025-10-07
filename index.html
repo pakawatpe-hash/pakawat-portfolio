@@ -342,3 +342,18 @@
   <script src="app.js?v=25" defer></script>
 </body>
 </html>
+<!-- Lightbox: ดูรูปเกียรติบัตร -->
+<div id="certLightbox" class="cert-lightbox" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="clb-backdrop" data-close></div>
+  <div class="clb-inner glass">
+    <button class="clb-close btn tiny" aria-label="ปิด" data-close>
+      <i class='bx bx-x'></i>
+    </button>
+    <img id="clbImg" src="" alt="Certificate preview">
+    <div class="clb-tools">
+      <a id="clbDownload" href="#" download class="btn small primary">
+        <i class='bx bx-download'></i> ดาวน์โหลด
+      </a>
+    </div>
+  </div>
+</div>
