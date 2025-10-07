@@ -479,4 +479,174 @@ if (isFinePointer) {
     }, {passive:true});
   }
 })();
+/* ===== Certificates (JPG) inside #work tab ===== */
+(function(){
+  const isFinePointer = matchMedia('(pointer: fine)').matches;
+
+  const data = [
+    { title: "อาชีพนักทดสอบระบบ ชั้น 3",  file: "assets/certs/cert-01.jpg", category: "programming" },
+    { title: "อาชีพนักทดสอบระบบ ระดับ 5",  file: "assets/certs/cert-02.jpg", category: "programming" },
+    { title: "อาชีพผู้ปฏิบัติงานด้านวิศวกรรมข้อมูล ระดับ 5", file: "assets/certs/cert-03.jpg", category: "ai" },
+    { title: "อาชีพนักพัฒนาซอฟต์แวร์เพื่ออินเทอร์เน็ตของสรรพสิ่ง ระดับ 5", file: "assets/certs/cert-04.jpg", category: "programming" },
+    { title: "อาชีพนักออกแบบศิลปะเกม (โมเดล 3 มิติ) ระดับ 5", file: "assets/certs/cert-05.jpg", category: "other" },
+    { title: "อาชีพนักพัฒนาซอฟต์แวร์ด้านเทคโนโลยีคลาวด์ ชั้น 5", file: "assets/certs/cert-06.jpg", category: "programming" },
+    { title: "อาชีพนักพัฒนาระบบสมองกลฝังตัว ระดับ 4", file: "assets/certs/cert-07.jpg", category: "hardware" },
+    { title: "อาชีพผู้ให้บริการด้านคอมพิวเตอร์และระบบคอมพิวเตอร์ ชั้น 4", file: "assets/certs/cert-08.jpg", category: "hardware" },
+    { title: "Basic Cybersecurity (2 ชั่วโมง)", file: "assets/certs/cert-09.jpg", category: "other" },
+    { title: "อาชีพผู้ให้บริการด้านคอมพิวเตอร์และระบบคอมพิวเตอร์ ชั้น 3", file: "assets/certs/cert-10.jpg", category: "hardware" },
+  ];
+
+  const panel = document.getElementById('panel-certs');
+  if(!panel) return;
+
+  const grid = panel.querySelector('#certGrid');
+  const filterBtns = panel.querySelectorAll('.cert-filters .chip');
+
+  function cardTemplate(cert){
+    return `
+      <img src="${cert.file}" alt="${cert.title}" class="cert-thumb" loading="lazy">
+      <div class="cert-meta">
+        <div class="cert-title">${cert.title}</div>
+        <div class="cert-actions">
+          <button class="btn tiny" data-view>ดู</button>
+          <a class="btn tiny ghost" href="${cert.file}" download="${cert.title.replace(/\s+/g,'_')}.jpg">ดาวน์โหลด</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function render(list){
+    grid.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    list.forEach(cert=>{
+      const card = document.createElement('article');
+      card.className = 'cert-card glass';
+      card.dataset.file = cert.file;
+      card.dataset.title = cert.title;
+      card.innerHTML = cardTemplate(cert);
+
+      // click = lightbox
+      card.querySelector('[data-view]').addEventListener('click', ()=> openLightbox(cert));
+
+      frag.appendChild(card);
+    });
+    grid.appendChild(frag);
+
+    // bind hover preview
+    bindHoverPreview();
+  }
+
+  function applyFilter(cat){
+    if(cat==='all') return render(data);
+    render(data.filter(d=>d.category===cat));
+  }
+
+  filterBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      filterBtns.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(btn.dataset.filter);
+    }, {passive:true});
+  });
+
+  // Lightbox (เดิม)
+  const lb = document.getElementById('certLightbox');
+  const lbImg = document.getElementById('clbImg');
+  const lbDl  = document.getElementById('clbDownload');
+  function openLightbox(cert){
+    lbImg.src = cert.file;
+    lbImg.alt = cert.title;
+    lbDl.href  = cert.file;
+    lbDl.download = cert.title.replace(/\s+/g,'_') + '.jpg';
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden','false');
+  }
+  function closeLightbox(){
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden','true');
+    lbImg.src = '';
+  }
+  lb.addEventListener('click', (e)=>{ if(e.target.hasAttribute('data-close')) closeLightbox(); }, {passive:true});
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && lb.classList.contains('open')) closeLightbox(); });
+
+  // ------- Hover Preview -------
+  let hoverEl, hoverImg, moving = false;
+
+  function ensureHover(){
+    if (hoverEl) return;
+    hoverEl = document.createElement('div');
+    hoverEl.className = 'cert-hover';
+    hoverEl.innerHTML = `<img alt="">`;
+    hoverImg = hoverEl.querySelector('img');
+    document.body.appendChild(hoverEl);
+  }
+
+  // keep preview within viewport & offset from cursor
+  function placePreview(clientX, clientY){
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const pad = 16;
+    const w  = Math.min(560, vw*0.76);
+    const h  = Math.min(420, vh*0.70);
+
+    // วางข้างๆ เมาส์แบบชาญฉลาด
+    let x = clientX + 24;
+    let y = clientY + 24;
+
+    // ถ้าชิดขอบขวา/ล่าง ให้เลื่อนเข้าในจอ
+    if (x + w/2 > vw - pad) x = vw - pad - w/2;
+    if (y + h/2 > vh - pad) y = vh - pad - h/2;
+
+    // ถ้าชิดซ้าย/บนเกินไป
+    if (x - w/2 < pad) x = pad + w/2;
+    if (y - h/2 < pad) y = pad + h/2;
+
+    // วางด้วย translate(-50%,-50%) ให้พอดีจุดศูนย์กลาง
+    hoverEl.style.left = `${x}px`;
+    hoverEl.style.top  = `${y}px`;
+  }
+
+  const raf = (fn)=>{ let t; return (...a)=>{ if(t) return; t = requestAnimationFrame(()=>{ fn(...a); t=0; }); }; };
+
+  function bindHoverPreview(){
+    if(!isFinePointer) return;
+
+    ensureHover();
+
+    grid.querySelectorAll('.cert-card').forEach(card=>{
+      const file = card.dataset.file;
+      const title = card.dataset.title;
+
+      const onEnter = (e)=>{
+        hoverImg.src = file;
+        hoverImg.alt = title;
+        placePreview(e.clientX, e.clientY);
+        hoverEl.classList.add('show');
+      };
+
+      const onMove = raf((e)=> placePreview(e.clientX, e.clientY));
+
+      const onLeave = ()=>{
+        hoverEl.classList.remove('show');
+        // หน่วงนิดเพื่อให้ transition จบก่อน แล้วค่อย clear src
+        setTimeout(()=>{ if(!hoverEl.classList.contains('show')) hoverImg.src = ''; }, 180);
+      };
+
+      card.addEventListener('mouseenter', onEnter, {passive:true});
+      card.addEventListener('mousemove', onMove,  {passive:true});
+      card.addEventListener('mouseleave', onLeave, {passive:true});
+    });
+  }
+
+  // โหลดครั้งแรก
+  render(data);
+
+  // กรณีสลับแท็บกลับมา
+  const tabBtn = document.getElementById('tab-certs');
+  if(tabBtn){
+    tabBtn.addEventListener('click', ()=>{
+      const activeCat = panel.querySelector('.cert-filters .chip.active')?.dataset.filter || 'all';
+      applyFilter(activeCat);
+    }, {passive:true});
+  }
+})();
 
