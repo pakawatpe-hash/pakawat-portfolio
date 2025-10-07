@@ -1,3 +1,107 @@
+/* ===== Background Particles (soft neon fog) – no library, non-blocking ===== */
+(() => {
+  const host = document.getElementById('particles-bg');
+  if (!host) return;
+
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  host.appendChild(canvas);
+
+  let w = 0, h = 0, DPR = Math.min(2, window.devicePixelRatio || 1);
+  let particles = [];
+  let running = true;
+
+  function resize() {
+    w = host.clientWidth; h = host.clientHeight;
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.max(1, Math.floor(w * DPR));
+    canvas.height = Math.max(1, Math.floor(h * DPR));
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    initParticles(true);
+  }
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  function makeParticle() {
+    const base = Math.min(w, h);
+    const r = rand(base * 0.025, base * 0.085);
+    const speed = rand(0.02, 0.12);
+    const angle = rand(0, Math.PI * 2);
+    const drift = rand(0.0002, 0.0008);
+    const hue = rand(205, 265);
+    const sat = rand(70, 95);
+    const alp = rand(0.12, 0.25);
+    return {
+      x: rand(-r, w + r),
+      y: rand(-r, h + r),
+      r, speed, angle, drift,
+      hue, sat, alp,
+      pulseSpd: rand(0.0004, 0.001)
+    };
+  }
+
+  function initParticles(keepCount = false) {
+    const target = Math.round((w * h) / 42000);
+    const N = Math.max(24, Math.min(70, target));
+    if (!keepCount || particles.length === 0) {
+      particles = Array.from({ length: N }, makeParticle);
+      return;
+    }
+    if (particles.length < N) {
+      const add = N - particles.length;
+      for (let i = 0; i < add; i++) particles.push(makeParticle());
+    } else if (particles.length > N) {
+      particles.length = N;
+    }
+  }
+
+  function drawParticle(p, now) {
+    const pulse = 0.92 + 0.08 * Math.sin(now * p.pulseSpd + p.r);
+    const R = p.r * pulse;
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, R);
+    const c1 = `hsla(${p.hue} ${p.sat}% 68% / ${p.alp})`;
+    const c2 = `hsla(${p.hue} ${Math.max(50, p.sat - 18)}% 50% / ${p.alp * 0.55})`;
+    g.addColorStop(0.0, c1); g.addColorStop(0.55, c2); g.addColorStop(1.0, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, Math.PI * 2); ctx.fill();
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    if (!running) return;
+    const dt = Math.min(100, now - last);
+    last = now;
+    ctx.clearRect(0, 0, w, h);
+    for (let p of particles) {
+      p.angle += p.drift * dt;
+      const vx = Math.cos(p.angle) * p.speed * dt * 60;
+      const vy = Math.sin(p.angle) * p.speed * dt * 60;
+      p.x += vx; p.y += vy;
+      const m = p.r * 1.2;
+      if (p.x < -m) p.x = w + m; if (p.x > w + m) p.x = -m;
+      if (p.y < -m) p.y = h + m; if (p.y > h + m) p.y = -m;
+      drawParticle(p, now);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden && !prefersReduced;
+    if (running) { last = performance.now(); requestAnimationFrame(frame); }
+  });
+
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+  if (prefersReduced) {
+    for (let p of particles) drawParticle(p, performance.now());
+  } else {
+    requestAnimationFrame((t) => { last = t; frame(t); });
+  }
+})();
+
 /* ===== Utils: RAF throttle ===== */
 const rafThrottle = (fn) => {
   let ticking = false;
@@ -365,12 +469,10 @@ if (isFinePointer) {
     const r  = tl.getBoundingClientRect();
     const vh = window.innerHeight;
 
-    // ความคืบหน้าบนแกน 0..1 (กลางจอเป็น baseline)
     let p = (vh/2 - r.top) / r.height;
     p = Math.max(0, Math.min(1, p));
     tl.style.setProperty('--spark-y', (p * 100).toFixed(2) + '%');
 
-    // ความคืบหน้าบนเส้นเชื่อมของแต่ละ item
     const mid = vh / 2;
     items.forEach(el => {
       const er = el.getBoundingClientRect();
@@ -391,18 +493,17 @@ if (isFinePointer) {
 /* ===== Certificates (JPG) inside #work tab — cleaned (no hover preview) ===== */
 (function(){
   const data = [
-  { title: "Cybersecurity พื้นฐาน (2 ชม.)", file: "assets/certs/cert-01.jpg", category: "programming" },
-  { title: "นักพัฒนา Hardware (ชั้น 3)", file: "assets/certs/cert-02.jpg", category: "programming" },
-  { title: "นักพัฒนา Applications (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
-  { title: "ผู้ให้บริการ Hardware (ระดับ 4)", file: "assets/certs/cert-04.jpg", category: "ai" },
-  { title: "นักพัฒนา Hardware (ระดับ 4)", file: "assets/certs/cert-05.jpg", category: "programming" },
-  { title: "นักพัฒนา Cloud (ระดับ 5)", file: "assets/certs/cert-06.jpg", category: "other" },
-  { title: "นักออกเเบบศิลปะเกม 3D (ระดับ 5)", file: "assets/certs/cert-07.jpg", category: "programming" },
-  { title: "นักพัฒนา Software เครือข่าย (ระดับ 4)", file: "assets/certs/cert-08.jpg", category: "hardware" },
-  { title: "วิศวะกรรมข้อมูล (ระดับ 5)", file: "assets/certs/cert-09.jpg", category: "data" },
-  { title: "นักทดสอบระบบ (ระดับ 5)", file: "assets/certs/cert-10.jpg", category: "hardware" },
-];
-
+    { title: "Cybersecurity พื้นฐาน (2 ชม.)", file: "assets/certs/cert-01.jpg", category: "programming" },
+    { title: "นักพัฒนา Hardware (ชั้น 3)", file: "assets/certs/cert-02.jpg", category: "programming" },
+    { title: "นักพัฒนา Applications (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
+    { title: "ผู้ให้บริการ Hardware (ระดับ 4)", file: "assets/certs/cert-04.jpg", category: "ai" },
+    { title: "นักพัฒนา Hardware (ระดับ 4)", file: "assets/certs/cert-05.jpg", category: "programming" },
+    { title: "นักพัฒนา Cloud (ระดับ 5)", file: "assets/certs/cert-06.jpg", category: "other" },
+    { title: "นักออกเเบบศิลปะเกม 3D (ระดับ 5)", file: "assets/certs/cert-07.jpg", category: "programming" },
+    { title: "นักพัฒนา Software เครือข่าย (ระดับ 4)", file: "assets/certs/cert-08.jpg", category: "hardware" },
+    { title: "วิศวะกรรมข้อมูล (ระดับ 5)", file: "assets/certs/cert-09.jpg", category: "data" },
+    { title: "นักทดสอบระบบ (ระดับ 5)", file: "assets/certs/cert-10.jpg", category: "hardware" },
+  ];
 
   const panel = document.getElementById('panel-certs');
   if(!panel) return;
@@ -415,7 +516,7 @@ if (isFinePointer) {
     const frag = document.createDocumentFragment();
     list.forEach(cert=>{
       const card = document.createElement('article');
-      card.className = 'cert-card glass'; // hover เอฟเฟกต์ทำใน CSS
+      card.className = 'cert-card glass';
       card.innerHTML = `
         <img src="${cert.file}" alt="${cert.title}" class="cert-thumb" loading="lazy">
         <div class="cert-meta">
@@ -465,7 +566,7 @@ if (isFinePointer) {
   lb.addEventListener('click', (e)=>{ if(e.target.hasAttribute('data-close')) closeLightbox(); }, {passive:true});
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && lb.classList.contains('open')) closeLightbox(); });
 
-  // โหลดครั้งแรก + เมื่อกดแท็บ Certificates
+  // โหลดครั้งแรก + รีเรนเดอร์เมื่อเปิดแท็บ
   render(data);
   const tabBtn = document.getElementById('tab-certs');
   if(tabBtn){
