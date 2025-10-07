@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Certificates — Pakawat</title>
+
+  <meta name="description" content="รวมเกียรติบัตร (PDF) ของ Pakawat จำนวน 10 ใบ">
+  <meta name="theme-color" content="#070b1a">
+
+  <!-- ใช้สไตล์หลักเดิม (ไม่แก้) -->
+  <link rel="stylesheet" href="app.css?v=25">
+  <!-- สไตล์เฉพาะหน้านี้ -->
+  <link rel="stylesheet" href="certs.css?v=1">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+  <header class="nav glass">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html#home">Pakawat</a>
+      <nav class="links" aria-label="Primary">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#education">Education</a>
+        <a href="index.html#work">Portfolio</a>
+        <a href="certificates.html" class="active" aria-current="page">Certificates</a>
+        <a href="index.html#contact" class="btn small">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="section">
+      <div class="container">
+        <h1 class="section-title">Certificates</h1>
+        <p class="section-sub">รวมเกียรติบัตร (PDF) ทั้งหมด 10 ใบ • กดเพื่อเปิดดู/ซูม/ดาวน์โหลด</p>
+
+        <!-- ตัวกรอง -->
+        <div class="cert-filters" role="tablist" aria-label="Filters">
+          <button class="chip active" data-filter="all" aria-selected="true">ทั้งหมด</button>
+          <button class="chip" data-filter="programming">Programming</button>
+          <button class="chip" data-filter="mobile">Mobile/Flutter</button>
+          <button class="chip" data-filter="ai">AI/Data</button>
+          <button class="chip" data-filter="other">อื่น ๆ</button>
+        </div>
+
+        <!-- กริด PDF -->
+        <div id="certGrid" class="cert-grid" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- LIGHTBOX PDF VIEWER -->
+  <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="certificate viewer">
+    <div class="lb-inner glass">
+      <header class="lb-top">
+        <div class="lb-title">
+          <i class='bx bx-certification'></i>
+          <span id="lbTitle">Certificate</span>
+        </div>
+        <button class="lb-close" id="lbClose" aria-label="ปิด (Esc)"><i class='bx bx-x'></i></button>
+      </header>
+
+      <div class="lb-toolbar">
+        <button id="prevPage" class="btn tiny" aria-label="หน้าก่อนหน้า (←)"><i class='bx bx-chevron-left'></i></button>
+        <span class="page-meta">หน้า <span id="pageNum">1</span>/<span id="pageCount">1</span></span>
+        <button id="nextPage" class="btn tiny" aria-label="หน้าถัดไป (→)"><i class='bx bx-chevron-right'></i></button>
+        <span class="sep"></span>
+        <button id="zoomOut" class="btn tiny" aria-label="ซูมออก (-)"><i class='bx bx-zoom-out'></i></button>
+        <button id="zoomIn" class="btn tiny" aria-label="ซูมเข้า (+)"><i class='bx bx-zoom-in'></i></button>
+        <span class="sep"></span>
+        <a id="openRaw" class="btn tiny ghost" href="#" target="_blank" rel="noopener">เปิดในแท็บใหม่</a>
+        <a id="downloadPdf" class="btn tiny primary" href="#" download>ดาวน์โหลด PDF</a>
+      </div>
+
+      <div class="lb-canvas-wrap">
+        <canvas id="pdfCanvas" aria-label="PDF page"></canvas>
+      </div>
+    </div>
+    <div class="lb-backdrop" id="lbBackdrop"></div>
+  </div>
+
+  <!-- PDF.js (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha512-0G2yJmBz0b0gCj2pvnQ0i2dI0gHgoEoNwO3V6lP2mclb3C4c+3N3xJYB0J8o7+uGfQeK6kVfQ7oY0c7d9H0K2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    // ชี้ worker ของ PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  </script>
+
+  <!-- สคริปต์เฉพาะหน้านี้ -->
+  <script src="certs.js?v=1" defer></script>
+</body>
+</html>
