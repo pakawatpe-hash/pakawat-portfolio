@@ -1037,72 +1037,83 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 @media (prefers-reduced-motion: reduce){
   .stack-chip i{ animation: none; filter:none; text-shadow:none; }
 }
-/* ===== RGB Neon Border Loop (7-color) ===== */
-.stack-chip {
+/* ===== RGB 7-color neon ring for .stack-chip (always visible) ===== */
+.stack-chip{
   position: relative;
-  overflow: hidden;
   border-radius: 16px;
-}
-
-/* 🔥 ขอบไฟ RGB หมุนรอบกรอบ */
-.stack-chip::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from 0deg,
-    #ff0000,
-    #ff8800,
-    #ffee00,
-    #00ff00,
-    #00ffff,
-    #0040ff,
-    #a000ff,
-    #ff0000
-  );
-  filter: blur(6px);
-  opacity: 0.25;
-  animation: rgbBorderSpin 4.5s linear infinite;
-  z-index: 0;
-  transition: opacity .3s ease, filter .3s ease;
-}
-
-/* เนื้อการ์ด */
-.stack-chip::after {
-  content: "";
-  position: absolute;
-  inset: 1px;
-  border-radius: inherit;
   background: var(--card);
-  z-index: 1;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  isolation: isolate; /* กัน z-index ปะทะกับลูกหลาน */
 }
 
-/* ไอคอนและข้อความอยู่บนสุด */
-.stack-chip > * {
-  position: relative;
-  z-index: 2;
+/* วงแหวน RGB หนา 3px หมุนรอบกรอบ */
+.stack-chip::before{
+  content:"";
+  position:absolute;
+  inset:-3px;                 /* เผื่อออกมานิดให้เห็นขอบชัด */
+  border-radius: inherit;
+  padding:3px;                /* ความหนาของวงแหวน */
+  background: conic-gradient(
+    #ff004c, #ff7b00, #ffee00, #00ff6a, #00eaff, #2a5cff, #a000ff, #ff004c
+  );
+  /* สร้าง “รู” ตรงกลาง ให้เหลือแต่ขอบ */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  animation: rgbRingSpin 5s linear infinite;
+  opacity:.85;
+  z-index: 0;                 /* อยู่ใต้เนื้อการ์ดกับไอคอน */
+  pointer-events:none;
+  filter: drop-shadow(0 0 10px rgba(160,180,255,.35));
 }
 
-/* keyframes หมุนรอบ */
-@keyframes rgbBorderSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+@keyframes rgbRingSpin{
+  from{ transform: rotate(0deg); }
+  to  { transform: rotate(360deg); }
 }
 
-/* ✨ hover แล้วไฟสว่างขึ้น */
+/* เนื้อใน/ไอคอน ให้อยู่เหนือวงแหวน */
+.stack-chip > *{ position: relative; z-index: 1; }
+
+/* แสงสแกนพาดการ์ดตอน hover (ไม่บังไอคอน) */
+.stack-chip::after{
+  content:"";
+  position:absolute; inset:0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 40%,
+                              rgba(255,255,255,.18) 50%,
+                              transparent 60%);
+  transform: translateX(-130%) skewX(-25deg);
+  opacity: 0;
+  transition: transform .9s ease, opacity .35s ease;
+  z-index: 1;                 /* อยู่ระดับเดียวกับเนื้อการ์ด แต่อยู่ใต้ไอคอน/ข้อความ */
+}
+
+.stack-chip:hover::after,
+.stack-chip:focus-visible::after{
+  transform: translateX(130%) skewX(-25deg);
+  opacity: 1;
+}
+
+/* Hover = วงแหวนสว่างขึ้น & หมุนไวขึ้นเล็กน้อย */
 .stack-chip:hover::before,
-.stack-chip:focus-visible::before {
-  opacity: 0.95;
-  filter: blur(8px) brightness(1.4);
+.stack-chip:focus-visible::before{
+  filter: drop-shadow(0 0 14px rgba(160,180,255,.7));
+  animation-duration: 3s;
+  opacity: 1;
 }
 
-/* แต่ละใบมี delay ต่างกันนิด ๆ */
-.stack-chip:nth-child(3n+1)::before { animation-delay: 0s; }
-.stack-chip:nth-child(3n+2)::before { animation-delay: 1.5s; }
-.stack-chip:nth-child(3n+3)::before { animation-delay: 3s; }
+/* ให้แต่ละใบเริ่มหมุนต่างเฟสกัน (ดูมีชีวิต) */
+.stack-chip:nth-child(3n+1)::before{ animation-delay: 0s; }
+.stack-chip:nth-child(3n+2)::before{ animation-delay: 1s; }
+.stack-chip:nth-child(3n+3)::before{ animation-delay: 2s; }
 
-/* ลด motion สำหรับคนที่ตั้งค่า */
-@media (prefers-reduced-motion: reduce) {
-  .stack-chip::before { animation: none; opacity: 0.4; }
+/* เคารพผู้ใช้ที่ลด motion */
+@media (prefers-reduced-motion: reduce){
+  .stack-chip::before{ animation: none; }
+  .stack-chip::after{ display:none; }
 }
