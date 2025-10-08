@@ -1271,3 +1271,68 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   transform: translateY(-2px);
   box-shadow: 0 0 14px rgba(120,150,255,.25);
 }
+/* ====== ALL YOUR EXISTING CSS (ยกมาทั้งหมด) ====== */
+/* ... (วางทุกอย่างจากไฟล์เดิมของคุณตามที่ส่งมา v26 ได้เลย) ... */
+
+/* ------------------------------------------------------------- */
+/* === เพิ่ม/Override ให้เอฟเฟกต์ขึ้นแน่นอน (วางไว้ท้ายไฟล์) === */
+/* ------------------------------------------------------------- */
+
+/* 💫 FORCE: Text Glow ให้ชนะ .headline.gradient และโหมดต่าง ๆ */
+.headline.glow-text{
+  background: linear-gradient(90deg,#fff,#bcd3ff,#9cc4ff,#bcd3ff,#fff) !important;
+  background-size: 220% auto !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: textGlow 2.6s linear infinite !important;
+  filter: drop-shadow(0 0 14px rgba(140,170,255,.16));
+}
+@keyframes textGlow{
+  0%{ background-position: 220% 0; }
+  100%{ background-position: -220% 0; }
+}
+
+/* Light mode — ใช้โทนน้ำเงินให้คมขึ้น */
+:root.theme-light .headline.glow-text{
+  background: linear-gradient(90deg,#1e3a8a,#2563eb,#4338ca,#2563eb,#1e3a8a) !important;
+}
+
+/* 🎮 TILT: มิติเห็นชัดขึ้นแต่ยังสุภาพ */
+.tilt{
+  transform-style: preserve-3d;
+  transition: transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease;
+}
+.tilt:hover{ box-shadow: 0 24px 60px rgba(0,0,0,.38); }
+.tilt .thumb, .tilt .cert-thumb{
+  transform: translateZ(14px);
+  transition: transform .22s ease;
+}
+.tilt:hover .thumb, .tilt:hover .cert-thumb{
+  transform: translateZ(24px) scale(1.035);
+}
+
+/* 🌗 Theme overrides (คงไว้ถ้าคุณมีอยู่แล้วได้) */
+:root.theme-light{
+  --bg:#f4f6fb; --bg2:#e9ecf8; --ink:#0f172a; --muted:#64748b;
+  --primary:#3b82f6; --primary-2:#8b5cf6; --card:rgba(255,255,255,.9); --line:rgba(0,0,0,.08);
+}
+.theme-light body{
+  background:
+    radial-gradient(900px 420px at 15% -10%, rgba(59,130,246,.12), transparent 70%),
+    radial-gradient(880px 420px at 85% -10%, rgba(139,92,246,.10), transparent 70%),
+    linear-gradient(180deg,var(--bg),var(--bg2));
+  color:var(--ink);
+}
+.theme-light .nav{ background:rgba(255,255,255,.7); border-bottom:1px solid var(--line); backdrop-filter: blur(10px); }
+.theme-light .glass{ background:var(--card); border-color:var(--line); box-shadow:0 6px 22px rgba(0,0,0,.1); }
+.theme-light .brand, .theme-light .links a{ color:var(--ink); }
+.theme-light .foot{ background:rgba(255,255,255,.6); color:var(--muted); }
+
+/* ปุ่ม toggle */
+.theme-toggle{
+  border-radius:10px; padding:6px 10px; font-size:18px;
+  border:1px solid var(--line); background:var(--card); color:var(--ink);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.theme-toggle:hover{ transform:translateY(-2px); box-shadow:0 0 14px rgba(120,150,255,.25); }
