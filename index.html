@@ -17,7 +17,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="app.css?v=25" />
+  <link rel="stylesheet" href="app.css?v=26" />
 </head>
 <body>
   <div id="particles-bg"></div>
@@ -57,6 +57,9 @@
         <a href="#work">Portfolio</a>
         <a href="#contact" class="btn small magnetic">Contact</a>
       </nav>
+
+      <!-- 🌙/☀️ Theme toggle (เพิ่มใหม่) -->
+      <button id="themeToggle" class="btn small theme-toggle magnetic" aria-label="Toggle theme">☀️</button>
     </div>
   </header>
 
@@ -283,15 +286,13 @@
           </div>
         </div>
 
-     <!-- Certificates panel (JPG) -->
-<div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
-  <div class="cert-filters">
-    <button class="chip active" data-filter="all">ทั้งหมด</button>
-  </div>
-
-  <div id="certGrid" class="cert-grid" aria-live="polite"></div>
-</div>
-
+        <!-- Certificates panel (JPG) -->
+        <div class="panel" id="panel-certs" role="tabpanel" aria-labelledby="tab-certs" hidden>
+          <div class="cert-filters">
+            <button class="chip active" data-filter="all">ทั้งหมด</button>
+          </div>
+          <div id="certGrid" class="cert-grid" aria-live="polite"></div>
+        </div>
 
         <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
           <div class="stack-grid">
@@ -352,6 +353,28 @@
   </div>
 
   <!-- JS -->
-  <script src="app.js?v=25" defer></script>
+  <script src="app.js?v=26" defer></script>
+
+  <!-- Toggle Theme boot (เผื่อยังไม่ได้ใส่ใน app.js ก็ทำงานทันที) -->
+  <script>
+    (function(){
+      const root = document.documentElement;
+      const btn  = document.getElementById('themeToggle');
+      if(!btn) return;
+
+      const setIcon = (isLight) => btn.textContent = isLight ? '🌙' : '☀️';
+      const saved = localStorage.getItem('theme') || 'dark';
+      const isLight = saved === 'light';
+      root.classList.toggle('theme-light', isLight);
+      setIcon(isLight);
+
+      btn.addEventListener('click', () => {
+        const makeLight = !root.classList.contains('theme-light');
+        root.classList.toggle('theme-light', makeLight);
+        localStorage.setItem('theme', makeLight ? 'light' : 'dark');
+        setIcon(makeLight);
+      });
+    })();
+  </script>
 </body>
 </html>
