@@ -7,7 +7,6 @@ const rafThrottle = (fn) => {
     requestAnimationFrame(() => { fn(...args); ticking = false; });
   };
 };
-
 const isFinePointer = matchMedia('(pointer: fine)').matches;
 
 /* ===== Reveal on scroll ===== */
@@ -31,14 +30,16 @@ if (revealEls.length) {
   secs.forEach(s=>obs.observe(s));
 })();
 
-/* ===== Tilt + Glare (เฉพาะ .tilt) ===== */
+/* ===== Tilt + Glare (เฉพาะ .tilt) — UPDATED with perspective ===== */
 document.querySelectorAll('.tilt').forEach(el=>{
   const glare = el.querySelector('.glare-spot');
   const handle = (e)=>{
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left)/r.width - .5;
     const y = (e.clientY - r.top)/r.height - .5;
-    el.style.transform = `rotateX(${(-y*6).toFixed(2)}deg) rotateY(${(x*8).toFixed(2)}deg)`;
+    const rx = (-y*7).toFixed(2);
+    const ry = ( x*9).toFixed(2);
+    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
     if(glare){
       glare.style.left = `${e.clientX - r.left}px`;
       glare.style.top  = `${e.clientY - r.top}px`;
@@ -46,7 +47,10 @@ document.querySelectorAll('.tilt').forEach(el=>{
     }
   };
   el.addEventListener('mousemove', handle, {passive:true});
-  el.addEventListener('mouseleave', ()=>{ el.style.transform='rotateX(0) rotateY(0)'; if(glare) glare.style.opacity=0; }, {passive:true});
+  el.addEventListener('mouseleave', ()=>{
+    el.style.transform='perspective(900px) rotateX(0) rotateY(0)';
+    if(glare) glare.style.opacity=0;
+  }, {passive:true});
 });
 
 /* ===== Magnetic hover ===== */
@@ -158,13 +162,13 @@ if (isFinePointer) {
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 })();
 
-/* ===== Marquee (2 แถวสวนทาง | ขอบ→ขอบ | จบพร้อมกัน | no-clone) ===== */
+/* ===== Marquee (no-clone) ===== */
 (function () {
   const ROOT = document.documentElement;
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const cssVar = (name) => parseFloat(getComputedStyle(ROOT).getPropertyValue(name)) || 0;
-  const BASE_SPEED = Math.max(20, cssVar('--mk-speed') || 120); // px/sec
+  const BASE_SPEED = Math.max(20, cssVar('--mk-speed') || 120);
   const ENABLED = !prefersReduced && BASE_SPEED > 0;
 
   const belt = document.getElementById('skillsBelt');
@@ -261,21 +265,10 @@ if (isFinePointer) {
   host.dataset.glowInit = '1';
 
   if (!document.createTreeWalker) return;
-
   const NF = window.NodeFilter || { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 };
   const walker = document.createTreeWalker(
-    host,
-    NF.SHOW_TEXT,
-    {
-      acceptNode: function (n) {
-        if (n.parentElement && n.parentElement.classList.contains('glow-word')) {
-          return NF.FILTER_REJECT;
-        }
-        return n.nodeValue && n.nodeValue.trim()
-          ? NF.FILTER_ACCEPT
-          : NF.FILTER_REJECT;
-      }
-    },
+    host, NF.SHOW_TEXT,
+    { acceptNode: (n)=> (n.parentElement && n.parentElement.classList.contains('glow-word')) ? NF.FILTER_REJECT : (n.nodeValue && n.nodeValue.trim() ? NF.FILTER_ACCEPT : NF.FILTER_REJECT) },
     false
   );
 
@@ -287,14 +280,8 @@ if (isFinePointer) {
     const parts = t.nodeValue.split(/(\s+)/);
     const frag = document.createDocumentFragment();
     for (let p of parts) {
-      if (!p || /^\s+$/.test(p)) {
-        frag.appendChild(document.createTextNode(p));
-      } else {
-        const s = document.createElement('span');
-        s.className = 'glow-word';
-        s.textContent = p;
-        frag.appendChild(s);
-      }
+      if (!p || /^\s+$/.test(p)) frag.appendChild(document.createTextNode(p));
+      else { const s = document.createElement('span'); s.className = 'glow-word'; s.textContent = p; frag.appendChild(s); }
     }
     t.parentNode.replaceChild(frag, t);
   }
@@ -305,19 +292,14 @@ if (isFinePointer) {
   function rgbaWithAlpha(cssColor, a) {
     const m = cssColor && cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
     if (m) return `rgba(${m[1]},${m[2]},${m[3]},${a})`;
-    const tmp = document.createElement('span');
-    tmp.style.color = cssColor || '';
-    document.body.appendChild(tmp);
-    const rgb = getComputedStyle(tmp).color;
-    document.body.removeChild(tmp);
+    const tmp = document.createElement('span'); tmp.style.color = cssColor || ''; document.body.appendChild(tmp);
+    const rgb = getComputedStyle(tmp).color; document.body.removeChild(tmp);
     const m2 = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
     return m2 ? `rgba(${m2[1]},${m2[2]},${m2[3]},${a})` : 'rgba(255,255,255,' + a + ')';
   }
 
-  const TRAIL = 4;
-  const STEP = 80;
-  let idx = 0;
-  let timer;
+  const TRAIL = 4; const STEP = 80;
+  let idx = 0; let timer;
 
   function setGlow(el, on) {
     if (!el) return;
@@ -339,38 +321,29 @@ if (isFinePointer) {
     if (idx < words.length) setGlow(words[idx], true);
     const drop = idx - TRAIL;
     if (drop >= 0 && drop < words.length) setGlow(words[drop], false);
-
     idx++;
-    if (idx > words.length + TRAIL) {
-      for (let w of words) setGlow(w, false);
-      idx = 0;
-    }
+    if (idx > words.length + TRAIL) { for (let w of words) setGlow(w, false); idx = 0; }
     timer = setTimeout(tick, STEP);
   }
-
   tick();
-
   window.addEventListener('pagehide', () => clearTimeout(timer), { once: true });
   window.addEventListener('beforeunload', () => clearTimeout(timer), { once: true });
 })();
 
-/* ===== Education axis & connector spark (scroll-linked) ===== */
+/* ===== Education axis & connector spark ===== */
 (() => {
   const tl = document.querySelector('.edu-timeline');
   if (!tl) return;
-
   const items = [...document.querySelectorAll('.edu-item')];
 
   const updateAxis = () => {
     const r  = tl.getBoundingClientRect();
     const vh = window.innerHeight;
 
-    // ความคืบหน้าบนแกน 0..1 (กลางจอเป็น baseline)
     let p = (vh/2 - r.top) / r.height;
     p = Math.max(0, Math.min(1, p));
     tl.style.setProperty('--spark-y', (p * 100).toFixed(2) + '%');
 
-    // ความคืบหน้าบนเส้นเชื่อมของแต่ละ item
     const mid = vh / 2;
     items.forEach(el => {
       const er = el.getBoundingClientRect();
@@ -381,28 +354,26 @@ if (isFinePointer) {
       el.style.setProperty('--line-prog', prog.toFixed(3));
     });
   };
-
   const onScroll = () => { updateAxis(); };
   window.addEventListener('scroll', onScroll, { passive:true });
   window.addEventListener('resize', onScroll, { passive:true });
   onScroll();
 })();
 
-/* ===== Certificates (JPG) inside #work tab — cleaned (no hover preview) ===== */
+/* ===== Certificates (JPG) ===== */
 (function(){
   const data = [
-  { title: "Cybersecurity พื้นฐาน (2 ชม.)", file: "assets/certs/cert-01.jpg", category: "programming" },
-  { title: "นักพัฒนา Hardware (ชั้น 3)", file: "assets/certs/cert-02.jpg", category: "programming" },
-  { title: "นักพัฒนา Applications (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
-  { title: "ผู้ให้บริการ Hardware (ระดับ 4)", file: "assets/certs/cert-04.jpg", category: "ai" },
-  { title: "นักพัฒนา Hardware (ระดับ 4)", file: "assets/certs/cert-05.jpg", category: "programming" },
-  { title: "นักพัฒนา Cloud (ระดับ 5)", file: "assets/certs/cert-06.jpg", category: "other" },
-  { title: "นักออกเเบบศิลปะเกม 3D (ระดับ 5)", file: "assets/certs/cert-07.jpg", category: "programming" },
-  { title: "นักพัฒนา Software เครือข่าย (ระดับ 4)", file: "assets/certs/cert-08.jpg", category: "hardware" },
-  { title: "วิศวะกรรมข้อมูล (ระดับ 5)", file: "assets/certs/cert-09.jpg", category: "data" },
-  { title: "นักทดสอบระบบ (ระดับ 5)", file: "assets/certs/cert-10.jpg", category: "hardware" },
-];
-
+    { title: "Cybersecurity พื้นฐาน (2 ชม.)", file: "assets/certs/cert-01.jpg", category: "programming" },
+    { title: "นักพัฒนา Hardware (ชั้น 3)", file: "assets/certs/cert-02.jpg", category: "programming" },
+    { title: "นักพัฒนา Applications (ระดับ 5)", file: "assets/certs/cert-03.jpg", category: "programming" },
+    { title: "ผู้ให้บริการ Hardware (ระดับ 4)", file: "assets/certs/cert-04.jpg", category: "ai" },
+    { title: "นักพัฒนา Hardware (ระดับ 4)", file: "assets/certs/cert-05.jpg", category: "programming" },
+    { title: "นักพัฒนา Cloud (ระดับ 5)", file: "assets/certs/cert-06.jpg", category: "other" },
+    { title: "นักออกเเบบศิลปะเกม 3D (ระดับ 5)", file: "assets/certs/cert-07.jpg", category: "programming" },
+    { title: "นักพัฒนา Software เครือข่าย (ระดับ 4)", file: "assets/certs/cert-08.jpg", category: "hardware" },
+    { title: "วิศวะกรรมข้อมูล (ระดับ 5)", file: "assets/certs/cert-09.jpg", category: "data" },
+    { title: "นักทดสอบระบบ (ระดับ 5)", file: "assets/certs/cert-10.jpg", category: "hardware" },
+  ];
 
   const panel = document.getElementById('panel-certs');
   if(!panel) return;
@@ -415,7 +386,7 @@ if (isFinePointer) {
     const frag = document.createDocumentFragment();
     list.forEach(cert=>{
       const card = document.createElement('article');
-      card.className = 'cert-card glass'; // hover เอฟเฟกต์ทำใน CSS
+      card.className = 'cert-card glass';
       card.innerHTML = `
         <img src="${cert.file}" alt="${cert.title}" class="cert-thumb" loading="lazy">
         <div class="cert-meta">
@@ -475,4 +446,3 @@ if (isFinePointer) {
     }, {passive:true});
   }
 })();
-
