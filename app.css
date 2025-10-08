@@ -147,7 +147,7 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .avatar-glow{
   width:240px;height:240px;border-radius:50%;
   position:relative;
-  overflow:hidden;              /* สำคัญ */
+  overflow:hidden;
   display:grid;place-items:center;
   background:
     radial-gradient(120px 120px at 30% 20%, rgba(106,165,255,.35), transparent 60%),
@@ -346,7 +346,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   position:absolute;
   right:28px; bottom:28px;
   width:68px; height:68px; border-radius:50%;
-  /* อาร์คหมุน: conic + เจาะกลางให้กลวง */
   background: conic-gradient(
       from 0deg,
       rgba(255,255,255,0) 0 78%,
@@ -355,285 +354,121 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
     );
   -webkit-mask: radial-gradient(farthest-side, transparent 54%, #000 55%);
           mask: radial-gradient(farthest-side, transparent 54%, #000 55%);
-
-  /* glow ทั้งใน/นอก (ไม่ต้องใช้ ::before) */
   box-shadow:
-    inset 0 0 12px rgba(255,255,255,.18),  /* inner glow */
-    0 0 10px rgba(255,255,255,.22);        /* outer glow */
-
+    inset 0 0 12px rgba(255,255,255,.18),
+    0 0 10px rgba(255,255,255,.22);
   animation: ringSpin 2.6s linear infinite;
   pointer-events:none;
 }
 @keyframes ringSpin{ to{ transform: rotate(360deg); } }
-/* === Glow sweep per-word inside code window === */
-:root{ --code-glow:#9ec0ff; } /* ปรับสีเรืองแสงได้ */
 
-.code-window pre code .glow-word{
-  transition: color .25s ease, text-shadow .25s ease, filter .25s ease;
-}
+/* === Glow sweep per-word inside code window === */
+:root{ --code-glow:#9ec0ff; }
+
+.code-window pre code .glow-word{ transition: color .25s ease, text-shadow .25s ease, filter .25s ease; }
 .code-window pre code .glow-word.on{
-  color:#fff; /* สว่างขึ้นนิด */
+  color:#fff;
   text-shadow:
     0 0 10px color-mix(in srgb, var(--code-glow) 90%, transparent),
     0 0 18px color-mix(in srgb, var(--code-glow) 55%, transparent);
   filter: saturate(1.15);
 }
-/* Glow sweep base */
-.code-window pre code .glow-word{
-  transition: color .25s ease, text-shadow .25s ease, filter .25s ease;
-}
+
 /* === Avatar shine sweep + subtle zoom on hover === */
 .about-photo .avatar-glow{
-  position: relative;         /* เผื่อ pseudo-element */
-  overflow: hidden;           /* ตัดแสงส่วนเกิน */
-  cursor: pointer;            /* บอกว่ามี interactive นิด ๆ */
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
   transition: box-shadow .3s ease, transform .25s ease;
 }
-
-/* แถบแสงวิ้งพาดข้ามรูป */
 .about-photo .avatar-glow::after{
   content:"";
   position:absolute;
   top:-20%; left:-60%;
   width:40%; height:140%;
-  background: linear-gradient(120deg,
-              rgba(255,255,255,0) 0%,
-              rgba(255,255,255,.18) 45%,
-              rgba(255,255,255,0) 100%);
+  background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.18) 45%, rgba(255,255,255,0) 100%);
   filter: blur(0.5px);
   transform: skewX(-20deg) translateX(-120%);
   opacity: 0;
   pointer-events:none;
   transition: transform .9s ease, opacity .25s ease;
 }
+.about-photo .avatar-glow:hover{ box-shadow: 0 34px 70px rgba(0,0,0,.42); transform: translateY(-2px); }
+.about-photo .avatar-glow:hover::after{ opacity: 1; transform: skewX(-20deg) translateX(320%); }
+.about-photo .avatar-glow .avatar-img{ transition: transform .35s ease, filter .35s ease; }
+.about-photo .avatar-glow:hover .avatar-img{ transform: scale(1.03); filter: brightness(1.06) saturate(1.05); }
+.about-photo .avatar-glow:focus-visible{ outline: 2px solid rgba(146,180,255,.9); outline-offset: 4px; }
+.about-photo .avatar-glow:focus-visible::after{ opacity: 1; transform: skewX(-20deg) translateX(320%); }
 
-/* hover = วิ้ง + ยกนิด ๆ + สว่างขึ้น */
-.about-photo .avatar-glow:hover{
-  box-shadow: 0 34px 70px rgba(0,0,0,.42);
-  transform: translateY(-2px);
-}
-.about-photo .avatar-glow:hover::after{
-  opacity: 1;
-  transform: skewX(-20deg) translateX(320%);
-}
-
-/* รูปขยายเนียน ๆ และสว่างขึ้นเล็กน้อย */
-.about-photo .avatar-glow .avatar-img{
-  transition: transform .35s ease, filter .35s ease;
-}
-.about-photo .avatar-glow:hover .avatar-img{
-  transform: scale(1.03);
-  filter: brightness(1.06) saturate(1.05);
-}
-
-/* (ทางเลือก) รองรับคีย์บอร์ด: ถ้าเพิ่ม tabindex="0" ให้ .avatar-glow */
-.about-photo .avatar-glow:focus-visible{
-  outline: 2px solid rgba(146,180,255,.9);
-  outline-offset: 4px;
-}
-.about-photo .avatar-glow:focus-visible::after{
-  opacity: 1;
-  transform: skewX(-20deg) translateX(320%);
-}
-/* About text readability */
+/* About text */
 .about-desc{
   line-height: 1.9;
   color:#dfe7ff;
   opacity:.95;
-  max-width: 68ch;          /* ความกว้างบรรทัดที่อ่านง่าย */
+  max-width: 68ch;
   text-wrap: pretty;
-  overflow-wrap: anywhere;  /* ตัดคำยาวได้ เช่น ชื่อมหาวิทยาลัย */
+  overflow-wrap: anywhere;
   word-break: break-word;
   line-break: loose;
 }
 .about-desc p{ margin:.4rem 0 1rem; }
 .about-desc strong{ color:#fff; font-weight:700; }
+
 /* ===================== EDUCATION TIMELINE ===================== */
-.edu-section{
-  position:relative;
-  padding:120px 0;
-  overflow:hidden;
-}
-
-.edu-timeline{
-  position:relative;
-  max-width:1100px;
-  margin:80px auto 0;
-  padding:0 24px 240px;   /* เว้นนิดเดียวพอ */
-}
-
-/* เส้นหลักตรงกลาง */
+.edu-section{ position:relative; padding:120px 0; overflow:hidden; }
+.edu-timeline{ position:relative; max-width:1100px; margin:80px auto 0; padding:0 24px 240px; }
 .edu-timeline::before{
-  content:"";
-  position:absolute;
-  top:0; bottom:0;
-  left:50%; transform:translateX(-50%);
-  width:3px;
-  background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.05));
-  z-index:0;
+  content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%);
+  width:3px; background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.05)); z-index:0;
 }
-
-/* 🔥 ไฟวงกลมเรืองแสงวิ่งรัวๆ บนเส้น */
 .edu-timeline::after{
-  content:"";
-  position:absolute;
-  left:50%; transform:translateX(-50%);
+  content:""; position:absolute; left:50%; transform:translateX(-50%);
   width:26px; height:26px; border-radius:50%;
   background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(120,160,255,.7) 50%, transparent 70%);
   box-shadow:0 0 18px rgba(120,160,255,.8), 0 0 30px rgba(120,160,255,.5);
-  animation: edu-glow-run 2.5s linear infinite; /* <<< ไฟวิ่งรัวๆ */
+  animation: edu-glow-run 2.5s linear infinite;
 }
+@keyframes edu-glow-run { 0%{ top:0%; } 100%{ top:100%; } }
 
-/* keyframes: ไฟวิ่งจากบนลงล่าง แล้ว loop */
-@keyframes edu-glow-run {
-  0%   { top:0%; }
-  100% { top:100%; }
-}
-
-/* ------------ Item ------------ */
-.edu-item{
-  position:relative;
-  width:50%;
-  margin:120px 0;         /* <<< ลดช่องว่าง */
-  z-index:1;
-}
-
-.edu-item.left  { left:0;    text-align:right; padding-right:120px; }
-.edu-item.right { left:50%;  text-align:left;  padding-left:120px; }
-
+.edu-item{ position:relative; width:50%; margin:120px 0; z-index:1; }
+.edu-item.left  { left:0;   text-align:right; padding-right:120px; }
+.edu-item.right { left:50%; text-align:left;  padding-left:120px; }
 .edu-chip{
-  display:inline-block;
-  padding:7px 16px;
-  background:linear-gradient(135deg,#6a9cff,#a777ff);
-  color:#fff;
-  border-radius:999px;
-  font-weight:800;
-  margin-bottom:10px;
+  display:inline-block; padding:7px 16px; background:linear-gradient(135deg,#6a9cff,#a777ff);
+  color:#fff; border-radius:999px; font-weight:800; margin-bottom:10px;
 }
+.edu-title{ margin:12px 0 4px; font-weight:800; font-size:22px; color:#fff; }
+.edu-desc{ margin:0; color:#cfdaf3; opacity:.92; }
 
-.edu-title{
-  margin:12px 0 4px;
-  font-weight:800;
-  font-size:22px;
-  color:#fff;
-}
-
-.edu-desc{
-  margin:0;
-  color:#cfdaf3;
-  opacity:.92;
-}
-
-/* Fade-in reveal */
 .edu-item.reveal{ opacity:0; transform:translateY(20px); }
 .edu-item.reveal.in{ opacity:1; transform:none; transition:.6s ease; }
 
-/* ---------- Mobile ---------- */
 @media (max-width:900px){
-  .edu-item{
-    width:100%;
-    left:0; text-align:left;
-    padding-left:80px;
-    margin:100px 0;
-  }
-  .edu-timeline::before,
-  .edu-timeline::after{ left:26px; transform:none; }
+  .edu-item{ width:100%; left:0; text-align:left; padding-left:80px; margin:100px 0; }
+  .edu-timeline::before, .edu-timeline::after{ left:26px; transform:none; }
 }
 
-/* ===== Glow Text Scan Effect ===== */
-.edu-row h3,
-.edu-row p,
-.edu-chip {
-  position: relative;
-  display: inline-block;
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.15) 0%,
-    #fff 40%,
-    #9cf 60%,
-    rgba(255,255,255,0.15) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textShine 3s linear infinite;
-  opacity: 0.95;
+/* ===== EDU Text Shine ===== */
+.edu-row h3,.edu-row p,.edu-chip{
+  position: relative; display: inline-block;
+  background: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, #fff 40%, #9cf 60%, rgba(255,255,255,0.15) 100%);
+  background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: textShine 3s linear infinite; opacity:.95;
 }
+@keyframes textShine{ 0%{background-position:-200% center;} 100%{background-position:200% center;} }
 
-/* Keyframes: แสงวิ่งซ้าย -> ขวา */
-@keyframes textShine {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+#education .edu-row .edu-title,#education .edu-row p{
+  color: transparent !important; -webkit-text-fill-color: transparent !important;
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.12) 25%, #ffffff 48%, #b8ccff 60%, rgba(255,255,255,0.12) 75%, rgba(255,255,255,0.05) 100%);
+  background-size: 260% 100%; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text;
+  animation: eduTextShine 2.8s linear infinite; opacity: .98; will-change: background-position;
 }
+@keyframes eduTextShine{ 0%{background-position:-160% 0;} 100%{background-position:160% 0;} }
+#education .edu-row:nth-of-type(1) .edu-title,#education .edu-row:nth-of-type(1) p{ animation-delay:.15s; }
+#education .edu-row:nth-of-type(2) .edu-title,#education .edu-row:nth-of-type(2) p{ animation-delay:1.0s; }
+#education .edu-row:nth-of-type(3) .edu-title,#education .edu-row:nth-of-type(3) p{ animation-delay:1.85s; }
 
-/* ===== Delay ไล่ลงมา ===== */
-.edu-row:nth-child(1) .edu-chip,
-.edu-row:nth-child(1) h3,
-.edu-row:nth-child(1) p {
-  animation-delay: 0s;
-}
-
-.edu-row:nth-child(2) .edu-chip,
-.edu-row:nth-child(2) h3,
-.edu-row:nth-child(2) p {
-  animation-delay: 1s;
-}
-
-.edu-row:nth-child(3) .edu-chip,
-.edu-row:nth-child(3) h3,
-.edu-row:nth-child(3) p {
-  animation-delay: 2s;
-}
-/* ========= EDU: Text glow scan (run per-row with delay) ========= */
-#education .edu-row .edu-title,
-#education .edu-row p {
-  position: relative;
-  display: inline-block;
-
-  /* ทำให้ตัวอักษรโปร่งใส แล้วใช้กราเดียนต์เป็นตัว “ทาสี” */
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-
-  /* แถบแสงวิ่งผ่านตัวอักษร */
-  background-image: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.05) 0%,
-    rgba(255,255,255,0.12) 25%,
-    #ffffff 48%,
-    #b8ccff 60%,
-    rgba(255,255,255,0.12) 75%,
-    rgba(255,255,255,0.05) 100%
-  );
-  background-size: 260% 100%;
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-
-  animation: eduTextShine 2.8s linear infinite;
-  opacity: .98;
-  will-change: background-position;
-}
-
-/* keyframes แสงวิ่งซ้าย -> ขวา */
-@keyframes eduTextShine {
-  0%   { background-position: -160% 0; }
-  100% { background-position: 160% 0; }
-}
-
-/* ===== ไล่ดีเลย์ทีละแถว (วิ่งไม่พร้อมกัน) ===== */
-/* แถวบนสุด - เร็วสุด */
-#education .edu-row:nth-of-type(1) .edu-title,
-#education .edu-row:nth-of-type(1) p { animation-delay: .15s; }
-
-/* แถวถัดมา */
-#education .edu-row:nth-of-type(2) .edu-title,
-#education .edu-row:nth-of-type(2) p { animation-delay: 1.0s; }
-
-/* แถวล่างสุด */
-#education .edu-row:nth-of-type(3) .edu-title,
-#education .edu-row:nth-of-type(3) p { animation-delay: 1.85s; }
-/* (ทั้งหมดคือของคุณเดิมด้านบน) */
-/* ===== Certificates (JPG) ===== */
+/* ===================== Certificates (Consolidated) ===================== */
 .cert-filters{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
 .cert-filters .chip{
   padding:8px 12px;border-radius:999px;border:1px solid var(--line);
@@ -642,496 +477,163 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 }
 .cert-filters .chip.active{
   background:linear-gradient(90deg,var(--primary),var(--primary-2));
-  color:#0b1022;border:none;
-  box-shadow:0 0 12px rgba(106,165,255,.35);
+  color:#0b1022;border:none;box-shadow:0 0 12px rgba(106,165,255,.35);
 }
 
 .cert-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  gap:16px;margin-top:10px;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:16px;margin-top:10px;justify-items:stretch;
 }
+
 .cert-card{
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:var(--card);
-  overflow:hidden;
-  transition:transform .18s ease, box-shadow .25s ease;
-  will-change:transform;
+  position:relative;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.2);
+  transition:transform .28s cubic-bezier(.19,1,.22,1), box-shadow .28s cubic-bezier(.19,1,.22,1);
+  display:flex;flex-direction:column;justify-content:space-between;
 }
-.cert-card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 10px 28px rgba(0,0,0,.35);
+.cert-card:hover{ transform:translateY(-6px) scale(1.02); box-shadow:0 16px 36px rgba(0,0,0,.42); }
+.cert-card::before{
+  content:''; position:absolute; top:0; left:-70%; width:45%; height:100%;
+  background:linear-gradient(120deg, transparent, rgba(255,255,255,.12), transparent);
+  transform:skewX(-20deg); transition: left .75s; pointer-events:none;
 }
-/* Certificates: โชว์ช่วงหัวของภาพ */
+.cert-card:hover::before{ left:130%; }
+
 .cert-thumb{
-  width:100%;
-  aspect-ratio:4/3;      /* คงอัตราส่วนกริดเดิม */
-  object-fit:cover;
-  object-position: top center;   /* <<< โฟกัสด้านบน */
-  display:block;
-  border-bottom:1px solid var(--line);
-  transition: transform .35s ease;
+  width:100%; aspect-ratio:4/3; object-fit:cover; object-position: top center;
+  display:block; border-bottom:1px solid var(--line); transition:transform .35s ease;
 }
+.cert-card:hover .cert-thumb{ transform: scale(1.015); }
 
-/* เอาไว้ให้มี motion นิด ๆ ตอน hover (ไม่ดันเลย์เอาต์) */
-.cert-card:hover .cert-thumb{
-  transform: scale(1.015);
+.cert-meta{ padding:12px 12px 14px; display:flex; flex-direction:column; gap:.6rem; }
+.cert-title{
+  font-weight:700;color:var(--ink);line-height:1.35;font-size:.95rem;
+  display:-webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
 }
+.cert-actions{ display:flex; gap:.5rem; flex-wrap:wrap; }
+.cert-actions .btn.tiny{ font-size:.8rem; padding:.3rem .6rem; border-radius:10px; }
 
-.cert-meta{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  padding:10px 12px;
-}
-.cert-title{font-weight:700;color:var(--ink)}
-.cert-actions{display:flex;gap:6px}
-.cert-actions .btn.tiny{
-  padding:6px 10px;
-  border-radius:10px;
-  font-size:13px;
-}
-
-/* Lightbox (Certificate View) */
-.cert-lightbox{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-.cert-lightbox.open{display:flex;}
-.clb-backdrop{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  backdrop-filter:blur(3px);
-}
+/* Lightbox */
+.cert-lightbox{ position:fixed; inset:0; z-index:9999; display:none; align-items:center; justify-content:center; }
+.cert-lightbox.open{ display:flex; }
+.clb-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(3px); }
 .clb-inner{
-  position:relative;
-  z-index:1;
-  max-width:min(1100px,92vw);
-  margin:auto;
-  padding:16px;
-  border-radius:16px;
-  background:var(--card);
-  border:1px solid var(--line);
-  box-shadow:0 0 40px rgba(0,0,0,.6);
+  position:relative; z-index:1; max-width:min(1100px,92vw); margin:auto; padding:16px;
+  border-radius:16px; background:var(--card); border:1px solid var(--line);
+  box-shadow:0 0 40px rgba(0,0,0,.6); animation:fadeInZoom .35s ease both;
 }
-.clb-close{
-  position:absolute;
-  right:10px;
-  top:10px;
-  cursor:pointer;
-  background:rgba(255,255,255,.08);
-  border:1px solid var(--line);
-  border-radius:8px;
-}
-.clb-close:hover{background:rgba(255,255,255,.18);}
-#clbImg{
-  display:block;
-  max-width:100%;
-  max-height:72vh;
-  border-radius:10px;
-  background:#0f152d;
-  object-fit:contain;
-}
-.clb-tools{
-  display:flex;
-  justify-content:flex-end;
-  margin-top:10px;
-}
+.clb-close{ position:absolute; right:10px; top:10px; cursor:pointer; }
+#clbImg{ display:block; max-width:100%; max-height:72vh; border-radius:10px; background:#0f152d; object-fit:contain; }
+.clb-tools{ display:flex; justify-content:flex-end; margin-top:10px; }
+@keyframes fadeInZoom{ from{opacity:0;transform:scale(.95);} to{opacity:1;transform:scale(1);} }
 
-/* Lightbox Animation */
-.cert-lightbox.open .clb-inner{
-  animation:fadeInZoom .35s ease both;
-}
-@keyframes fadeInZoom{
-  from{opacity:0;transform:scale(.95);}
-  to{opacity:1;transform:scale(1);}
-}
-
-/* Responsive (Cert grid + lightbox) */
-@media(max-width:600px){
-  .cert-grid{grid-template-columns:1fr 1fr;}
-  .clb-inner{padding:10px;}
-}
-@media(max-width:420px){
-  .cert-grid{grid-template-columns:1fr;}
-}
-/* ===== Certificates layout fix ===== */
-.cert-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* ✅ บังคับให้มี 5 คอลัมน์ต่อแถว */
-  gap: 1.2rem;
-  margin-top: 1.5rem;
-  justify-items: center;
-}
-
-/* ✅ ปรับขนาดการ์ดให้เล็กลงพอดี */
-.cert-card {
-  width: 200px;          /* เดิมอาจ 260–300px */
-  min-height: 280px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.cert-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-}
-
-/* ✅ ปรับภาพให้เห็นหัวชัดขึ้น */
-.cert-thumb {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  object-position: top; /* <<< โฟกัสช่วงหัว */
-  border-radius: 10px 10px 0 0;
-}
-
-/* ✅ ปรับส่วนชื่อและปุ่มให้ดูบาลานซ์ */
-.cert-meta {
-  padding: 0.8rem 0.6rem 1rem;
-  text-align: center;
-}
-.cert-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.3;
-  margin-bottom: 0.5rem;
-}
-.cert-actions .btn.tiny {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.6rem;
-}
-
-
-.cert-card {
-  position: relative;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.cert-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
-}
-
-/* รูปใบประกาศ */
-.cert-thumb {
-  width: 100%;
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* ส่วนข้อความใต้รูป */
-.cert-meta {
-  padding: 1rem 1.2rem 1.4rem;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-/* ชื่อใบประกาศ */
-.cert-title {
-  font-weight: 600;
-  line-height: 1.4;
-  color: #fff;
-  font-size: 0.95rem;
-  word-break: keep-all;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* แสดงแค่ 2 บรรทัด */
-  -webkit-box-orient: vertical;
-}
-
-/* ปุ่มดู / ดาวน์โหลด */
-.cert-actions {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-/* ปุ่มขนาดเล็กให้พอดี */
-.cert-actions .btn.tiny {
-  font-size: 0.8rem;
-  padding: 0.3rem 0.6rem;
-}
-/* ===== Certificates: Quick Hover Preview ===== */
-.cert-hover {
-  position: fixed;
-  left: 50%; top: 50%;
-  transform: translate(-50%,-50%) scale(.96);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 9998;
-  transition: opacity .18s ease, transform .22s cubic-bezier(.2,.75,.25,1);
+/* Quick Hover Preview (desktop only) */
+.cert-hover{
+  position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(.96);
+  opacity:0; pointer-events:none; z-index:9998;
+  transition:opacity .18s ease, transform .22s cubic-bezier(.2,.75,.25,1);
   filter: drop-shadow(0 22px 48px rgba(0,0,0,.45));
 }
+.cert-hover.show{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+.cert-hover img{
+  display:block; max-width:min(560px, 76vw); max-height:min(420px, 70vh);
+  width:auto; height:auto; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:#0f152d;
+}
+@media (pointer:coarse){ .cert-hover{ display:none !important; } }
 
-.cert-hover.show {
-  opacity: 1;
-  transform: translate(-50%,-50%) scale(1);
-}
+@media(max-width:600px){ .cert-grid{grid-template-columns:repeat(2,1fr);} .clb-inner{padding:10px;} }
+@media(max-width:420px){ .cert-grid{grid-template-columns:1fr;} }
 
-.cert-hover img {
-  display: block;
-  max-width: min(560px, 76vw);
-  max-height: min(420px, 70vh);
-  width: auto; height: auto;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: #0f152d;
-}
-
-/* เอฟเฟกต์แสงเล็ก ๆ เวลาโชว์ */
-.cert-hover.show img {
-  animation: previewGlow .5s ease both;
-}
-@keyframes previewGlow {
-  from { box-shadow: 0 0 0 rgba(255,255,255,0); }
-  to   { box-shadow: 0 0 0 rgba(255,255,255,0); }
-}
-
-/* ปิดบนมือถือ/แท็บเล็ต (pointer coarse) */
-@media (pointer:coarse){
-  .cert-hover{ display:none !important; }
-}
-/* ===== Certificates: Hover Animation ===== */
-.cert-card {
-  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1),
-              box-shadow 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-  transform-origin: center center;
-}
-
-.cert-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-}
-
-/* แสงเคลื่อนไหวเบา ๆ ตอน hover */
-.cert-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -75%;
-  width: 50%; height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.15), transparent);
-  transform: skewX(-25deg);
-  transition: 0.75s;
-  pointer-events: none;
-}
-.cert-card:hover::before {
-  left: 130%;
-}
 /* === Soft neon for buttons === */
-.btn {
-  position: relative;
-  isolation: isolate;
+.btn{ position: relative; isolation: isolate; }
+.btn.primary,.btn.ghost{
+  box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 10px 24px rgba(0,0,0,.25);
 }
-
-/* glow เบา ๆ ตลอด */
-.btn.primary,
-.btn.ghost {
-  box-shadow:
-    0 1px 0 rgba(255,255,255,.06) inset,
-    0 10px 24px rgba(0,0,0,.25);
-}
-
-/* hover = neon ชัดขึ้น + ขอบในนุ่ม */
-.btn.primary:hover,
-.btn.primary:focus-visible {
+.btn.primary:hover,.btn.primary:focus-visible{
   box-shadow:
     0 0 18px color-mix(in srgb, var(--primary) 55%, transparent),
     0 0 34px color-mix(in srgb, var(--primary-2) 45%, transparent),
     0 14px 32px rgba(0,0,0,.35);
   transform: translateY(-2px);
 }
-
-.btn.ghost:hover,
-.btn.ghost:focus-visible {
-  box-shadow:
-    0 0 16px rgba(146, 180, 255, .22),
-    0 12px 28px rgba(0,0,0,.35);
-  background: rgba(255,255,255,.08);
-  border-color: rgba(255,255,255,.22);
+.btn.ghost:hover,.btn.ghost:focus-visible{
+  box-shadow: 0 0 16px rgba(146,180,255,.22), 0 12px 28px rgba(0,0,0,.35);
+  background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.22);
 }
-
-/* แถบประกายวิ่งผ่านปุ่ม */
 .btn::after{
-  content:"";
-  position:absolute; inset:0;
-  border-radius:inherit;
-  background:
-    radial-gradient(80px 40px at var(--sx, -30%) 50%,
-      rgba(255,255,255,.18), transparent 60%);
-  mix-blend-mode:screen;
-  opacity:0; transform: translateX(-20%);
-  transition: opacity .35s ease, transform .35s ease;
-  pointer-events:none;
+  content:""; position:absolute; inset:0; border-radius:inherit;
+  background: radial-gradient(80px 40px at var(--sx, -30%) 50%, rgba(255,255,255,.18), transparent 60%);
+  mix-blend-mode:screen; opacity:0; transform: translateX(-20%);
+  transition: opacity .35s ease, transform .35s ease; pointer-events:none;
 }
-.btn:hover::after,
-.btn:focus-visible::after{
-  --sx: 130%;
-  opacity:1; transform: translateX(0);
-}
-/* ===== Twinkle glow for icons (stack tiles etc.) ===== */
-.stack-chip i{
-  position: relative;
-  color:#dfe7ff;
-  /* วิบวับเบา ๆ ตลอด */
-  animation: twinkleGlow 3.2s ease-in-out infinite;
-  /* ลด aliasing เวลาเรืองแสง */
-  -webkit-font-smoothing: antialiased;
-  text-shadow: 0 0 0 transparent;
-  filter: drop-shadow(0 0 0 rgba(150,180,255,0));
-}
+.btn:hover::after,.btn:focus-visible::after{ --sx: 130%; opacity:1; transform: translateX(0); }
 
-/* สลับดีเลย์ให้ไม่กระพริบพร้อมกันทั้งแถว */
+/* ===== Twinkle glow for icons ===== */
+.stack-chip i{
+  position: relative; color:#dfe7ff; animation: twinkleGlow 3.2s ease-in-out infinite;
+  -webkit-font-smoothing: antialiased; text-shadow: 0 0 0 transparent; filter: drop-shadow(0 0 0 rgba(150,180,255,0));
+}
 .stack-chip:nth-child(3n+1) i{ animation-delay: .15s; }
 .stack-chip:nth-child(3n+2) i{ animation-delay: .55s; }
 .stack-chip:nth-child(3n+3) i{ animation-delay: .95s; }
-
-/* hover = สว่างและคมขึ้นนิด ๆ */
-.stack-chip:hover i,
-.stack-chip:focus-visible i{
-  animation-duration: 2s;
-  filter: drop-shadow(0 4px 12px rgba(146,180,255,.45));
-}
-
-/* keyframes วิบวับแบบสุภาพ ไม่เวียนหัว */
+.stack-chip:hover i,.stack-chip:focus-visible i{ animation-duration: 2s; filter: drop-shadow(0 4px 12px rgba(146,180,255,.45)); }
 @keyframes twinkleGlow{
-  0%, 22%, 60%, 100%{
-    text-shadow:
-      0 0 0 rgba(146,180,255,0),
-      0 0 0 rgba(155,140,255,0);
-    filter: drop-shadow(0 0 0 rgba(146,180,255,0));
-  }
-  12%{
-    text-shadow:
-      0 0 6px rgba(146,180,255,.55),
-      0 0 12px rgba(155,140,255,.35);
-    filter: drop-shadow(0 0 6px rgba(146,180,255,.35));
-  }
-  42%{
-    text-shadow:
-      0 0 8px rgba(155,140,255,.6),
-      0 0 16px rgba(106,165,255,.45);
-    filter: drop-shadow(0 0 8px rgba(106,165,255,.35));
-  }
+  0%,22%,60%,100%{ text-shadow:0 0 0 rgba(146,180,255,0),0 0 0 rgba(155,140,255,0); filter: drop-shadow(0 0 0 rgba(146,180,255,0)); }
+  12%{ text-shadow:0 0 6px rgba(146,180,255,.55),0 0 12px rgba(155,140,255,.35); filter: drop-shadow(0 0 6px rgba(146,180,255,.35)); }
+  42%{ text-shadow:0 0 8px rgba(155,140,255,.6),0 0 16px rgba(106,165,255,.45); filter: drop-shadow(0 0 8px rgba(106,165,255,.35)); }
 }
-
-/* ผู้ใช้ที่ตั้งลด motion */
 @media (prefers-reduced-motion: reduce){
   .stack-chip i{ animation: none; filter:none; text-shadow:none; }
 }
+
 /* ------------------------------------------------------------- */
 /* === เพิ่มฟีเจอร์ใหม่โดยไม่ลบของเก่า === */
 /* ------------------------------------------------------------- */
 
-/* 💫 1. Text Glow Animation (ไฟวิ่งผ่านข้อความใหญ่) */
+/* 💫 Text Glow Animation */
 .glow-text {
   background: linear-gradient(90deg,#fff 0%,#bcd3ff 35%,#9cc4ff 50%,#bcd3ff 65%,#fff 100%);
   background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
+  -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: textGlow 3.2s linear infinite;
   filter: drop-shadow(0 6px 26px rgba(130,160,255,.14));
 }
-@keyframes textGlow {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+@keyframes textGlow { 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
 
-/* 🎮 2. 3D Tilt effect (ใช้กับ .tilt ที่มีอยู่แล้ว) */
-.tilt {
-  transform-style: preserve-3d;
-  transition: transform .12s linear, box-shadow .25s ease;
-  will-change: transform;
-}
-.tilt:hover {
-  box-shadow: 0 20px 44px rgba(0,0,0,.38);
-}
-.tilt .cert-thumb,
-.tilt .thumb {
-  transform: translateZ(8px);
-  transition: transform .2s ease;
-}
-.tilt:hover .cert-thumb,
-.tilt:hover .thumb {
-  transform: translateZ(12px) scale(1.01);
-}
+/* 🎮 3D Tilt effect */
+.tilt{ transform-style: preserve-3d; transition: transform .12s linear, box-shadow .25s ease; will-change: transform; }
+.tilt:hover{ box-shadow: 0 20px 44px rgba(0,0,0,.38); }
+.tilt .cert-thumb,.tilt .thumb{ transform: translateZ(8px); transition: transform .2s ease; }
+.tilt:hover .cert-thumb,.tilt:hover .thumb{ transform: translateZ(12px) scale(1.01); }
 
-/* 🌈 3. Dark/Light Mode Toggle */
-.theme-toggle {
-  margin-left: 8px;
-  border-radius: 12px;
-  padding: 8px 12px;
-  line-height: 1;
-  cursor: pointer;
-  transition: transform .2s ease;
-}
+/* 🌈 Theme Toggle */
+.theme-toggle{ margin-left: 8px; border-radius: 12px; padding: 8px 12px; line-height: 1; cursor: pointer; transition: transform .2s ease; }
 .theme-toggle:hover { transform: translateY(-1px); }
 
 /* 🎨 Light Theme Variables */
-:root.theme-light {
-  --bg: #f6f8ff;
-  --bg2: #eaf0ff;
-  --ink: #0c1426;
-  --muted: #5a6a84;
-  --primary: #446bff;
-  --primary-2: #8d69ff;
-  --card: rgba(0,0,0,.045);
-  --line: rgba(0,0,0,.12);
+:root.theme-light{
+  --bg: #f6f8ff; --bg2: #eaf0ff; --ink: #0c1426; --muted: #5a6a84;
+  --primary: #446bff; --primary-2: #8d69ff;
+  --card: rgba(0,0,0,.045); --line: rgba(0,0,0,.12);
 }
-
-/* 🌞 ปรับพื้นหลัง Aurora สำหรับ Light Mode */
-:root.theme-light body {
+:root.theme-light body{
   background:
     radial-gradient(900px 420px at 12% -12%, rgba(68,107,255,.12), transparent 60%),
     radial-gradient(880px 420px at 88% -12%, rgba(141,105,255,.10), transparent 60%),
     linear-gradient(180deg, var(--bg), var(--bg2));
 }
-
 :root.theme-light .bg-blob { opacity:.22; filter: blur(70px); }
-:root.theme-light .glass {
-  background: rgba(255,255,255,.72);
-  border-color: rgba(0,0,0,.08);
-  box-shadow: 0 10px 30px rgba(40,60,120,.12);
-}
+:root.theme-light .glass{ background: rgba(255,255,255,.72); border-color: rgba(0,0,0,.08); box-shadow: 0 10px 30px rgba(40,60,120,.12); }
 :root.theme-light .btn.ghost { background: rgba(0,0,0,.04); }
 
-/* ------------------------------------------------------------- */
-/* ✅ จบส่วนเพิ่มใหม่ — ของเดิมทั้งหมดไม่ถูกแตะต้อง */
-/* ------------------------------------------------------------- */
-/* ============== THEME: Light Mode ============== */
-/* เมื่อปุ่มกดจะ toggle class .theme-light บน <html> */
+/* ============== THEME: Light Mode (alt) ============== */
 .theme-light{
-  /* override ตัวแปร */
-  --bg:#f6f7fb;
-  --bg2:#e9eef8;
-  --ink:#1b2333;
-  --muted:#667085;
-  --primary:#3b82f6;
-  --primary-2:#a855f7;
-  --card:rgba(255,255,255,.75);
-  --line:rgba(0,0,0,.10);
+  --bg:#f6f7fb; --bg2:#e9eef8; --ink:#1b2333; --muted:#667085;
+  --primary:#3b82f6; --primary-2:#a855f7;
+  --card:rgba(255,255,255,.75); --line:rgba(0,0,0,.10);
 }
-
-/* พื้นหลังสว่างขึ้น (แทนที่ radial เดิมให้โทนใส/ฟ้าอ่อน) */
 .theme-light body{
   color:var(--ink);
   background:
@@ -1140,134 +642,21 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
     radial-gradient(700px 380px at 50% 65%, rgba(56,189,248,.10), transparent 60%),
     linear-gradient(180deg,var(--bg),var(--bg2));
 }
-
-/* แถบนำทางใสสว่าง */
-.theme-light .nav{
-  background:rgba(255,255,255,.6);
-  border-bottom:1px solid var(--line);
-}
+.theme-light .nav{ background:rgba(255,255,255,.6); border-bottom:1px solid var(--line); }
 .theme-light .brand{ color:#25324a; }
 .theme-light .links a{ color:#25324a; opacity:.95; }
-
-/* การ์ด/ปุ่มให้สว่าง คอนทราสต์อ่านง่าย */
-.theme-light .glass{
-  background:var(--card);
-  border:1px solid var(--line);
-  box-shadow:0 8px 28px rgba(0,0,0,.08);
-}
+.theme-light .glass{ background:var(--card); border:1px solid var(--line); box-shadow:0 8px 28px rgba(0,0,0,.08); }
 .theme-light .btn.ghost{ background:rgba(0,0,0,.06); }
 .theme-light .btn.primary{ color:#0b1022; }
-
-/* โค้ดวินโดว์โทนสว่างขึ้นเล็กน้อย */
 .theme-light .code-window{ background:#ecf1ff; border-color:rgba(0,0,0,.08); }
 .theme-light pre{ color:#21324d; }
 .theme-light .kw{ color:#e11d48; } .theme-light .id{ color:#b45309; } .theme-light .fn{ color:#0f766e; }
-
-/* สถานะอื่น ๆ */
 .theme-light .foot{ background:rgba(255,255,255,.55); color:#4b5563; }
 
-/* ============== Theme Toggle button (สวยขึ้นนิด) ============== */
+/* Theme toggle button */
 .theme-toggle{
-  width:38px;height:38px;border-radius:10px;
-  display:grid;place-items:center;
+  width:38px;height:38px;border-radius:10px; display:grid;place-items:center;
   border:1px solid var(--line); background:var(--card); color:var(--ink);
-}
-
-/* ============== Tilt Fallback (ถ้า JS ไม่ทำงาน) ============== */
-.tilt{ transition: transform .18s ease, box-shadow .18s ease; transform-style:preserve-3d; }
-.tilt:hover{
-  transform: perspective(900px) rotateX(4deg) rotateY(-4deg) translateY(-2px);
-  box-shadow: 0 18px 40px rgba(0,0,0,.35);
-}
-/* -------------------------------------------------- */
-/* 💫 TEXT GLOW — ไฟวิ่งผ่านชื่อใหญ่ (Hello, I'm Pakawat) */
-/* -------------------------------------------------- */
-.glow-text {
-  background: linear-gradient(90deg, #ffffff, #bcd3ff, #9cc4ff, #bcd3ff, #ffffff);
-  background-size: 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textGlow 3s linear infinite;
-  filter: drop-shadow(0 0 16px rgba(150,180,255,.15));
-}
-@keyframes textGlow {
-  to { background-position: -200% 0; }
-}
-
-/* -------------------------------------------------- */
-/* 🎮 3D TILT EFFECT — การ์ดเอียงมีมิติ */
-/* -------------------------------------------------- */
-.tilt {
-  perspective: 1000px;
-  transform-style: preserve-3d;
-  transition: transform .25s ease, box-shadow .25s ease;
-  cursor: pointer;
-}
-.tilt:hover {
-  transform: rotateX(6deg) rotateY(-6deg) translateY(-3px);
-  box-shadow: 0 20px 50px rgba(0,0,0,.35);
-}
-.tilt .thumb, .tilt .cert-thumb {
-  transition: transform .3s ease;
-  transform: translateZ(10px);
-}
-.tilt:hover .thumb, .tilt:hover .cert-thumb {
-  transform: translateZ(18px) scale(1.04);
-}
-
-/* -------------------------------------------------- */
-/* 🌗 DARK / LIGHT MODE — ปรับใหม่ให้สีบาลานซ์กว่าเดิม */
-/* -------------------------------------------------- */
-:root.theme-light {
-  --bg: #f4f6fb;
-  --bg2: #e9ecf8;
-  --ink: #0f172a;
-  --muted: #64748b;
-  --primary: #3b82f6;
-  --primary-2: #8b5cf6;
-  --card: rgba(255,255,255,.9);
-  --line: rgba(0,0,0,.08);
-}
-.theme-light body {
-  background:
-    radial-gradient(900px 420px at 15% -10%, rgba(59,130,246,.12), transparent 70%),
-    radial-gradient(880px 420px at 85% -10%, rgba(139,92,246,.10), transparent 70%),
-    linear-gradient(180deg,var(--bg),var(--bg2));
-  color: var(--ink);
-}
-.theme-light .glass {
-  background: var(--card);
-  border-color: var(--line);
-  box-shadow: 0 6px 22px rgba(0,0,0,.1);
-}
-.theme-light .nav {
-  background: rgba(255,255,255,.7);
-  border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(10px);
-}
-.theme-light .brand, .theme-light .links a { color: var(--ink); }
-.theme-light .headline.gradient,
-.theme-light .glow-text {
-  background: linear-gradient(90deg,#1e3a8a,#4338ca,#2563eb,#1e3a8a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.theme-light .foot {
-  background: rgba(255,255,255,.6);
-  color: var(--muted);
-}
-
-/* ปุ่ม toggle น่ารัก ๆ */
-.theme-toggle {
-  border-radius: 10px;
-  padding: 6px 10px;
-  font-size: 18px;
-  border: 1px solid var(--line);
-  background: var(--card);
-  color: var(--ink);
   transition: transform .2s ease, box-shadow .2s ease;
 }
-.theme-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 14px rgba(120,150,255,.25);
-}
+.theme-toggle:hover{ transform: translateY(-2px); box-shadow: 0 0 14px rgba(120,150,255,.25); }
