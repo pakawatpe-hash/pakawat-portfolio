@@ -1041,16 +1041,6 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 /* === เพิ่มฟีเจอร์ใหม่โดยไม่ลบของเก่า === */
 /* ------------------------------------------------------------- */
 
-/* 💫 1. Text Glow Animation (ไฟวิ่งผ่านข้อความใหญ่) */
-.glow-text {
-  background: linear-gradient(90deg,#fff 0%,#bcd3ff 35%,#9cc4ff 50%,#bcd3ff 65%,#fff 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textGlow 3.2s linear infinite;
-  filter: drop-shadow(0 6px 26px rgba(130,160,255,.14));
-}
 @keyframes textGlow {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
