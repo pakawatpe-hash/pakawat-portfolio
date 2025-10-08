@@ -475,3 +475,25 @@ if (isFinePointer) {
     }, {passive:true});
   }
 })();
+/* ===== Dark / Light Theme toggle (persist with localStorage) ===== */
+(() => {
+  const root = document.documentElement;
+  const btn  = document.getElementById('themeToggle');
+  if (!btn) return;
+
+  const setIcon = (lightOn) => { btn.textContent = lightOn ? '🌙' : '☀️'; };
+
+  // load
+  const saved = localStorage.getItem('theme') || 'dark';
+  const lightOn = saved === 'light';
+  root.classList.toggle('theme-light', lightOn);
+  setIcon(lightOn);
+
+  // toggle
+  btn.addEventListener('click', () => {
+    const makeLight = !root.classList.contains('theme-light');
+    root.classList.toggle('theme-light', makeLight);
+    localStorage.setItem('theme', makeLight ? 'light' : 'dark');
+    setIcon(makeLight);
+  }, {passive:true});
+})();
