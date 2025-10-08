@@ -1179,3 +1179,95 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   transform: perspective(900px) rotateX(4deg) rotateY(-4deg) translateY(-2px);
   box-shadow: 0 18px 40px rgba(0,0,0,.35);
 }
+/* -------------------------------------------------- */
+/* 💫 TEXT GLOW — ไฟวิ่งผ่านชื่อใหญ่ (Hello, I'm Pakawat) */
+/* -------------------------------------------------- */
+.glow-text {
+  background: linear-gradient(90deg, #ffffff, #bcd3ff, #9cc4ff, #bcd3ff, #ffffff);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textGlow 3s linear infinite;
+  filter: drop-shadow(0 0 16px rgba(150,180,255,.15));
+}
+@keyframes textGlow {
+  to { background-position: -200% 0; }
+}
+
+/* -------------------------------------------------- */
+/* 🎮 3D TILT EFFECT — การ์ดเอียงมีมิติ */
+/* -------------------------------------------------- */
+.tilt {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform .25s ease, box-shadow .25s ease;
+  cursor: pointer;
+}
+.tilt:hover {
+  transform: rotateX(6deg) rotateY(-6deg) translateY(-3px);
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+.tilt .thumb, .tilt .cert-thumb {
+  transition: transform .3s ease;
+  transform: translateZ(10px);
+}
+.tilt:hover .thumb, .tilt:hover .cert-thumb {
+  transform: translateZ(18px) scale(1.04);
+}
+
+/* -------------------------------------------------- */
+/* 🌗 DARK / LIGHT MODE — ปรับใหม่ให้สีบาลานซ์กว่าเดิม */
+/* -------------------------------------------------- */
+:root.theme-light {
+  --bg: #f4f6fb;
+  --bg2: #e9ecf8;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --primary: #3b82f6;
+  --primary-2: #8b5cf6;
+  --card: rgba(255,255,255,.9);
+  --line: rgba(0,0,0,.08);
+}
+.theme-light body {
+  background:
+    radial-gradient(900px 420px at 15% -10%, rgba(59,130,246,.12), transparent 70%),
+    radial-gradient(880px 420px at 85% -10%, rgba(139,92,246,.10), transparent 70%),
+    linear-gradient(180deg,var(--bg),var(--bg2));
+  color: var(--ink);
+}
+.theme-light .glass {
+  background: var(--card);
+  border-color: var(--line);
+  box-shadow: 0 6px 22px rgba(0,0,0,.1);
+}
+.theme-light .nav {
+  background: rgba(255,255,255,.7);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+.theme-light .brand, .theme-light .links a { color: var(--ink); }
+.theme-light .headline.gradient,
+.theme-light .glow-text {
+  background: linear-gradient(90deg,#1e3a8a,#4338ca,#2563eb,#1e3a8a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.theme-light .foot {
+  background: rgba(255,255,255,.6);
+  color: var(--muted);
+}
+
+/* ปุ่ม toggle น่ารัก ๆ */
+.theme-toggle {
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 18px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 14px rgba(120,150,255,.25);
+}
