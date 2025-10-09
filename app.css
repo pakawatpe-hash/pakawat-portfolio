@@ -752,3 +752,102 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .theme-light .card .thumb.gradient-1{ background:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%); }
 .theme-light .card .thumb.gradient-2{ background:linear-gradient(135deg,#8b5cf6 0%,#3b82f6 100%); }
 .theme-light .card .thumb.gradient-3{ background:linear-gradient(135deg,#22d3ee 0%,#3b82f6 100%); }
+/* =========================================================
+   🌞 LIGHT MODE FULL PAGE FIX — About / Stats / Education
+   ========================================================= */
+
+/* === 1. ABOUT BOX === */
+.theme-light .about-text{
+  background:rgba(255,255,255,.9);
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
+  color:#0f172a;
+}
+.theme-light .about-desc{
+  color:#334155;
+  opacity:.96;
+  line-height:1.9;
+}
+
+/* === 2. STAT CARDS (Projects / Certificates / Tech Stack) === */
+.theme-light .stat-card{
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:18px;
+  box-shadow:0 6px 20px rgba(0,0,0,.07);
+  color:#0f172a;
+}
+.theme-light .stat-card .icon{
+  background:rgba(0,0,0,.04);
+  border-color:rgba(0,0,0,.08);
+  color:#1e293b;
+}
+.theme-light .stat-card .num{ color:#0f172a; }
+.theme-light .stat-card .label{ color:#475569; }
+
+/* === 3. EDUCATION TIMELINE === */
+.theme-light .edu-section{ background:transparent; }
+.theme-light .edu-item{
+  background:rgba(255,255,255,.88);
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:16px;
+  padding:18px 22px;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+.theme-light .edu-title{ color:#0c1426; }
+.theme-light .edu-desc{ color:#334155; opacity:.95; }
+.theme-light .edu-chip{
+  background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  color:#fff;
+  box-shadow:0 3px 10px rgba(59,130,246,.35);
+}
+.theme-light .edu-timeline::before{
+  background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.05));
+}
+.theme-light .edu-timeline::after{
+  background:radial-gradient(circle,#3b82f6 0%,rgba(59,130,246,.4) 50%,transparent 70%);
+  box-shadow:0 0 16px rgba(59,130,246,.4);
+}
+
+/* === 4. GENERAL CARDS / SECTIONS === */
+.theme-light .card,
+.theme-light .contact-card,
+.theme-light .cert-card{
+  background:rgba(255,255,255,.95);
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:0 10px 26px rgba(0,0,0,.08);
+  color:#0f172a;
+}
+.theme-light .card p,
+.theme-light .contact-card span{ color:#334155; }
+
+/* === 5. FOOTER === */
+.theme-light .foot{
+  background:rgba(255,255,255,.85);
+  color:#475569;
+  border-top:1px solid rgba(0,0,0,.08);
+  box-shadow:0 -4px 12px rgba(0,0,0,.05);
+}
+
+/* === 6. HERO BACKGROUND SOFT FIX (ความต่อเนื่อง) === */
+.theme-light .hero{
+  background:linear-gradient(180deg,rgba(255,255,255,.6) 0%,rgba(240,244,255,.9) 100%);
+}
+
+/* === 7. Minor Typography === */
+.theme-light h3,
+.theme-light h2,
+.theme-light h4{
+  color:#0f172a;
+}
+.theme-light p{ color:#334155; }
+
+/* === 8. เพิ่ม contrast ให้ hover === */
+.theme-light .stack-chip:hover,
+.theme-light .card:hover,
+.theme-light .edu-item:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 26px rgba(0,0,0,.12);
+  transition:all .25s ease;
+}
