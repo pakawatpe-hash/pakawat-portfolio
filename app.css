@@ -669,16 +669,25 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 .theme-light .hero::after{
   opacity:.22 !important;           /* เดิม .42–.62 ทำให้ขาวฟุ้งเกิน */
   filter: blur(52px) !important;     /* ลด blur ลง */
-}
+/* === FIX: Headline gradient disappeared in Light Mode === */
 .theme-light .headline.gradient,
-.theme-light .glow-text{
-  /* ไล่สีเข้มขึ้นเพื่ออ่านชัดบนพื้นสว่าง */
-  background: linear-gradient(90deg,#0f1d4a 0%, #1f3aa9 40%, #2563eb 60%, #0f1d4a 100%) !important;
-  -webkit-background-clip:text; background-clip:text;
-  -webkit-text-fill-color: transparent;
-  filter: none !important;           /* ตัด drop-shadow ฟุ้ง ๆ ใน light */
+.theme-light .glow-text {
+  /* ทำให้ gradient กลับมาโปร่งใสและเห็นพื้นหลังผ่านได้ */
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 45%, #6366f1 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  font-weight: 800;
+  filter: drop-shadow(0 2px 4px rgba(37,99,235,.15)); /* เพิ่มความคมเล็กน้อย */
 }
-.theme-light .sub{ color: color-mix(in srgb, var(--ink) 70%, #000 30%); }
+
+/* ตัวซับด้านล่าง (DekCom...) ให้คอนทราสต์พอดี */
+.theme-light .sub {
+  color: #1e293b !important;
+  opacity: .95;
+}
+
 
 /* 2) Glass/Pill/Nav: เพิ่มคอนทราสต์เส้นขอบและพื้นหลังให้ไม่ซีด */
 .theme-light .glass{
