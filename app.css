@@ -660,3 +660,65 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   transition: transform .2s ease, box-shadow .2s ease;
 }
 .theme-toggle:hover{ transform: translateY(-2px); box-shadow: 0 0 14px rgba(120,150,255,.25); }
+/* =========================================================
+   LIGHT MODE FIX PATCH — better contrast & less haze
+   ========================================================= */
+
+/* 1) Hero: ลดความฟุ้งของ Aurora + ทำให้ตัวหนังสือคมขึ้น */
+.theme-light .hero::before,
+.theme-light .hero::after{
+  opacity:.22 !important;           /* เดิม .42–.62 ทำให้ขาวฟุ้งเกิน */
+  filter: blur(52px) !important;     /* ลด blur ลง */
+}
+.theme-light .headline.gradient,
+.theme-light .glow-text{
+  /* ไล่สีเข้มขึ้นเพื่ออ่านชัดบนพื้นสว่าง */
+  background: linear-gradient(90deg,#0f1d4a 0%, #1f3aa9 40%, #2563eb 60%, #0f1d4a 100%) !important;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color: transparent;
+  filter: none !important;           /* ตัด drop-shadow ฟุ้ง ๆ ใน light */
+}
+.theme-light .sub{ color: color-mix(in srgb, var(--ink) 70%, #000 30%); }
+
+/* 2) Glass/Pill/Nav: เพิ่มคอนทราสต์เส้นขอบและพื้นหลังให้ไม่ซีด */
+.theme-light .glass{
+  background: rgba(255,255,255,.85) !important;
+  border-color: rgba(0,0,0,.08) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.10) !important;
+}
+.theme-light .pill{
+  background: rgba(0,0,0,.04) !important;
+  border-color: rgba(0,0,0,.10) !important;
+  color: #213049 !important;
+}
+
+/* 3) Code window: แยกชั้นจากฉากหลังให้ชัดขึ้น */
+.theme-light .code-window{
+  background: #eef3ff !important;
+  border-color: rgba(0,0,0,.08) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.10) inset, 0 6px 16px rgba(0,0,0,.12);
+}
+.theme-light .dots{ background: rgba(0,0,0,.04) !important; border-bottom-color: rgba(0,0,0,.08) !important; }
+.theme-light pre{ color:#1f2a44 !important; }
+.theme-light .kw{ color:#dc2626 !important; }
+.theme-light .id{ color:#b45309 !important; }
+.theme-light .fn{ color:#0d9488 !important; }
+
+/* 4) Buttons: เน้นคอนทราสต์ข้อความกับพื้นสว่าง */
+.theme-light .btn.primary{ color:#0b1022 !important; }
+.theme-light .btn.ghost{
+  background: rgba(0,0,0,.06) !important;
+  border-color: rgba(0,0,0,.10) !important;
+  color:#0f172a !important;
+}
+
+/* 5) Marquee bar: ลดหมอกขาว + เส้นขอบอ่อนลงเล็กน้อย */
+.theme-light .marquee.full-bleed{
+  background: rgba(0,0,0,.03) !important;
+  border-top-color: rgba(0,0,0,.08) !important;
+  border-bottom-color: rgba(0,0,0,.08) !important;
+}
+
+/* 6) อ่านง่ายขึ้นอีกนิดในหัวข้อและลิงก์เมนู */
+.theme-light .links a{ color:#0f172a !important; opacity:.95; }
+.theme-light .section-title{ color:#0c1426 !important; }
