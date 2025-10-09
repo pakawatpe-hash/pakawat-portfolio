@@ -851,3 +851,53 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
   box-shadow:0 10px 26px rgba(0,0,0,.12);
   transition:all .25s ease;
 }
+/* ================== THEME SWITCH STABILIZER ================== */
+/* 1) จองพื้นที่ขอบ 1px ไว้ตั้งแต่ base เพื่อลดการขยับตอนสลับธีม */
+.about-text,
+.stat-card,
+.edu-item,
+.card,
+.contact-card,
+.cert-card {
+  box-sizing: border-box;
+  border: 1px solid transparent;   /* มีขอบแต่โปร่งใส -> ขนาดคงที่ */
+}
+
+/* 2) ห้ามเปลี่ยน padding/margin เมื่อเข้า light mode (รีเซ็ตของเดิมที่เคยเพิ่ม) */
+.theme-light .edu-item,
+.theme-light .about-text,
+.theme-light .stat-card,
+.theme-light .card,
+.theme-light .contact-card,
+.theme-light .cert-card {
+  padding: 0;   /* ย้อนกลับตาม base (ถ้า base มี padding อยู่ ให้ระบุเท่ากันได้) */
+}
+
+/* NOTE: ถ้า base ของบางตัว “มี” padding อยู่ ให้คืนค่าเท่ากันที่นี่แทน 0  */
+/* ตัวอย่าง: about-text ใน base ใช้ padding: 20px 22px;  -> คืนค่าแบบนี้: */
+.theme-light .about-text { padding: 20px 22px; }
+
+/* 3) เปลี่ยนเฉพาะ “สี/เงา” ไม่แตะขนาด */
+.theme-light .about-text,
+.theme-light .stat-card,
+.theme-light .edu-item,
+.theme-light .card,
+.theme-light .contact-card,
+.theme-light .cert-card {
+  border-color: rgba(0,0,0,.08);
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 8px 22px rgba(0,0,0,.08);
+  transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+/* 4) Education: ห้ามเพิ่ม padding ที่กล่อง (เหตุผลหลักที่เคลื่อน) */
+.theme-light .edu-item { padding: 0; background: rgba(255,255,255,.9); }
+/* ถ้าอยากมีช่องว่าง ให้ใส่ที่ .edu-content ภายในแทน (ไม่กระทบกรอบนอก) */
+.edu-item .edu-content { padding: 18px 22px; }   /* ใช้ได้ทั้งสองธีม มิติคงที่ */
+
+/* 5) ไอคอน/ป้าย ฯลฯ — สีอย่างเดียว ไม่แตะขนาด */
+.theme-light .stat-card .icon{
+  background: rgba(0,0,0,.04);
+  border-color: rgba(0,0,0,.08);
+  color:#1e293b;
+}
