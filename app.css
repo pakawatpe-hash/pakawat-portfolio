@@ -722,3 +722,40 @@ pre{margin:0;padding:12px 14px 16px 14px;color:#c7d5ff;line-height:1.5;overflow:
 /* 6) อ่านง่ายขึ้นอีกนิดในหัวข้อและลิงก์เมนู */
 .theme-light .links a{ color:#0f172a !important; opacity:.95; }
 .theme-light .section-title{ color:#0c1426 !important; }
+/* === FIX: improve light mode contrast === */
+.theme-light body {
+  background:
+    radial-gradient(900px 420px at 12% -12%, rgba(59,130,246,.10), transparent 60%),
+    radial-gradient(880px 420px at 88% -12%, rgba(139,92,246,.08), transparent 60%),
+    linear-gradient(180deg,#f6f7fb,#e9eef8);
+  color:#0f172a;
+}
+.theme-light .hero::before,
+.theme-light .hero::after {
+  opacity:.25 !important; filter:blur(40px) !important;
+}
+.theme-light .headline.gradient,
+.theme-light .glow-text {
+  background:linear-gradient(90deg,#1e3a8a,#2563eb,#1e3a8a);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:none;
+}
+.theme-light .sub { color:#334155; }
+.theme-light .pill {
+  background:rgba(0,0,0,.05);
+  border-color:rgba(0,0,0,.1);
+  color:#1e293b;
+}
+.theme-light .code-window {
+  background:#eef3ff;
+  border-color:rgba(0,0,0,.08);
+  box-shadow:0 6px 20px rgba(0,0,0,.1);
+}
+.theme-light pre { color:#1e293b; }
+.theme-light .btn.primary { color:#0b1022; }
+.theme-light .btn.ghost {
+  background:rgba(0,0,0,.06);
+  border-color:rgba(0,0,0,.12);
+  color:#0f172a;
+}
